@@ -1,8 +1,6 @@
 .home-container {
-    margin: 0; /* Remove default margin */
-    padding: 0 20px; /* Optional: control the padding */
+    padding: 0px; /* Optional: control the padding */
     font-family: 'Roboto', sans-serif;
-    background-color: #f9f9f9;
     color: #333;
   }
 
@@ -27,9 +25,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #f5f5f5;
+    background-color: #E4E2DD;
     padding: 40px;
-    margin-top: 20px;
   }
   
   .products-grid {

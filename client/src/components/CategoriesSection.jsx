@@ -3,22 +3,26 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css"; 
 import './CategoriesSection.css'; // Asegúrate de agregar los estilos
+import sectionImg from '../assets/Mate-512.webp';
 
 const categories = [
-  { id: 1, name: 'Mates de Madera', img: 'https://via.placeholder.com/150?text=Mate+de+Madera' },
-  { id: 2, name: 'Mates de Cerámica', img: 'https://via.placeholder.com/150?text=Mate+de+Cerámica' },
-  { id: 3, name: 'Mates de Vidrio', img: 'https://via.placeholder.com/150?text=Mate+de+Vidrio' },
-  { id: 4, name: 'Mates Personalizados', img: 'https://via.placeholder.com/150?text=Mate+Personalizado' },
-  { id: 5, name: 'Accesorios', img: 'https://via.placeholder.com/150?text=Accesorios' },
-  // Puedes agregar más categorías aquí
+  { id: 1, name: 'Mates de Madera', img: sectionImg },
+  { id: 2, name: 'Mates de Cerámica', img: sectionImg },
+  { id: 3, name: 'Mates de Vidrio', img: sectionImg  },
+  { id: 4, name: 'Mates Personalizados', img: sectionImg  },
+  { id: 5, name: 'Accesorios', img: sectionImg  },
 ];
 
 const sliderSettings = {
   dots: true,
   infinite: true,
   speed: 500,
-  slidesToShow: 3, // Número de categorías visibles a la vez
+  slidesToShow: 3, 
   slidesToScroll: 1,
+  centerMode: true,
+  centerPadding: '20px',  
+  autoplay: true,
+  autoplay: 3000
 };
 
 const CategoriesSection = () => {

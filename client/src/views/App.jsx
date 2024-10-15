@@ -4,8 +4,12 @@ import Navigation from "./Navigation";
 import Home from './Home';
 import Products from "./Products";
 import Login from "./Login";
+
 import Users from "./Users";
 import Register from "./Register";
+
+import ProductsAdmin from './adminViews/ProductsAdmin';
+
 import { Routes,Route } from "react-router-dom";
 
 const App = () => {
@@ -18,8 +22,11 @@ const App = () => {
         <Route path='/Products' element={<Products/>}/>
         <Route path='/Users' element={<Users/>}/>
         <Route path='/Login' element={<Login/>}/>
+
         <Route path='/Register' element={<Register/>}/>
-        
+
+        <Route path="/adminViews/ProductsAdmin" element={<ProductsAdmin/>}/>
+
       </Routes>
     </>
     

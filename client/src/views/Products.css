@@ -1,0 +1,115 @@
+/* src/Products.css */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+}
+
+.productos-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.productos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.productos-header h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.filtro-button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.filtros {
+  background-color: #fff;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.filtros h3 {
+  margin: 10px 0 5px;
+}
+
+.aplicar-filtros {
+  background-color: #646cff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.productos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.producto-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  text-align: center;
+}
+
+.imagen-placeholder {
+  height: 200px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.producto-card h2 {
+  font-size: 18px;
+  margin: 10px 0;
+  color: #333;
+}
+
+.precio-anterior {
+  text-decoration: line-through;
+  color: gray;
+  margin-right: 10px;
+}
+
+.precio {
+  font-size: 20px;
+  font-weight: bold;
+  color: #000;
+}
+
+.paginacion {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.paginacion-boton {
+  border: none;
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.paginacion-boton:hover {
+  background-color: #ddd;
+}

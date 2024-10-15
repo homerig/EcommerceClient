@@ -33,6 +33,7 @@ body {
   gap: 5px;
 }
 
+
 .filtros {
   background-color: #fff;
   padding: 15px;
@@ -113,3 +114,11 @@ body {
 .paginacion-boton:hover {
   background-color: #ddd;
 }
+.producto-imagen {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+

@@ -1,0 +1,45 @@
+.home-container {
+    margin: 0; /* Remove default margin */
+    padding: 0 20px; /* Optional: control the padding */
+    font-family: 'Roboto', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+  }
+
+  #root {
+    width: 100%; /* Take full width */
+    margin: 0; /* Remove the auto centering margin */
+    padding: 0; /* Adjust padding to zero to prevent unnecessary spacing */
+  }
+  
+  .header {
+    width: 100%; /* Full width header */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .hero-section {
+    width: 100%; /* Full width hero */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f5f5f5;
+    padding: 40px;
+    margin-top: 20px;
+  }
+  
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    width: 100%; /* Use full width of the screen */
+  }
+  
+  .categories-section {
+    width: 100%;
+  }
+  

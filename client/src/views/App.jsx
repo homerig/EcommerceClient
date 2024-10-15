@@ -5,8 +5,6 @@ import Home from './Home';
 import Products from "./Products";
 import Login from "./Login";
 import ProductsAdmin from './adminViews/ProductsAdmin';
-import Users from './adminViews/Users';
-import Orders from './adminViews/Orders';
 
 import { Routes,Route } from "react-router-dom";
 

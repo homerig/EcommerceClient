@@ -1,0 +1,63 @@
+/* src/Login.css */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+  }
+  
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .login-modal {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+  }
+  
+  .login-modal h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+  
+  .login-modal input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .login-modal button {
+    background-color: #646cff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  
+  .login-modal button:hover {
+    background-color: #5a54d5;
+  }
+  
+  .error {
+    color: red;
+    margin: 10px 0;
+  }
+  
+  .register-link {
+    color: #646cff;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  

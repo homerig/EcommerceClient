@@ -1,7 +1,7 @@
 import React from 'react';
 import Product from '../components/Product';
 import CategoriesSection from '../components/CategoriesSection'; 
-import './Home.css';
+import './css/Home.css';
 import mateImg from '../assets/Mate_1.png'
 import mateHome from '../assets/Mates_Home.png'
 

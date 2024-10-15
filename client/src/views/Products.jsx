@@ -1,6 +1,6 @@
 // src/Products.js
 import React, { useState } from 'react';
-import './Products.css';
+import './css/Products.css';
 import mateImg from '../assets/Mate_1.png';
 
 const productos = [

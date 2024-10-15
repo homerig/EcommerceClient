@@ -5,6 +5,42 @@ import logo from '../assets/LogoMatecito.png'; // Asegúrate de que la imagen de
 import './css/Navigation.css'; // Agrega un archivo CSS para estilos
 
 const Navigation = () => {
+
+    return(
+        <nav>
+            <ul>
+                <li>
+                    <Link to='/'>Home</Link>
+                </li>
+                <li>
+                    <Link to='/Products'>Products</Link>
+                </li>
+                <li>
+                    <Link to='/Login'>Login</Link>
+                </li>
+                <li>
+                    <Link to='/Register'>Register</Link>
+                </li>
+                <li>
+                    <Link to='/ViewCart'>ViewCart</Link>
+                </li>
+                <li>
+                    <Link to='/ViewProduct'>ViewProduct</Link>
+                </li>
+                <li>
+                    <Link to='/Orders'>Orders</Link>
+                </li>
+                <li>
+                    <Link to='/Users'>Users</Link>
+                </li>
+                <li>
+                    <Link to='/ProcutsAdmin'>ProductsAdmin</Link>
+                </li>
+            </ul>
+        </nav>
+    )
+}
+
   return (
     <nav className="navbar">
       <div className="navbar-left">
@@ -37,5 +73,6 @@ const Navigation = () => {
     </nav>
   );
 };
+
 
 export default Navigation;

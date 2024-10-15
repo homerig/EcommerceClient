@@ -4,7 +4,7 @@ import Navigation from "./Navigation";
 import Home from './Home';
 import Products from "./Products";
 import Login from "./Login";
-
+import ViewCart from "./ViewCart";
 import Users from "./Users";
 import Register from "./Register";
 
@@ -24,7 +24,7 @@ const App = () => {
         <Route path='/Login' element={<Login/>}/>
 
         <Route path='/Register' element={<Register/>}/>
-
+        <Route path='/ViewCart' element={<ViewCart/>}/>
         <Route path="/adminViews/ProductsAdmin" element={<ProductsAdmin/>}/>
 
       </Routes>

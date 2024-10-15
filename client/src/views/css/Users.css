@@ -6,6 +6,7 @@
     color: #333;
     box-sizing: border-box; /* Asegura que el padding y borde no causen overflow */
     overflow-x: hidden; /* Evita cualquier posible desbordamiento horizontal */
+    border-bottom: 2cm solid #E4E2DD; /* Borde inferior gris claro de 2cm */
   }
   
   .search-filter {

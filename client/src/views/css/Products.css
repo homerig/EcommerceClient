@@ -121,3 +121,43 @@ body {
   margin-bottom: 10px;
 }
 
+.producto-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  height: 300px; /* Asegura una altura uniforme para todas las tarjetas */
+}
+
+.producto-imagen {
+  max-width: 100%;
+  height: 150px;
+  object-fit: contain;
+}
+
+.precio {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+.agregar-carrito-btn {
+  background-color: #808080; /* Color gris */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: auto; /* Alinea el botón al final de la tarjeta */
+  width: 100%; /* Asegura que el botón ocupe todo el ancho disponible */
+  max-width: 180px; /* Tamaño máximo para un mejor aspecto */
+  text-align: center;
+}
+
+.agregar-carrito-btn:hover {
+  background-color: #696969; /* Cambia a un tono más oscuro al pasar el mouse */
+}
+

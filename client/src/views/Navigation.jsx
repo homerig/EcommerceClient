@@ -23,7 +23,7 @@ const Navigation = () => {
           <Link to="/Orders">Orders</Link>
         </li>
         <li>
-          <Link to="/Users">Users</Link>
+          <Link to="/ViewUsers">Users</Link>
         </li>
       </ul>
       <div className="navbar-icons">

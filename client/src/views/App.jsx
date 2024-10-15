@@ -5,7 +5,7 @@ import Home from './Home';
 import Products from "./Products";
 import Login from "./Login";
 import ViewCart from "./ViewCart";
-import Users from "./Users";
+import ViewUsers from "./ViewUsers";
 import Register from "./Register";
 import ViewProduct from "./ViewProduct";
 import ProductsAdmin from './adminViews/ProductsAdmin';
@@ -20,7 +20,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/Products' element={<Products/>}/>
-        <Route path='/Users' element={<Users/>}/>
+        <Route path='/ViewUsers' element={<ViewUsers/>}/>
         <Route path='/Login' element={<Login/>}/>
 
         <Route path='/Register' element={<Register/>}/>

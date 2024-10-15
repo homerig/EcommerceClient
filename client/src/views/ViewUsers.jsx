@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react'; 
 import './css/Users.css';
 import UserCard from './UserCard';
 
-const Users = () => {
+const ViewUsers = () => {
   const [filter, setFilter] = useState('Todos');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -56,4 +56,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default ViewUsers;

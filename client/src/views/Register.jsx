@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import './css/Register.css';
 import { useNavigate } from 'react-router-dom';
-import logo from '../assets/LogoMatecito.png';
+import logo from '../assets/logoIsotipo.png';
+import { Link } from 'react-router-dom';
 
 const Register = () => {
   const [formData, setFormData] = useState({

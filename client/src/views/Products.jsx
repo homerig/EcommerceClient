@@ -15,11 +15,16 @@ const productos = [
   { nombre: 'Mate Stanley', precio: 45500, imagen: mateImg },
 ];
 
+
 const Products = () => {
   const [showFilters, setShowFilters] = useState(false);
+  const [carrito, setCarrito] = useState([]);
 
-  const toggleFilters = () => {
-    setShowFilters(!showFilters);
+  const toggleFilters = () => setShowFilters(!showFilters);
+
+  const agregarAlCarrito = (producto) => {
+    setCarrito((prevCarrito) => [...prevCarrito, producto]);
+    alert(`${producto.nombre} agregado al carrito`);
   };
 
   return (
@@ -71,6 +76,12 @@ const Products = () => {
               </span>
             )}
             <p className="precio">${producto.precio.toLocaleString()}</p>
+            <button 
+              className="agregar-carrito-btn" 
+              onClick={() => agregarAlCarrito(producto)}
+            >
+              Agregar al carrito
+            </button>
           </div>
         ))}
       </div>

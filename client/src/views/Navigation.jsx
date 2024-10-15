@@ -24,13 +24,13 @@ const Navigation = () => {
         <Link to="/search">
           <FontAwesomeIcon icon={faSearch} className="icon" />
         </Link>
-        <Link to="/cart">
+        <Link to="/ViewCart">
           <FontAwesomeIcon icon={faShoppingCart} className="icon" />
         </Link>
-        <Link to="/profile">
+        <Link to="/Login">
           <FontAwesomeIcon icon={faUser} className="icon" />
         </Link>
-        <Link to="/settings">
+        <Link to="/adminViews/ProductsAdmin">
           <FontAwesomeIcon icon={faCog} className="icon" />
         </Link>
       </div>

@@ -1,22 +1,30 @@
 .user-card {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-  }
-  
-  .user-card:hover {
-    transform: translateY(-5px);
-  }
-  
-  .user-card h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-  
-  .user-card p {
-    font-size: 16px;
-    margin-bottom: 5px;
-  }
-  
+  background-color: #f9f9f9; /* Fondo suave y neutro */
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+/* border-left: 5px solid #a67c52;  Borde con un color cálido y neutro */
+}
+
+.user-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.user-card h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: #333; /* Color de texto oscuro */
+  font-weight: bold;
+}
+
+.user-card p {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #555; /* Color de texto gris oscuro */
+}
+
+.user-card p strong {
+  color: hsl(0, 1%, 23%); /* Color del texto destacado con un tono neutro */
+}

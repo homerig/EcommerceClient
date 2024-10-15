@@ -1,6 +1,6 @@
 // src/FinishCart.jsx
 import React, { useState } from 'react';
-import './FinishCart.css';
+import './css/FinishCart.css';
 
 const FinishCart = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({

@@ -1,9 +1,10 @@
 // src/ViewCart.jsx
 import React, { useState } from 'react';
-import './ViewCart.css';
+import './css/ViewCart.css';
 import mateImg from '../assets/Mate_1.png'; // Reemplaza con la ruta correcta
-import { FaTrash } from 'react-icons/fa'; // Para el ícono de la basura
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FinishCart from './FinishCart'; // Importamos el modal
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const ViewCart = () => {
   const [cartItems, setCartItems] = useState([
@@ -46,7 +47,7 @@ const ViewCart = () => {
 
   return (
     <div className="cart-container">
-      <h1>Tu carrito</h1>
+      <h2>Tu carrito</h2>
       <div className="cart-items">
         {cartItems.map((item) => (
           <div key={item.id} className="cart-item">
@@ -62,7 +63,7 @@ const ViewCart = () => {
             </div>
             <p className="cart-item-price">${(item.cantidad * item.precio).toLocaleString()}</p>
             <button className="remove-item-button" onClick={() => removeItem(item.id)}>
-              <FaTrash />
+              <FontAwesomeIcon icon={faTrash} className="icon" />
             </button>
           </div>
         ))}

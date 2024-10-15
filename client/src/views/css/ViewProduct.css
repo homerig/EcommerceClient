@@ -1,0 +1,76 @@
+.card{
+    padding: 4% 3%;
+  }
+
+.container {
+    display: flex;
+    flex-direction: row;
+    padding: 2% 10%;
+    gap: 8%;
+    font-family: Arial, sans-serif;
+  }
+  
+  .imageSection {
+    flex: 1;
+    padding-right: 20px;
+  }
+  
+  .backButton {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .image {
+    width: 40%;
+    border-radius: 10px;
+  }
+  
+  .detailsSection {
+    flex: 1;
+    padding-left: 20px;
+  }
+  
+  .title {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .description {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .subtitle {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .colorOptions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .colorButton {
+    width: 30px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .cartButton {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  

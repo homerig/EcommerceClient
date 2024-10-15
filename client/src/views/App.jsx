@@ -7,7 +7,7 @@ import Login from "./Login";
 import ViewCart from "./ViewCart";
 import Users from "./Users";
 import Register from "./Register";
-
+import ViewProduct from "./ViewProduct";
 import ProductsAdmin from './adminViews/ProductsAdmin';
 
 import { Routes,Route } from "react-router-dom";
@@ -25,6 +25,7 @@ const App = () => {
 
         <Route path='/Register' element={<Register/>}/>
         <Route path='/ViewCart' element={<ViewCart/>}/>
+        <Route path='/ViewProduct' element={<ViewProduct/>}/>
         <Route path="/adminViews/ProductsAdmin" element={<ProductsAdmin/>}/>
 
       </Routes>

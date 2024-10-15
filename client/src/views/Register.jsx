@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './css/Register.css';
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/LogoMatecito.png';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -44,6 +45,9 @@ const Register = () => {
   return (
     <div className="register-container">
       <div className="register-modal">
+      <Link to="/" className="logo-link">
+          <img src={logo} alt="Matecito Logo" className="logo" />
+        </Link>
         <h1>Complete sus datos</h1>
         <form onSubmit={handleSubmit}>
           <input

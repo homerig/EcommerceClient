@@ -15,6 +15,7 @@ const productos = [
   { nombre: 'Mate Stanley', precio: 45500, imagen: mateImg },
 ];
 
+
 const Products = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [carrito, setCarrito] = useState([]);

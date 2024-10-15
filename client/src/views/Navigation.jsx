@@ -20,25 +20,10 @@ const Navigation = () => {
           <Link to="/Products">Products</Link>
         </li>
         <li>
-          <Link to="/Login">Login</Link>
-        </li>
-        <li>
-          <Link to="/Register">Register</Link>
-        </li>
-        <li>
-          <Link to="/ViewCart">View Cart</Link>
-        </li>
-        <li>
-          <Link to="/ViewProduct">View Product</Link>
-        </li>
-        <li>
           <Link to="/Orders">Orders</Link>
         </li>
         <li>
           <Link to="/Users">Users</Link>
-        </li>
-        <li>
-          <Link to="/ProductsAdmin">Products Admin</Link>
         </li>
       </ul>
       <div className="navbar-icons">

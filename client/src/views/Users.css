@@ -1,0 +1,47 @@
+.users-container {
+    width: 100%;
+    padding: 20px;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    box-sizing: border-box; /* Asegura que el padding y borde no causen overflow */
+    overflow-x: hidden; /* Evita cualquier posible desbordamiento horizontal */
+  }
+  
+  .search-filter {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .search-filter select, 
+  .search-filter input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 18px;
+    border: 1px solid #ccc;
+    box-sizing: border-box; /* Asegura que padding no cause desbordamiento */
+    
+  }
+  
+  
+  .search-filter input {
+    width: 60%;
+    
+  }
+  
+  .user-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 columnas flexibles */
+    gap: 40px;
+    width: 100%; /* Se asegura de que el grid no desborde */
+    box-sizing: border-box; /* Asegura que el padding no cause overflow */
+  }
+  
+  .user-card {
+    max-width: 100%; /* Asegura que las tarjetas no desborden */
+    box-sizing: border-box; /* Evita que padding o bordes causen desbordamiento */
+  }
+  
+  
+  

@@ -1,73 +1,73 @@
-
-
 body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-  }
-  
-  .register-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
-    border-bottom: 2cm solid #E4E2DD; /* Borde inferior gris claro de 2cm */
-  }
-  .register-modal {
-    background-color: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    padding: 40px;
-    width: 400px;
-    text-align: center;
-    position: relative;
-    display: flex;
-    flex-direction: column; /* Organizar elementos en columna */
-    justify-content: center; /* Centrar verticalmente */
-    align-items: center;     /* Centrar horizontalmente */
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.register-modal {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  width: 350px; /* Adjust width for compact look */
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column; /* Organize items in a column */
+  justify-content: center; /* Center vertically */
+  align-items: center;     /* Center horizontally */
 }
 
 .register-modal input {
-    width: 100%; /* Asegurar que el input ocupe el 100% del contenedor */
-    padding: 15px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    font-size: 16px;
-    box-sizing: border-box; /* Incluye el padding y el border dentro del width */
+  width: 100%; /* Ensure inputs take 100% of the container */
+  padding: 15px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 30px; /* Rounded corners for inputs */
+  font-size: 16px;
+  box-sizing: border-box; /* Include padding and border in the width */
+  background-color: #f4f4f4; /* Light gray background for inputs */
 }
 
-  .register-modal h1 {
-    margin-bottom: 30px;
-    font-size: 24px;
-    color: #333;
-  }
+.register-modal h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+  font-weight: normal; /* Match the heading style */
+}
 
-  .register-modal button {
-    background-color: #222;
-    color: white;
-    padding: 15px;
-    margin-top: 20px;
-    border: none;
-    border-radius: 30px; /* Botón más redondeado */
-    cursor: pointer;
-    width: 100%;
-    font-size: 16px;
-    transition: background-color 0.3s;
+.register-modal button {
+  background-color: #222;
+  color: white;
+  padding: 15px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 30px; /* More rounded button */
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.register-modal button:hover {
+  background-color: #555;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .register-modal {
+    width: 90%; /* Make the form adjust better on smaller screens */
   }
-  
-  .register-modal button:hover {
-    background-color: #555;
-  }
-  
-  .error {
-    color: red;
-    margin-top: 10px;
-    font-size: 14px;
-  }
-  
-  @media (max-width: 768px) {
-    .register-modal {
-      width: 90%; /* Hacer que el formulario se ajuste mejor en pantallas pequeñas */
-    }
-  }
-  
+}
+

@@ -1,60 +1,81 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // For navigation
 import './css/Register.css';
-import { useNavigate } from 'react-router-dom';
-import logo from '../assets/logoIsotipo.png';
-import { Link } from 'react-router-dom';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
-  const [error, setError] = useState('');
-  const navigate = useNavigate(); // Hook para la navegación
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const [passwordError, setPasswordError] = useState(null); // For password mismatch
+  const navigate = useNavigate(); // Navigation hook
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [e.target.name]: e.target.value
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { fullName, email, password, confirmPassword } = formData;
+    setLoading(true);
+    setError(null);
+    setPasswordError(null);
 
-    if (!fullName || !email || !password || !confirmPassword) {
-      setError('Todos los campos son obligatorios.');
+    // Check if passwords match before proceeding
+    if (formData.password !== formData.confirmPassword) {
+      setPasswordError('Las contraseñas no coinciden');
+      setLoading(false);
       return;
     }
 
-    if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden.');
-      return;
-    }
-
-    setError('');
-    console.log('Registro exitoso:', formData);
-    
-
+    fetch('http://localhost:4002/api/v1/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      }),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Error al registrar el usuario');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setSuccess(true);
+      setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+      
+  
+    })
+    .catch((error) => {
+      setError(error.message);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
   };
 
   return (
     <div className="register-container">
       <div className="register-modal">
-      <Link to="/" className="logo-link">
-          <img src={logo} alt="Matecito Logo" className="logo" />
-        </Link>
-        <h1>Complete sus datos</h1>
-        <form onSubmit={handleSubmit}>
+        <h2>Complete sus datos</h2>
+        <form onSubmit={handleSubmit} className="register-form">
           <input
             type="text"
-            name="fullName"
+            name="name"
             placeholder="Nombre Completo"
-            value={formData.fullName}
+            value={formData.name}
             onChange={handleChange}
             required
           />
@@ -82,9 +103,15 @@ const Register = () => {
             onChange={handleChange}
             required
           />
-          {error && <p className="error">{error}</p>}
-          <button type="submit">Registrarse</button>
+          <button type="submit" disabled={loading}>
+            {loading ? 'Registrando...' : 'Registrarse'}
+          </button>
         </form>
+
+        {/* Display any errors or success messages below the form */}
+        {passwordError && <p className="error">{passwordError}</p>}
+        {error && <p className="error">Error: {error}</p>}
+        {success && <p className="success">¡Usuario registrado exitosamente!</p>}
       </div>
     </div>
   );

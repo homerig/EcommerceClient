@@ -1,31 +1,44 @@
 // src/Products.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './css/Products.css';
-import mateImg from '../assets/Mate_1.png';
-
-const productos = [
-  { nombre: 'Mate camionero clásico', precio: 30000, imagen: mateImg },
-  { nombre: 'Mate Imperial clásico', precioAnterior: 29700, precio: 25000, imagen: mateImg },
-  { nombre: 'Mate de Acero clásico', precio: 35000, imagen: mateImg },
-  { nombre: 'Mate camionero personalizado', precio: 50000, imagen: mateImg },
-  { nombre: 'Mate Imperial personalizado', precio: 55000, imagen: mateImg },
-  { nombre: 'Mate de Acero personalizado', precio: 60000, imagen: mateImg },
-  { nombre: 'Mate torpedo', precio: 23000, imagen: mateImg },
-  { nombre: 'Mate criollo', precioAnterior: 29700, precio: 24500, imagen: mateImg },
-  { nombre: 'Mate Stanley', precio: 45500, imagen: mateImg },
-];
-
+import mateImg from '../assets/Mate_1.png'; // Esta imagen puede ser un placeholder
 
 const Products = () => {
+  const [productos, setProductos] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
   const [carrito, setCarrito] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const toggleFilters = () => setShowFilters(!showFilters);
 
   const agregarAlCarrito = (producto) => {
     setCarrito((prevCarrito) => [...prevCarrito, producto]);
-    alert(`${producto.nombre} agregado al carrito`);
+    alert(`${producto.name} agregado al carrito`);
   };
+
+  // Fetch de productos desde el backend
+  useEffect(() => {
+    fetch('http://localhost:4002/catalogo/products')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al obtener los productos');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setProductos(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Cargando productos...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="productos-container">
@@ -38,44 +51,29 @@ const Products = () => {
 
       {showFilters && (
         <div className="filtros">
+          {/* Filtros de ejemplo */}
           <h3>Categorías:</h3>
           <label><input type="checkbox" /> Imperial</label>
           <label><input type="checkbox" /> Camionero</label>
           <label><input type="checkbox" /> Acero</label>
-          <label><input type="checkbox" /> Criollo</label>
-          <label><input type="checkbox" /> Stanley</label>
-          <label><input type="checkbox" /> Torpedos</label>
-
-          <h3>Color:</h3>
-          <label><input type="checkbox" /> Rosa</label>
-          <label><input type="checkbox" /> Blanco</label>
-          <label><input type="checkbox" /> Negro</label>
-          <label><input type="checkbox" /> Marrón</label>
-          <label><input type="checkbox" /> Verde</label>
-          <label><input type="checkbox" /> Azul</label>
-
-          <h3>Precio:</h3>
-          <input type="number" placeholder="Desde" />
-          <input type="number" placeholder="Hasta" />
-          <button className="aplicar-filtros">Aplicar filtros</button>
         </div>
       )}
 
       <div className="productos-grid">
-        {productos.map((producto, index) => (
-          <div key={index} className="producto-card">
+        {productos.map((producto) => (
+          <div key={producto.id} className="producto-card">
             <img 
-              src={producto.imagen} 
-              alt={producto.nombre} 
+              src={producto.images?.[0]?.url || mateImg} 
+              alt={producto.name} 
               className="producto-imagen" 
             />
-            <h2>{producto.nombre}</h2>
-            {producto.precioAnterior && (
+            <h2>{producto.name}</h2>
+            {producto.discount && (
               <span className="precio-anterior">
-                ${producto.precioAnterior.toLocaleString()}
+                ${(producto.price * (1 + producto.discount)).toFixed(2)}
               </span>
             )}
-            <p className="precio">${producto.precio.toLocaleString()}</p>
+            <p className="precio">${producto.price.toFixed(2)}</p>
             <button 
               className="agregar-carrito-btn" 
               onClick={() => agregarAlCarrito(producto)}

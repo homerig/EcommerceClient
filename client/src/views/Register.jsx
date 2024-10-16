@@ -39,8 +39,7 @@ const Register = () => {
     setError('');
     console.log('Registro exitoso:', formData);
     
-    // Redirigir a la página de inicio después de un registro exitoso
-    navigate('/home');
+
   };
 
   return (

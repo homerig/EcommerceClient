@@ -1,0 +1,79 @@
+/* Modal overlay to cover the screen */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Fondo oscuro con opacidad */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal container */
+.modal-container {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 3rem; /* Ajustar el padding para dar más espacio interno */
+  width: 500px; /* Aumentamos el ancho */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 1.5rem;
+  font-size: 28px; /* Tamaño de letra más grande */
+}
+
+label {
+  display: block;
+  text-align: left;
+  margin-bottom: 10px;
+  font-size: 16px; /* Aumentamos el tamaño de las etiquetas */
+}
+
+input, select {
+  width: 100%;
+  padding: 1rem; /* Aumentamos el padding para que el input se vea más grande */
+  margin-top: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  font-size: 16px; /* Aumentamos el tamaño del texto */
+}
+
+input::placeholder {
+  color: #999;
+  font-size: 14px; /* Placeholder también más grande */
+}
+
+/* Submit button */
+.submit-button {
+  width: 100%;
+  background-color: #333; /* Similar a lo que parece ser en la imagen */
+  color: white;
+  padding: 1rem; /* Botón más grande */
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 18px; /* Texto más grande */
+  margin-top: 20px;
+}
+
+.submit-button:hover {
+  background-color: #555;
+}
+
+/* Close button */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px; /* Botón de cerrar más grande */
+  cursor: pointer;
+}

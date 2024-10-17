@@ -22,6 +22,7 @@ const Products = () => {
     fetch('http://localhost:4002/catalogo/products')
       .then((response) => {
         if (!response.ok) {
+          
           throw new Error('Error al obtener los productos');
         }
         return response.json();

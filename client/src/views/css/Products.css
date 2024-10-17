@@ -161,3 +161,53 @@ body {
   background-color: #696969; /* Cambia a un tono más oscuro al pasar el mouse */
 }
 
+
+button {
+  margin-top: 1em;
+}
+
+/* src/Products.css */
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap; /* Permite que los filtros se ajusten en múltiples líneas si es necesario */
+  justify-content: space-between;
+  margin: 10px 0; /* Reducir el margen superior e inferior */
+  padding: 10px; /* Espacio interno para evitar que el contenido esté pegado al borde */
+  border: 1px solid #ddd; /* Para mantener el estilo del borde */
+  border-radius: 8px; /* Bordes redondeados */
+}
+
+.filtro-categorias,
+.filtro-colores,
+.filtro-precio {
+  flex: 1 1 30%; /* Permitirá que cada filtro ocupe al menos el 30% del ancho, y se ajuste según sea necesario */
+  margin: 5px; /* Espaciado uniforme entre los filtros */
+}
+
+.filtros h3 {
+  margin: 5px 0; /* Reducir el margen de los títulos de los filtros */
+  font-size: 1em; /* Tamaño de fuente más pequeño */
+}
+
+label {
+  font-size: 0.85em; /* Hacer las etiquetas un poco más pequeñas */
+  margin-right: 0.5em; /* Espaciado entre las etiquetas */
+}
+
+.filtro-precio input {
+  margin: 5px 0; /* Espaciado más pequeño para los inputs */
+  padding: 5px; /* Un poco de padding para los inputs */
+  width: 80%; /* Ajustar el ancho de los inputs */
+}
+
+.aplicar-filtros {
+  background-color: #646cff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px; /* Hacer el botón un poco más pequeño */
+  cursor: pointer;
+  margin-top: 5px; /* Espaciado más pequeño */
+  width: 100%; /* Asegurar que el botón ocupe todo el ancho disponible */
+}

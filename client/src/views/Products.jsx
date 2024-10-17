@@ -1,7 +1,6 @@
-// src/Products.js
 import React, { useState, useEffect } from 'react';
 import './css/Products.css';
-import mateImg from '../assets/Mate_1.png'; // Esta imagen puede ser un placeholder
+import mateImg from '../assets/Mate_1.png';
 
 const Products = () => {
   const [productos, setProductos] = useState([]);
@@ -9,6 +8,11 @@ const Products = () => {
   const [carrito, setCarrito] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Estado para los filtros
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [priceRange, setPriceRange] = useState({ min: '', max: '' });
 
   const toggleFilters = () => setShowFilters(!showFilters);
 
@@ -40,6 +44,18 @@ const Products = () => {
   if (loading) return <p>Cargando productos...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  // Función para filtrar productos
+  const filterProducts = () => {
+    return productos.filter((producto) => {
+      const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(producto.category);
+      const matchesColor = selectedColors.length === 0 || selectedColors.includes(producto.color);
+      const matchesPrice = (!priceRange.min || producto.price >= priceRange.min) && (!priceRange.max || producto.price <= priceRange.max);
+      return matchesCategory && matchesColor && matchesPrice;
+    });
+  };
+
+  const filteredProducts = filterProducts();
+
   return (
     <div className="productos-container">
       <header className="productos-header">
@@ -51,16 +67,28 @@ const Products = () => {
 
       {showFilters && (
         <div className="filtros">
-          {/* Filtros de ejemplo */}
-          <h3>Categorías:</h3>
-          <label><input type="checkbox" /> Imperial</label>
-          <label><input type="checkbox" /> Camionero</label>
-          <label><input type="checkbox" /> Acero</label>
+          <div className="filtro-categorias">
+            <h3>Categorías:</h3>
+            <label><input type="checkbox" value="Imperial" onChange={(e) => setSelectedCategories(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(c => c !== e.target.value))} /> Imperial</label>
+            <label><input type="checkbox" value="Camionero" onChange={(e) => setSelectedCategories(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(c => c !== e.target.value))} /> Camionero</label>
+            <label><input type="checkbox" value="Acero" onChange={(e) => setSelectedCategories(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(c => c !== e.target.value))} /> Acero</label>
+          </div>
+          <div className="filtro-colores">
+            <h3>Colores:</h3>
+            <label><input type="checkbox" value="Rojo" onChange={(e) => setSelectedColors(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(c => c !== e.target.value))} /> Rojo</label>
+            <label><input type="checkbox" value="Blanco" onChange={(e) => setSelectedColors(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(c => c !== e.target.value))} /> Blanco</label>
+            <label><input type="checkbox" value="Negro" onChange={(e) => setSelectedColors(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(c => c !== e.target.value))} /> Negro</label>
+          </div>
+          <div className="filtro-precio">
+            <h3>Precio:</h3>
+            <input type="number" placeholder="Desde" value={priceRange.min} onChange={(e) => setPriceRange({...priceRange, min: e.target.value})} />
+            <input type="number" placeholder="Hasta" value={priceRange.max} onChange={(e) => setPriceRange({...priceRange, max: e.target.value})} />
+          </div>
         </div>
       )}
 
       <div className="productos-grid">
-        {productos.map((producto) => (
+        {filteredProducts.map((producto) => (
           <div key={producto.id} className="producto-card">
             <img 
               src={producto.images?.[0]?.url || mateImg} 
@@ -84,13 +112,7 @@ const Products = () => {
         ))}
       </div>
 
-      <footer className="paginacion">
-        {[1, 2, 3, 4, 5].map((num) => (
-          <button key={num} className="paginacion-boton">
-            {num}
-          </button>
-        ))}
-      </footer>
+      {/* Se eliminó la sección de paginación */}
     </div>
   );
 };

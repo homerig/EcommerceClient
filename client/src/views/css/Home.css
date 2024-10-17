@@ -1,42 +1,74 @@
+/* Estilos para el contenedor general */
 .home-container {
-    padding: 0px; /* Optional: control the padding */
-    font-family: 'Roboto', sans-serif;
-    color: #333;
-  }
+  padding: 0px;
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+}
 
-  #root {
-    width: 100%; /* Take full width */
-    margin: 0; /* Remove the auto centering margin */
-    padding: 0; /* Adjust padding to zero to prevent unnecessary spacing */
-  }
-  
-  .header {
-    width: 100%; /* Full width header */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #fff;
-    padding: 20px;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .hero-section {
-    width: 100%; /* Full width hero */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #E4E2DD;
-    padding: 40px;
-  }
-  
-  .products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-    width: 100%; /* Use full width of the screen */
-  }
-  
-  .categories-section {
-    width: 100%;
-  }
-  
+/* Hero Section */
+.hero-section {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #E4E2DD;
+  padding: 40px;
+}
+
+/* Productos grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Estilos del precio */
+.product-price {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+/* Precio anterior (tachado) */
+.product-price-old {
+  text-decoration: line-through;
+  color: #999;
+  margin-right: 10px;
+}
+
+/* Precio con descuento */
+.product-price-discounted {
+  color: #E60023;
+  font-weight: bold;
+}
+
+/* Contenedor de cabecera para el título y el botón */
+.products-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px; /* Separar del margen izquierdo y derecho */
+  margin-bottom: 20px;
+}
+
+/* Estilo para el título "Nuestros Productos" */
+.products-title {
+  margin-left: 20px; /* Separar el título del margen izquierdo */
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Botón "Ver más" como enlace de texto */
+.ver-mas-link {
+  font-size: 16px;
+  color: #000000;
+  text-decoration: none;
+  font-weight: normal;
+  margin-right: 20px; /* Alineación cerca del margen derecho */
+}
+
+/* Hover en el enlace "Ver más" */
+.ver-mas-link:hover {
+  text-decoration: underline;
+  color: #414141;
+}

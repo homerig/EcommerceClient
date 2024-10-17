@@ -10,6 +10,7 @@ import Register from "./Register";
 import ViewProduct from "./ViewProduct";
 import ProductsAdmin from './adminViews/ProductsAdmin';
 
+
 import { Routes,Route } from "react-router-dom";
 
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
         <Route path='/Products' element={<Products/>}/>
         <Route path='/ViewUsers' element={<ViewUsers/>}/>
         <Route path='/Login' element={<Login/>}/>
+       
 
         <Route path='/Register' element={<Register/>}/>
         <Route path='/ViewCart' element={<ViewCart/>}/>

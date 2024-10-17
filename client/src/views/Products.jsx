@@ -4,70 +4,22 @@ import mateImg from '../assets/Mate_1.png';
 
 const Products = () => {
   const [productos, setProductos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [carrito, setCarrito] = useState(null); // Cambiado a null para poder verificar más tarde
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Estados para los filtros
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [priceRange, setPriceRange] = useState({ min: '', max: '' });
+  const [colorFilter, setColorFilter] = useState(''); // Estado para el filtro de color
 
   const userId = 1; // Cambia esto por la manera en que obtienes el userId
 
-  const toggleFilters = () => {
-    setShowFilters(!showFilters); // Alterna el estado de showFilters
-  };
+  const toggleFilters = () => setShowFilters(!showFilters);
 
-  const agregarAlCarrito = async (producto) => {
-    if (!producto.id) {
-        console.error('El producto no tiene un ID válido:', producto);
-        alert('Error: el producto no tiene un ID válido.');
-        return;
-    }
-
-    try {
-        // Si el carrito no existe, crear uno
-        if (!carrito) {
-            const response = await fetch('http://localhost:4002/cart', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ userId }), // Cambia esto si necesitas un formato diferente
-            });
-
-            if (!response.ok) {
-                throw new Error('Error al crear el carrito');
-            }
-
-            const newCart = await response.json();
-            setCarrito(newCart.id); // Guardar el ID del nuevo carrito
-        }
-
-        // Agregar el producto al carrito
-        const addResponse = await fetch(`http://localhost:4002/catalogo/${carrito}/add-product`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                productId: producto.id, // Asegúrate de que este ID sea un número
-                quantity: 1, // Cambia la cantidad si es necesario
-            }),
-        });
-
-        if (!addResponse.ok) {
-            const errorDetails = await addResponse.json();
-            throw new Error(`Error al agregar el producto al carrito: ${errorDetails.message || 'Sin detalles'}`);
-        }
-
-        alert(`${producto.name} agregado al carrito`);
-    } catch (error) {
-        console.error('Error:', error);
-        alert('No se pudo agregar el producto al carrito: ' + error.message);
-    }
-};
-
-  
   // Fetch de productos desde el backend
-  useEffect(() => {
+  const fetchProducts = () => {
     fetch('http://localhost:4002/catalogo/products')
       .then((response) => {
         if (!response.ok) {
@@ -84,10 +36,150 @@ const Products = () => {
         setError(error.message);
         setLoading(false);
       });
+  };
+
+  // Fetch de categorías desde el backend
+  const fetchCategories = () => {
+    fetch('http://localhost:4002/categories')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al obtener las categorías');
+        }
+        return response.json();
+      })
+      .then((data) => setCategorias(data))
+      .catch((error) => {
+        console.error('Error:', error);
+        setError(error.message);
+      });
+  };
+
+  useEffect(() => {
+    fetchProducts();
+    fetchCategories(); // Obtén las categorías al cargar el componente
   }, []);
 
   if (loading) return <p>Cargando productos...</p>;
   if (error) return <p>Error: {error}</p>;
+
+  // Función para agregar productos al carrito
+  const agregarAlCarrito = async (producto) => {
+    try {
+      // Verificar si el carrito ya existe para el usuario
+      let existingCart = null;
+
+      const cartResponse = await fetch(`http://localhost:4002/cart?userId=${userId}`);
+      if (cartResponse.ok) {
+        const carts = await cartResponse.json();
+        if (carts.length > 0) {
+          existingCart = carts[0]; // Asumimos que hay un único carrito por usuario
+        }
+      }
+
+      // Si no hay carrito existente, crear uno nuevo
+      if (!existingCart) {
+        const createResponse = await fetch('http://localhost:4002/cart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId }), // Cambia esto si necesitas un formato diferente
+        });
+
+        if (!createResponse.ok) {
+          throw new Error('Error al crear el carrito');
+        }
+
+        existingCart = await createResponse.json();
+      }
+
+      // Agregar el producto al carrito
+      const addResponse = await fetch(`http://localhost:4002/catalogo/${existingCart.id}/add-product`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId: producto.id, // Asegúrate de que este ID sea un número
+          quantity: 1, // Cambia la cantidad si es necesario
+        }),
+      });
+
+      if (!addResponse.ok) {
+        const errorDetails = await addResponse.json();
+        throw new Error(`Error al agregar el producto al carrito: ${errorDetails.message || 'Sin detalles'}`);
+      }
+
+      alert(`${producto.name} agregado al carrito`);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('No se pudo agregar el producto al carrito: ' + error.message);
+    }
+  };
+
+  // Funciones de filtrado
+  const filterByCategory = (categoryId) => {
+    fetch(`http://localhost:4002/catalogo/products/by-category/${categoryId}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al filtrar productos por categoría');
+        }
+        return response.json();
+      })
+      .then((data) => setProductos(data))
+      .catch((error) => {
+        console.error('Error:', error);
+        setError(error.message);
+      });
+  };
+
+  const filterByPrice = () => {
+    const { min, max } = priceRange;
+    fetch(`http://localhost:4002/catalogo/filter-by-price?minPrice=${min}&maxPrice=${max}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al filtrar productos por precio');
+        }
+        return response.json();
+      })
+      .then((data) => setProductos(data))
+      .catch((error) => {
+        console.error('Error:', error);
+        setError(error.message);
+      });
+  };
+
+  const filterByColor = () => {
+    const filteredProducts = productos.filter(producto =>
+      producto.name.toLowerCase().includes(colorFilter.toLowerCase())
+    );
+    setProductos(filteredProducts);
+  };
+
+  // Función para manejar el envío de filtros
+  const handleFilterSubmit = (e) => {
+    e.preventDefault();
+    // Filtrar por categoría seleccionada
+    if (selectedCategories.length > 0) {
+      filterByCategory(selectedCategories[0]); // Suponiendo que solo seleccionas una categoría a la vez
+    } else {
+      // Si no hay categorías seleccionadas, filtrar por precio
+      filterByPrice();
+    }
+
+    // Filtrar por color si se ha proporcionado
+    if (colorFilter) {
+      filterByColor();
+    }
+  };
+
+  // Función para deshacer los filtros
+  const clearFilters = () => {
+    setSelectedCategories([]);
+    setPriceRange({ min: '', max: '' });
+    setColorFilter(''); // Limpiar el filtro de color
+    fetchProducts(); // Vuelve a cargar todos los productos
+  };
 
   return (
     <div className="productos-container">
@@ -96,14 +188,60 @@ const Products = () => {
         <button className="filtro-button" onClick={toggleFilters}>
           Filtrar <span>🔽</span>
         </button>
+        <button className="limpiar-filtros-button" onClick={clearFilters}>
+          Limpiar Filtros
+        </button>
       </header>
 
-      {/* Aquí puedes agregar la lógica para mostrar los filtros si showFilters es true */}
       {showFilters && (
-        <div className="filtros-container">
-          {/* Aquí van tus filtros */}
-          <p>Filtros aquí...</p>
-        </div>
+        <form onSubmit={handleFilterSubmit}>
+          <div className="filtros">
+            <div className="filtro-categorias">
+              <h3>Categorías:</h3>
+              {categorias.map((categoria) => (
+                <label key={categoria.id}>
+                  <input 
+                    type="checkbox" 
+                    value={categoria.id} 
+                    onChange={(e) => 
+                      setSelectedCategories(prev => 
+                        e.target.checked 
+                          ? [...prev, e.target.value] 
+                          : prev.filter(c => c !== e.target.value)
+                      )
+                    } 
+                  />
+                  {categoria.description}
+                </label>
+              ))}
+            </div>
+            <div className="filtro-precio">
+              <h3>Precio:</h3>
+              <input 
+                type="number" 
+                placeholder="Desde" 
+                value={priceRange.min} 
+                onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })} 
+              />
+              <input 
+                type="number" 
+                placeholder="Hasta" 
+                value={priceRange.max} 
+                onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })} 
+              />
+            </div>
+            <div className="filtro-color">
+              <h3>Filtrar por color (nombre del producto):</h3>
+              <input 
+                type="text" 
+                placeholder="Ingrese un color" 
+                value={colorFilter} 
+                onChange={(e) => setColorFilter(e.target.value)} 
+              />
+            </div>
+            <button type="submit">Aplicar Filtros</button>
+          </div>
+        </form>
       )}
 
       <div className="productos-grid">

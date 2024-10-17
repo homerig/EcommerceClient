@@ -12,7 +12,6 @@ const Products = () => {
   // Estados para los filtros
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
-  const [colorFilter, setColorFilter] = useState(''); // Estado para el filtro de color
 
   const userId = 1; // Cambia esto por la manera en que obtienes el userId
 
@@ -149,12 +148,6 @@ const Products = () => {
       });
   };
 
-  const filterByColor = () => {
-    const filteredProducts = productos.filter(producto =>
-      producto.name.toLowerCase().includes(colorFilter.toLowerCase())
-    );
-    setProductos(filteredProducts);
-  };
 
   // Función para manejar el envío de filtros
   const handleFilterSubmit = (e) => {
@@ -166,18 +159,12 @@ const Products = () => {
       // Si no hay categorías seleccionadas, filtrar por precio
       filterByPrice();
     }
-
-    // Filtrar por color si se ha proporcionado
-    if (colorFilter) {
-      filterByColor();
-    }
   };
 
   // Función para deshacer los filtros
   const clearFilters = () => {
     setSelectedCategories([]);
     setPriceRange({ min: '', max: '' });
-    setColorFilter(''); // Limpiar el filtro de color
     fetchProducts(); // Vuelve a cargar todos los productos
   };
 
@@ -228,15 +215,6 @@ const Products = () => {
                 placeholder="Hasta" 
                 value={priceRange.max} 
                 onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })} 
-              />
-            </div>
-            <div className="filtro-color">
-              <h3>Filtrar por color (nombre del producto):</h3>
-              <input 
-                type="text" 
-                placeholder="Ingrese un color" 
-                value={colorFilter} 
-                onChange={(e) => setColorFilter(e.target.value)} 
               />
             </div>
             <button type="submit">Aplicar Filtros</button>

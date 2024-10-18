@@ -6,8 +6,8 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [userName, setUserName] = useState(null); // Guardar nombre del usuario
-  const [userEmail, setUserEmail] = useState(null); // Guardar email del usuario
+  const [userName, setUserName] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
   const navigate = useNavigate();
 
   // Verificar si hay una sesión iniciada al cargar la vista
@@ -21,44 +21,45 @@ const Login = () => {
       setUserEmail(storedEmail);
     }
   }, []);
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
-      setError('Por favor completa todos los campos.');
-      return;
+        setError('Por favor completa todos los campos.');
+        return;
     }
 
     try {
-      const response = await fetch('http://localhost:4002/api/v1/auth/authenticate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+        const response = await fetch('http://localhost:4002/api/v1/auth/authenticate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
 
-      if (!response.ok) {
-        throw new Error('Credenciales incorrectas o problema en el servidor.');
-      }
+        if (!response.ok) {
+            throw new Error('Credenciales incorrectas o problema en el servidor.');
+        }
 
-      const data = await response.json();
+        const data = await response.json();
+        const decodedToken = JSON.parse(atob(data.access_token.split('.')[1])); // Decodificar el token
 
-      // Guardar datos del usuario en localStorage
-      localStorage.setItem('authToken', data.accessToken); 
-      localStorage.setItem('userName', data.name); // Asegúrate de que 'data.name' existe
-      localStorage.setItem('userEmail', data.email); // Asegúrate de que 'data.email' existe
-      localStorage.setItem('userId', data.id);
+        console.log('Datos del token:', decodedToken); // Verificar los datos decodificados
 
-      // Actualizar estado con los datos del usuario
-      setUserName(data.name); 
-      setUserEmail(data.email); 
+        // Guardar datos relevantes del usuario en localStorage
+        localStorage.setItem('authToken', data.access_token);
+        localStorage.setItem('userId', data.userId); // Usar el campo correcto de la respuesta
+        localStorage.setItem('userName', decodedToken.sub); // Suponiendo que 'sub' contiene el nombre del usuario
+        localStorage.setItem('userEmail', email); // Guardar el email del usuario
+        console.log('ID del usuario guardado:', data.userId); // Verificar el ID guardado
 
-      navigate('/'); // Redirigir a la pantalla principal
+        navigate('/');
     } catch (err) {
-      setError(err.message);
+        console.error('Error al autenticar:', err);
+        setError(err.message);
     }
-  };
+};
 
   const handleLogout = () => {
     localStorage.clear(); // Limpiar la sesión
@@ -75,6 +76,7 @@ const Login = () => {
           <h1>Perfil de Usuario</h1>
           <p><strong>Nombre:</strong> {userName}</p>
           <p><strong>Email:</strong> {userEmail}</p>
+          <p><strong>ID:</strong> {localStorage.getItem('userId')}</p> {/* Mostrar el ID del usuario */}
           <button onClick={handleLogout}>Cerrar Sesión</button>
         </div>
       </div>

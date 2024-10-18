@@ -13,7 +13,7 @@ const Products = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
 
-  const userId = 1; // Cambia esto por la manera en que obtienes el userId
+  const userId = localStorage.getItem('userId');
 
   const toggleFilters = () => setShowFilters(!showFilters);
 

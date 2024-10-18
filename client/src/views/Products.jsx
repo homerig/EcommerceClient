@@ -13,8 +13,7 @@ const Products = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
 
-  const userId = localStorage.getItem('userId'); // Obtén el ID del usuario desde localStorage
-
+  const userId = localStorage.getItem('userId');
 
   const toggleFilters = () => setShowFilters(!showFilters);
 
@@ -23,6 +22,7 @@ const Products = () => {
     fetch('http://localhost:4002/catalogo/products')
       .then((response) => {
         if (!response.ok) {
+          
           throw new Error('Error al obtener los productos');
         }
         return response.json();
@@ -62,26 +62,39 @@ const Products = () => {
   if (loading) return <p>Cargando productos...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  // Función para agregar productos al carrito
   const agregarAlCarrito = async (producto) => {
     try {
-      // Primero, creamos un nuevo carrito para el usuario actual
-      const createResponse = await fetch('http://localhost:4002/cart', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId }), // Cambia esto si necesitas un formato diferente
-      });
-  
-      if (!createResponse.ok) {
-        const errorDetails = await createResponse.json();
-        throw new Error('Error al crear el carrito: ' + (errorDetails.message || 'Sin detalles'));
+      // Verificar si el carrito ya existe para el usuario
+      let existingCart = null;
+
+      const cartResponse = await fetch(`http://localhost:4002/cart?userId=${userId}`);
+      if (cartResponse.ok) {
+        const carts = await cartResponse.json();
+        if (carts.length > 0) {
+          existingCart = carts[0]; // Asumimos que hay un único carrito por usuario
+        }
       }
-  
-      const existingCart = await createResponse.json(); // Obtenemos el carrito recién creado
-  
-      // Ahora agregamos el producto al carrito
-      const addResponse = await fetch(`http://localhost:4002/cart/${existingCart.id}/add-product`, {
+
+      // Si no hay carrito existente, crear uno nuevo
+      if (!existingCart) {
+        const createResponse = await fetch('http://localhost:4002/cart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId }), // Cambia esto si necesitas un formato diferente
+        });
+
+        if (!createResponse.ok) {
+          throw new Error('Error al crear el carrito');
+        }
+
+        existingCart = await createResponse.json();
+      }
+
+      // Agregar el producto al carrito
+      const addResponse = await fetch(`http://localhost:4002/catalogo/${existingCart.id}/add-product`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -91,12 +104,12 @@ const Products = () => {
           quantity: 1, // Cambia la cantidad si es necesario
         }),
       });
-  
+
       if (!addResponse.ok) {
         const errorDetails = await addResponse.json();
         throw new Error(`Error al agregar el producto al carrito: ${errorDetails.message || 'Sin detalles'}`);
       }
-  
+
       alert(`${producto.name} agregado al carrito`);
     } catch (error) {
       console.error('Error:', error);
@@ -135,6 +148,7 @@ const Products = () => {
         setError(error.message);
       });
   };
+
 
   // Función para manejar el envío de filtros
   const handleFilterSubmit = (e) => {

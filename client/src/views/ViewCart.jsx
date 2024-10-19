@@ -1,31 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import './css/ViewCart.css';
+import FinishCart from './FinishCart'; // Importa el modal
 
 const ViewCart = () => {
   const [cartId, setCartId] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
   const [userId, setUserId] = useState(() => {
     return localStorage.getItem('userId');
   });
 
   useEffect(() => {
     if (userId) {
-      fetchCart();  // Llamamos a la función fetchCart sin pasar el userId
+      fetchCart();
     } else {
       setError('El ID de usuario no está disponible.');
     }
   }, [userId]);
 
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   const fetchCart = async () => {
     try {
-      const response = await fetch(`http://localhost:4002/cart/user/${userId}`); // Usamos el userId del estado
+      const response = await fetch(`http://localhost:4002/cart/user/${userId}`);
       if (response.ok) {
         const cart = await response.json();
         if (cart && cart.id) {
           setCartId(cart.id);
           if (cart.items && Array.isArray(cart.items)) {
-            // Aquí llamamos a la función para obtener los detalles de los productos
             const itemsWithDetails = await Promise.all(
               cart.items.map(async (item) => {
                 const productResponse = await fetch(`http://localhost:4002/products/${item.productId}`);
@@ -58,7 +67,6 @@ const ViewCart = () => {
       console.error(err);
     }
   };
-
 
   const incrementProductQuantity = async (productId) => {
     try {
@@ -108,7 +116,7 @@ const ViewCart = () => {
                   : item
               );
             } else {
-              removeItem(productId); // Eliminar el producto si la cantidad es 1
+              removeItem(productId);
               return prevItems.filter((item) => item.productId !== productId);
             }
           }
@@ -144,26 +152,8 @@ const ViewCart = () => {
     }
   };
 
-  const finishCart = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:4002/cart/finish?cartId=${cartId}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-
-      if (response.ok) {
-        alert('Compra finalizada con éxito');
-        setCartItems([]); // Limpia el carrito
-      } else {
-        setError('Error al finalizar la compra.');
-      }
-    } catch (err) {
-      setError('Error al conectar con el servidor.');
-      console.error(err);
-    }
+  const finishCart = () => {
+    openModal(); // Mostrar el modal al confirmar el carrito
   };
 
   return (
@@ -180,7 +170,7 @@ const ViewCart = () => {
                 <img src={item.productImage} alt={item.productName} className="cart-item-image" />
                 <div className="cart-item-details">
                   <h2>{item.productName}</h2>
-                  <p>Precio: ${item.productPrice}</p> {/* Mostramos el precio dinámico */}
+                  <p>Precio: ${item.productPrice}</p>
                 </div>
                 <div className="cart-item-quantity">
                   <button onClick={() => decrementProductQuantity(item.productId)}>-</button>
@@ -193,11 +183,14 @@ const ViewCart = () => {
           <div className="cart-summary">
             <h3>Resumen de compra</h3>
             <p>Productos ({cartItems.length})</p>
-            <p>Total: ${cartItems.reduce((acc, item) => acc + item.quantity * item.productPrice, 0)}</p> {/* Calculamos el total correctamente */}
+            <p>Total: ${cartItems.reduce((acc, item) => acc + item.quantity * item.productPrice, 0)}</p>
             <button className="confirm-cart-button" onClick={finishCart}>Confirmar carrito</button>
           </div>
         </>
       )}
+
+      {/* Modal FinishCart */}
+      <FinishCart isOpen={isModalOpen} onClose={closeModal} cartId={cartId} />
     </div>
   );
 };

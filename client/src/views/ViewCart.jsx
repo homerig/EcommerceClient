@@ -153,7 +153,7 @@ const ViewCart = () => {
   };
 
   const finishCart = () => {
-    openModal(); // Mostrar el modal al confirmar el carrito
+    openModal(); 
   };
 
   return (

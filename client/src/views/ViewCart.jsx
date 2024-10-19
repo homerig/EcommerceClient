@@ -19,7 +19,7 @@ const ViewCart = () => {
 
   const fetchCart = async () => {
     try {
-      const response = await fetch(`http://localhost:4002/cart/user/3`); // Usamos el userId del estado
+      const response = await fetch(`http://localhost:4002/cart/user/${userId}`); // Usamos el userId del estado
       if (response.ok) {
         const cart = await response.json();
         if (cart && cart.id) {

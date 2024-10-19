@@ -2,29 +2,56 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faPlus, faSearch, faEye } from '@fortawesome/free-solid-svg-icons';
 import './css/ProductsAdmin.css';
+import axios from 'axios';
 
 const ProductTable = () => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingProduct, setEditingProduct] = useState(null);
+  const [images, setImages] = useState([]); 
   const [formValues, setFormValues] = useState({
     name: '',
     description: '',
     price: 0,
     discount: 0,
     stock: 0,
+    categoryId: '',
     images: null,
   });
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedProductImages, setSelectedProductImages] = useState([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [createModalOpen, setCreateModalOpen] = useState(false); // Estado para el modal de creación
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const handleChange = (e) => {
+    const { name, value, files } = e.target; // Incluye files para manejar imágenes
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: files ? files : value, // Si es un input de archivo, asigna files
+    }));
+  };
+  
+  const handleImageChange = (e) => {
+    setImages(e.target.files); // Guardar los archivos seleccionados
+  };
 
   useEffect(() => {
     fetch('http://localhost:4002/catalogo/products')
       .then((response) => response.json())
       .then((data) => setProducts(data))
       .catch((error) => console.error('Error fetching data:', error));
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:4002/categories');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
   }, []);
 
   const handleSearch = (event) => {
@@ -106,35 +133,36 @@ const ProductTable = () => {
     const formData = new FormData();
     formData.append('name', formValues.name);
     formData.append('description', formValues.description);
-    formData.append('price', parseFloat(formValues.price)); // Asegúrate de que sea un número
-    formData.append('discount', parseFloat(formValues.discount)); // Asegúrate de que sea un número
-    formData.append('stock', parseInt(formValues.stock, 10)); // Asegúrate de que sea un número
-  
-    if (formValues.images && formValues.images.length > 0) {
+    formData.append('price', parseFloat(formValues.price));
+    formData.append('discount', parseFloat(formValues.discount));
+    formData.append('stock', parseInt(formValues.stock, 10));
+    formData.append('categoryId', parseInt(formValues.categoryId, 10));
+
+    if (formValues.images) {
       for (let i = 0; i < formValues.images.length; i++) {
         formData.append('images', formValues.images[i]);
       }
     }
-  
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
-    }
-    
+
     fetch('http://localhost:4002/products', {
       method: 'POST',
       body: formData,
     })
     .then((response) => {
-      if (!response.ok) {
-        throw new Error('Error en la solicitud: ' + response.statusText);
+      if (response.ok) {
+        setCreateModalOpen(false);
+        setFormValues({ name: '', description: '', price: 0, discount: 0, stock: 0, categoryId: '', images: null });
+        fetch('http://localhost:4002/catalogo/products')
+        .then((response) => response.json())
+        .then((data) => setProducts(data))
+        .catch((error) => console.error('Error fetching data:', error));
+      } else {
+        alert('Error al guardar el producto');
       }
-      return response.json();
-    })
-    .then((data) => {
-      console.log('Producto creado con éxito:', data);
     })
     .catch((error) => {
-      console.error('Hubo un problema con la solicitud:', error);
+      console.error('Error al guardar el producto:', error);
+      alert('Hubo un problema al intentar guardar el producto.');
     });
   };
   
@@ -158,9 +186,10 @@ const ProductTable = () => {
 
   return (
     <div className="product-table-container">
+      <div className="table-actions">
       <h2>Productos</h2>
       <div className="table-actions">
-        <button className="btn add-button" onClick={() => setCreateModalOpen(true)}>
+      <button className="add-button" onClick={() => setCreateModalOpen(true)}>
           <FontAwesomeIcon icon={faPlus} /> Agregar
         </button>
         <div className="search-bar">
@@ -169,9 +198,12 @@ const ProductTable = () => {
             placeholder="Buscar..."
             value={searchTerm}
             onChange={handleSearch}
+            className="searchBar"
           />
           <FontAwesomeIcon icon={faSearch} className="search-icon" />
         </div>
+      </div>
+        
       </div>
 
       <table className="styled-table">
@@ -237,6 +269,17 @@ const ProductTable = () => {
                 onChange={handleInputChange}
               />
             </label>
+            <div>
+              <label>Category:</label>
+              <select name="categoryId" onChange={handleChange} required>
+                <option value="">Select a category</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.description}
+                  </option>
+                ))}
+              </select>
+            </div>
             <label>
               Precio:
               <input

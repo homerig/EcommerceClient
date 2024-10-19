@@ -164,10 +164,17 @@ const Products = () => {
 
   // Función para deshacer los filtros
   const clearFilters = () => {
-    setSelectedCategories([]);
-    setPriceRange({ min: '', max: '' });
+    setSelectedCategories([]); // Desmarcar todas las categorías
+    setPriceRange({ min: '', max: '' }); // Reiniciar el rango de precios
+    setShowFilters(false); // Cerrar la ventana de filtros
+
+    // Desmarcar todas las categorías en el DOM
+    const checkboxes = document.querySelectorAll('.filtro-categorias input[type="checkbox"]');
+    checkboxes.forEach((checkbox) => (checkbox.checked = false)); 
+
     fetchProducts(); // Vuelve a cargar todos los productos
   };
+
 
   return (
     <div className="productos-container">

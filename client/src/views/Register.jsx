@@ -53,10 +53,17 @@ const Register = () => {
       return response.json();
     })
     .then((data) => {
-      setSuccess(true);
-      setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+      // Guardar el token en localStorage y otros datos del usuario
+      const decodedToken = JSON.parse(atob(data.access_token.split('.')[1]));
       
-  
+      localStorage.setItem('authToken', data.access_token);
+      localStorage.setItem('userId', data.userId);
+      localStorage.setItem('userName', decodedToken.sub); // Nombre del usuario
+      localStorage.setItem('userEmail', formData.email); // Guardar email
+
+      // Redirigir al home o a la página deseada
+      navigate('/');
+
     })
     .catch((error) => {
       setError(error.message);
@@ -65,6 +72,8 @@ const Register = () => {
       setLoading(false);
     });
   };
+
+  
 
   return (
     <div className="register-container">

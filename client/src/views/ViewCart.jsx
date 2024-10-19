@@ -1,82 +1,196 @@
-// src/ViewCart.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './css/ViewCart.css';
-import mateImg from '../assets/Mate_1.png'; // Reemplaza con la ruta correcta
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import FinishCart from './FinishCart'; // Importamos el modal
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import FinishCart from './FinishCart'; // Importa el modal
 
 const ViewCart = () => {
-  const [cartItems, setCartItems] = useState([
-    { id: 1, nombre: 'Mate camionero', color: 'Rosa', cantidad: 1, precio: 25000, imagen: mateImg },
-    { id: 2, nombre: 'Mate camionero', color: 'Marrón', cantidad: 2, precio: 25000, imagen: mateImg },
-  ]);
-
+  const [cartId, setCartId] = useState(null);
+  const [cartItems, setCartItems] = useState([]);
+  const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
+  const [userId, setUserId] = useState(() => {
+    return localStorage.getItem('userId');
+  });
 
-  const incrementItem = (id) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, cantidad: item.cantidad + 1 } : item
-      )
-    );
-  };
-
-  const decrementItem = (id) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id && item.cantidad > 1 ? { ...item, cantidad: item.cantidad - 1 } : item
-      )
-    );
-  };
-
-  const removeItem = (id) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-  };
-
-  const totalProductos = cartItems.reduce((acc, item) => acc + item.cantidad, 0);
-  const totalPrecio = cartItems.reduce((acc, item) => acc + item.cantidad * item.precio, 0);
+  useEffect(() => {
+    if (userId) {
+      fetchCart();
+    } else {
+      setError('El ID de usuario no está disponible.');
+    }
+  }, [userId]);
 
   const openModal = () => {
-    setIsModalOpen(true); // Abrir modal
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    setIsModalOpen(false); // Cerrar modal
+    setIsModalOpen(false);
+  };
+
+  const fetchCart = async () => {
+    try {
+      const response = await fetch(`http://localhost:4002/cart/user/${userId}`);
+      if (response.ok) {
+        const cart = await response.json();
+        if (cart && cart.id) {
+          setCartId(cart.id);
+          if (cart.items && Array.isArray(cart.items)) {
+            const itemsWithDetails = await Promise.all(
+              cart.items.map(async (item) => {
+                const productResponse = await fetch(`http://localhost:4002/products/${item.productId}`);
+                if (productResponse.ok) {
+                  const productData = await productResponse.json();
+                  return {
+                    ...item,
+                    productName: productData.name,
+                    productPrice: productData.price,
+                    productImage: productData.image,
+                  };
+                } else {
+                  setError('Error al obtener los detalles del producto.');
+                  return item;
+                }
+              })
+            );
+            setCartItems(itemsWithDetails);
+          } else {
+            setError('El carrito no contiene items.');
+          }
+        } else {
+          setError('No se encontró el carrito para el usuario.');
+        }
+      } else {
+        setError('Error al obtener el carrito.');
+      }
+    } catch (err) {
+      setError('Error al conectar con el servidor.');
+      console.error(err);
+    }
+  };
+
+  const incrementProductQuantity = async (productId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:4002/cart/incOne?cartId=${cartId}&productId=${productId}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      if (response.ok) {
+        setCartItems((prevItems) =>
+          prevItems.map((item) =>
+            item.productId === productId
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          )
+        );
+      } else {
+        setError('Error al incrementar la cantidad del producto.');
+      }
+    } catch (err) {
+      setError('Error al conectar con el servidor.');
+      console.error(err);
+    }
+  };
+
+  const decrementProductQuantity = async (productId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:4002/cart/decOne?cartId=${cartId}&productId=${productId}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      if (response.ok) {
+        setCartItems((prevItems) => {
+          const item = prevItems.find((item) => item.productId === productId);
+          if (item) {
+            if (item.quantity > 1) {
+              return prevItems.map((item) =>
+                item.productId === productId
+                  ? { ...item, quantity: item.quantity - 1 }
+                  : item
+              );
+            } else {
+              removeItem(productId);
+              return prevItems.filter((item) => item.productId !== productId);
+            }
+          }
+          return prevItems;
+        });
+      } else {
+        setError('Error al decrementar la cantidad del producto.');
+      }
+    } catch (err) {
+      setError('Error al conectar con el servidor.');
+      console.error(err);
+    }
+  };
+
+  const removeItem = async (productId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:4002/cart/remove-product?cartId=${cartId}&productId=${productId}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      if (response.ok) {
+        setCartItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
+      } else {
+        setError('Error al eliminar el producto del carrito.');
+      }
+    } catch (err) {
+      setError('Error al conectar con el servidor.');
+      console.error(err);
+    }
+  };
+
+  const finishCart = () => {
+    openModal(); 
   };
 
   return (
     <div className="cart-container">
-      <h2>Tu carrito</h2>
-      <div className="cart-items">
-        {cartItems.map((item) => (
-          <div key={item.id} className="cart-item">
-            <img src={item.imagen} alt={item.nombre} className="cart-item-image" />
-            <div className="cart-item-details">
-              <h2>{item.nombre}</h2>
-              <p>Color: {item.color}</p>
-            </div>
-            <div className="cart-item-quantity">
-              <button onClick={() => decrementItem(item.id)}>-</button>
-              <span>{item.cantidad}</span>
-              <button onClick={() => incrementItem(item.id)}>+</button>
-            </div>
-            <p className="cart-item-price">${(item.cantidad * item.precio).toLocaleString()}</p>
-            <button className="remove-item-button" onClick={() => removeItem(item.id)}>
-              <FontAwesomeIcon icon={faTrash} className="icon" />
-            </button>
+      <h2>Carrito de Compras</h2>
+      {error && <p>{error}</p>}
+      {cartItems.length === 0 ? (
+        <p>El carrito está vacío (userId: {userId})</p>
+      ) : (
+        <>
+          <div className="cart-items">
+            {cartItems.map((item) => (
+              <div className="cart-item" key={item.id}>
+                <img src={item.productImage} alt={item.productName} className="cart-item-image" />
+                <div className="cart-item-details">
+                  <h2>{item.productName}</h2>
+                  <p>Precio: ${item.productPrice}</p>
+                </div>
+                <div className="cart-item-quantity">
+                  <button onClick={() => decrementProductQuantity(item.productId)}>-</button>
+                  <span>{item.quantity}</span>
+                  <button onClick={() => incrementProductQuantity(item.productId)}>+</button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <div className="cart-summary">
-        <h3>Resumen de compra</h3>
-        <p>Productos ({totalProductos})</p>
-        <p>Total: ${totalPrecio.toLocaleString()}</p>
-        <button className="confirm-cart-button" onClick={openModal}>Confirmar carrito</button>
-      </div>
+          <div className="cart-summary">
+            <h3>Resumen de compra</h3>
+            <p>Productos ({cartItems.length})</p>
+            <p>Total: ${cartItems.reduce((acc, item) => acc + item.quantity * item.productPrice, 0)}</p>
+            <button className="confirm-cart-button" onClick={finishCart}>Confirmar carrito</button>
+          </div>
+        </>
+      )}
 
-      {/* Modal de Confirmar Compra */}
-      <FinishCart isOpen={isModalOpen} onClose={closeModal} />
+      {/* Modal FinishCart */}
+      <FinishCart isOpen={isModalOpen} onClose={closeModal} cartId={cartId} />
     </div>
   );
 };

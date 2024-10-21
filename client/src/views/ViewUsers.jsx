@@ -11,8 +11,10 @@ const ViewUsers = () => {
   const [searchTerm, setSearchTerm] = useState(''); // Barra de búsqueda
   const [error, setError] = useState(null); // Manejamos los errores
   const [loading, setLoading] = useState(true); // Estado de carga
+  const [orders, setOrders] = useState({}); // Estado para almacenar las órdenes por usuario
 
   useEffect(() => {
+    // Obtener los usuarios
     fetch('http://localhost:4002/users')
       .then(response => {
         if (!response.ok) {
@@ -23,6 +25,24 @@ const ViewUsers = () => {
       .then(data => {
         setUsers(data);
         setLoading(false);
+
+        // Obtener las órdenes de cada usuario
+        data.forEach(user => {
+          fetch(`http://localhost:4002/order/user/${user.id}`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Error al obtener las órdenes del usuario ${user.id}`);
+              }
+              return response.json();
+            })
+            .then(orderData => {
+              setOrders(prevOrders => ({
+                ...prevOrders,
+                [user.id]: orderData, // Guardamos las órdenes por userId
+              }));
+            })
+            .catch(err => setError(err.message));
+        });
       })
       .catch(err => {
         setError(err.message);
@@ -109,6 +129,7 @@ const ViewUsers = () => {
           <UserCard 
             key={user.id} 
             user={user} 
+            orders={orders[user.id]} // Pasamos las órdenes al componente UserCard
             onEdit={() => handleEdit(user)} 
             onDelete={() => handleDelete(user.id)} 
           />

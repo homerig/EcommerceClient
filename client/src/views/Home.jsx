@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Asegúrate de tener Link importado
+import { Link } from 'react-router-dom';
 import Product from '../components/Product';
 import CategoriesSection from '../components/CategoriesSection';
 import './css/Home.css';
-import mateHome from '../assets/Mates_Home.png'; // Imagen de héroe o principal
-import mateImg from '../assets/Mate_1.png'; // Placeholder de imagen de producto
+import mateHome from '../assets/Mates_Home.png';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -66,10 +65,8 @@ const Home = () => {
       </section>
 
       <section className="products-section">
-        {/* Contenedor para el título y el botón */}
         <div className="products-header">
           <h2 className="products-title">Nuestros Productos</h2>
-          {/* Enlace Ver más alineado a la derecha */}
           <Link to="/Products" className="ver-mas-link">
             Ver más
           </Link>
@@ -79,13 +76,16 @@ const Home = () => {
           {products.map(product => (
             <Product
               key={product.id}
-              product={{ ...product, img: product.images?.[0]?.url || mateImg }}
+              product={{
+                ...product,
+                img: product.images.length > 0 ? product.images[0] : mateImg // Usar la primera imagen o un placeholder
+              }}
             />
           ))}
         </div>
       </section>
 
-      <CategoriesSection categories={categories} /> {/* Mostrar categorías */}
+      <CategoriesSection categories={categories} />
     </div>
   );
 };

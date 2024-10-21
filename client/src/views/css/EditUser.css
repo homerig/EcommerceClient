@@ -31,7 +31,7 @@ h2 {
 label {
   display: block;
   text-align: left;
-  margin-bottom: 10px;
+  margin-top: 20px;
   font-size: 16px; /* Aumentamos el tamaño de las etiquetas */
 }
 
@@ -44,6 +44,9 @@ input, select {
   border-radius: 20px;
   font-size: 16px; /* Aumentamos el tamaño del texto */
 }
+input{
+  width: 95% !important;
+}
 
 input::placeholder {
   color: #999;
@@ -53,18 +56,18 @@ input::placeholder {
 /* Submit button */
 .submit-button {
   width: 100%;
-  background-color: #333; /* Similar a lo que parece ser en la imagen */
-  color: white;
+  background-color: #333 !important; /* Similar a lo que parece ser en la imagen */
+  color: white !important;
   padding: 1rem; /* Botón más grande */
   border: none;
-  border-radius: 20px;
+  border-radius: 99rem;
   cursor: pointer;
   font-size: 18px; /* Texto más grande */
   margin-top: 20px;
 }
 
 .submit-button:hover {
-  background-color: #555;
+  background-color: #555 !important;
 }
 
 /* Close button */

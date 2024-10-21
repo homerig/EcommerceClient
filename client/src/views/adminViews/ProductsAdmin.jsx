@@ -205,7 +205,7 @@ const ProductTable = () => {
       </div>
         
       </div>
-
+      <div className="tableContainer">
       <table className="styled-table">
         <thead>
           <tr>
@@ -245,14 +245,17 @@ const ProductTable = () => {
           ))}
         </tbody>
       </table>
+      </div>
+      
 
       {/* Modal de creación */}
       {createModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modal-overlay">
+          <div className="modal-container">
+          <button className="close-button" onClick={() => setCreateModalOpen(false)}>✖</button>
             <h3>Crear Producto</h3>
             <label>
-              Nombre:
+              Nombre
               <input
                 type="text"
                 name="name"
@@ -261,7 +264,7 @@ const ProductTable = () => {
               />
             </label>
             <label>
-              Descripción:
+              Descripción
               <input
                 type="text"
                 name="description"
@@ -270,9 +273,9 @@ const ProductTable = () => {
               />
             </label>
             <div>
-              <label>Category:</label>
+              <label>Categoría</label>
               <select name="categoryId" onChange={handleChange} required>
-                <option value="">Select a category</option>
+                <option value="">Seleccione una categoría</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.description}
@@ -280,35 +283,37 @@ const ProductTable = () => {
                 ))}
               </select>
             </div>
+            <div className="inputGroup">
+              <label>
+                Precio
+                <input
+                  type="number"
+                  name="price"
+                  value={formValues.price}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Descuento
+                <input
+                  type="number"
+                  name="discount"
+                  value={formValues.discount}
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                Stock
+                <input
+                  type="number"
+                  name="stock"
+                  value={formValues.stock}
+                  onChange={handleInputChange}
+                />
+              </label>
+            </div>
             <label>
-              Precio:
-              <input
-                type="number"
-                name="price"
-                value={formValues.price}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              Descuento:
-              <input
-                type="number"
-                name="discount"
-                value={formValues.discount}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              Stock:
-              <input
-                type="number"
-                name="stock"
-                value={formValues.stock}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              Imágenes:
+              Imágenes
               <input
                 type="file"
                 name="images"
@@ -316,11 +321,8 @@ const ProductTable = () => {
                 onChange={(e) => setFormValues({ ...formValues, images: e.target.files })}
               />
             </label>
-            <button className="btn save-button" onClick={handleCreateProduct}>
+            <button className="btn save-button submit-button" onClick={handleCreateProduct}>
               Crear Producto
-            </button>
-            <button className="btn cancel-button" onClick={() => setCreateModalOpen(false)}>
-              Cancelar
             </button>
           </div>
         </div>

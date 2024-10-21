@@ -21,7 +21,7 @@ const Product = ({ product }) => {
         console.error('Error:', err);
         setError(err.message);
       } finally {
-        setLoading(false); // Asegúrate de marcar como no cargando, independientemente del resultado
+        setLoading(false);
       }
     };
 
@@ -37,14 +37,15 @@ const Product = ({ product }) => {
   return (
     <Link to={`/ViewProduct/${product.id}`} className="product-link">
       <div className="product-card">
-        <img src={product.img} alt={product.name} className="product-image" />
+        {/* Mostrar la imagen en formato Base64 */}
+        <img src={`data:image/jpeg;base64,${product.img}`} alt={product.name} className="product-image" />
         <div className="product-name">{product.name}</div>
         <div className="product-price-container">
-          {product.discount > 0 ? ( // Si hay descuento, mostrar precio inicial y final
+          {product.discount > 0 ? (
             <>
               {product.discount && (
                 <span className="product-old-price">
-                  ${initialPrice} {/* Precio inicial con formato */}
+                  ${initialPrice}
                 </span>
               )}
               <span className="product-final-price">
@@ -52,9 +53,8 @@ const Product = ({ product }) => {
               </span>
             </>
           ) : (
-            // Si no hay descuento, mostrar solo el precio final
             <span className="product-final-price">
-              ${discountedPrice || 'Precio no disponible'} {/* Utiliza el precio final del endpoint */}
+              ${discountedPrice || 'Precio no disponible'}
             </span>
           )}
         </div>

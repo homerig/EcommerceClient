@@ -15,7 +15,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    padding-left: 25px;
+    padding-right: 5px;
   }
   
   .add-button {
@@ -38,9 +40,9 @@
     align-items: center;
     background-color: #fff;
     border: 1px solid #ddd;
-    padding: 5px 10px;
-    border-radius: 20px;
-  }
+    padding: 5px 20px 5px 14px;
+    border-radius: 99rem;
+}
   
   .search-bar input {
     border: none;
@@ -56,19 +58,28 @@
   .styled-table {
     width: 100%;
     border-collapse: collapse;
-  }
+}
   
   .styled-table th,
   .styled-table td {
     padding: 12px 15px;
     text-align: left;
   }
-  
-  .styled-table th {
+  .tableContainer{
+    box-shadow: 0 2px 30px rgb(0 0 0 / 15%);
+    border-radius: 10px;
+    padding: 15px;
+}
+  .styled-table thead {
     background-color: #f3f3f3;
     font-weight: bold;
   }
-  
+  .styled-table th:first-child{
+    border-top-left-radius: 10px;
+  } 
+  .styled-table th:last-child{
+    border-top-right-radius: 10px;
+  }
   .styled-table tr:nth-child(even) {
     background-color: #f9f9f9;
   }
@@ -118,19 +129,26 @@
   
   .modal-content {
     background: white;
-    padding: 100px;
+    padding: 30px 60px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 35%;
   }
   
-input{
+input, select{
   margin-bottom: 0px !important;
 }
-  
+
 .searchBar{
     width: 100%;
     padding: 10px;
     margin-top: 0px;
     border: 1px solid #ddd;
     border-radius: 99rem !important;
+}
+
+.inputGroup {
+  display: flex;
+  gap: 8%;
+  padding-right: 20px;
 }

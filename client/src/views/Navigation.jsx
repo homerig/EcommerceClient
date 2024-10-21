@@ -27,9 +27,6 @@ const Navigation = () => {
         </li>
       </ul>
       <div className="navbar-icons">
-        <Link to="/search">
-          <FontAwesomeIcon icon={faSearch} className="icon" />
-        </Link>
         <Link to="/ViewCart">
           <FontAwesomeIcon icon={faShoppingCart} className="icon" />
         </Link>

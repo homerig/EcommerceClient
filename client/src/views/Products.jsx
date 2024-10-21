@@ -9,7 +9,7 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Estados para los filtros
+
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
 
@@ -17,7 +17,7 @@ const Products = () => {
 
   const toggleFilters = () => setShowFilters(!showFilters);
 
-  // Fetch de productos desde el backend
+
   const fetchProducts = () => {
     fetch('http://localhost:4002/catalogo/products')
       .then((response) => {
@@ -38,7 +38,7 @@ const Products = () => {
       });
   };
 
-  // Fetch de categorías desde el backend
+ 
   const fetchCategories = () => {
     fetch('http://localhost:4002/categories')
       .then((response) => {
@@ -56,34 +56,33 @@ const Products = () => {
 
   useEffect(() => {
     fetchProducts();
-    fetchCategories(); // Obtén las categorías al cargar el componente
+    fetchCategories(); 
   }, []);
 
   if (loading) return <p>Cargando productos...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  // Función para agregar productos al carrito
   const agregarAlCarrito = async (producto) => {
     try {
-      // Verificar si el carrito ya existe para el usuario
+      
       let existingCart = null;
 
       const cartResponse = await fetch(`http://localhost:4002/cart?userId=${userId}`);
       if (cartResponse.ok) {
         const carts = await cartResponse.json();
         if (carts.length > 0) {
-          existingCart = carts[0]; // Asumimos que hay un único carrito por usuario
+          existingCart = carts[0];
         }
       }
 
-      // Si no hay carrito existente, crear uno nuevo
+      
       if (!existingCart) {
         const createResponse = await fetch('http://localhost:4002/cart', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ userId }), // Cambia esto si necesitas un formato diferente
+          body: JSON.stringify({ userId }),
         });
 
         if (!createResponse.ok) {
@@ -93,15 +92,15 @@ const Products = () => {
         existingCart = await createResponse.json();
       }
 
-      // Agregar el producto al carrito
+      
       const addResponse = await fetch(`http://localhost:4002/catalogo/${existingCart.id}/add-product`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          productId: producto.id, // Asegúrate de que este ID sea un número
-          quantity: 1, // Cambia la cantidad si es necesario
+          productId: producto.id, 
+          quantity: 1, 
         }),
       });
 
@@ -117,7 +116,7 @@ const Products = () => {
     }
   };
 
-  // Funciones de filtrado
+  
   const filterByCategory = (categoryId) => {
     fetch(`http://localhost:4002/catalogo/products/by-category/${categoryId}`)
       .then((response) => {
@@ -150,24 +149,27 @@ const Products = () => {
   };
 
 
-  // Función para manejar el envío de filtros
+  
   const handleFilterSubmit = (e) => {
     e.preventDefault();
-    // Filtrar por categoría seleccionada
     if (selectedCategories.length > 0) {
-      filterByCategory(selectedCategories[0]); // Suponiendo que solo seleccionas una categoría a la vez
+      filterByCategory(selectedCategories[0]); 
     } else {
-      // Si no hay categorías seleccionadas, filtrar por precio
       filterByPrice();
     }
   };
 
-  // Función para deshacer los filtros
+ 
   const clearFilters = () => {
     setSelectedCategories([]);
-    setPriceRange({ min: '', max: '' });
-    fetchProducts(); // Vuelve a cargar todos los productos
+    setPriceRange({ min: '', max: '' }); 
+    setShowFilters(false); 
+    const checkboxes = document.querySelectorAll('.filtro-categorias input[type="checkbox"]');
+    checkboxes.forEach((checkbox) => (checkbox.checked = false)); 
+
+    fetchProducts(); 
   };
+
 
   return (
     <div className="productos-container">
@@ -227,7 +229,7 @@ const Products = () => {
   {productos.map((producto) => (
     <div key={producto.id} className="producto-card">
       <img 
-        src={`data:image/jpeg;base64,${producto.images[0]}`}  // Asegúrate de que sea 'image/jpeg' o el tipo MIME correcto
+        src={`data:image/jpeg;base64,${producto.images[0]}`}  
         className="producto-imagen" 
       />
       <h2>{producto.name}</h2>

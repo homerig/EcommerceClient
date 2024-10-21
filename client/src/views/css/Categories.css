@@ -1,0 +1,62 @@
+.categories-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+  }
+  
+  .category-form {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .category-form input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .category-form button {
+    padding: 10px 15px;
+    margin-left: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .category-form button:hover {
+    background-color: #45a049;
+  }
+  
+  .categories-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .categories-list li {
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+    border-radius: 4px;
+  }
+  
+  .error {
+    color: red;
+  }
+  .add-category-button {
+    padding: 10px 15px;
+    margin-top: 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .add-category-button:hover {
+    background-color: #0056b3;
+  }
+    

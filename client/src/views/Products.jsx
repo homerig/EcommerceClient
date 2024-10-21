@@ -64,19 +64,13 @@ const Products = () => {
 
   const agregarAlCarrito = async (producto) => {
     try {
-      
       let existingCart = null;
-
-      const cartResponse = await fetch(`http://localhost:4002/cart?userId=${userId}`);
-      if (cartResponse.ok) {
-        const carts = await cartResponse.json();
-        if (carts.length > 0) {
-          existingCart = carts[0];
-        }
-      }
-
-      
-      if (!existingCart) {
+  
+      // Buscar el carrito existente para el usuario
+      const cartResponse = await fetch(`http://localhost:4002/cart/user/${userId}`);
+  
+      // Si se obtiene una respuesta 404, significa que no hay carrito, entonces lo creamos
+      if (cartResponse.status === 404) {
         const createResponse = await fetch('http://localhost:4002/cart', {
           method: 'POST',
           headers: {
@@ -84,38 +78,46 @@ const Products = () => {
           },
           body: JSON.stringify({ userId }),
         });
-
+  
         if (!createResponse.ok) {
           throw new Error('Error al crear el carrito');
         }
-
+  
+        // Obtener el carrito recién creado
         existingCart = await createResponse.json();
+      } else if (cartResponse.ok) {
+        existingCart = await cartResponse.json();
       }
-
-      
+  
+      if (!existingCart || !existingCart.id) {
+        throw new Error('No se pudo obtener o crear el carrito');
+      }
+  
+      // Agregar el producto al carrito existente
       const addResponse = await fetch(`http://localhost:4002/catalogo/${existingCart.id}/add-product`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          productId: producto.id, 
-          quantity: 1, 
+          cartId: existingCart.id,
+          productId: producto.id,
+          quantity: 1,
         }),
       });
-
+  
       if (!addResponse.ok) {
         const errorDetails = await addResponse.json();
         throw new Error(`Error al agregar el producto al carrito: ${errorDetails.message || 'Sin detalles'}`);
       }
-
+  
       alert(`${producto.name} agregado al carrito`);
     } catch (error) {
       console.error('Error:', error);
       alert('No se pudo agregar el producto al carrito: ' + error.message);
     }
   };
-
+  
   
   const filterByCategory = (categoryId) => {
     fetch(`http://localhost:4002/catalogo/products/by-category/${categoryId}`)

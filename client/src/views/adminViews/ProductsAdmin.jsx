@@ -399,20 +399,25 @@ const ProductTable = () => {
 
       {/* Modal de visualización de imágenes */}
       {imageModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Imágenes del Producto</h3>
-            <div className="image-gallery">
-              {selectedProductImages.map((image, index) => (
-                <img key={index} src={URL.createObjectURL(image)} alt={`Product Image ${index + 1}`} />
-              ))}
-            </div>
-            <button className="btn cancel-button" onClick={() => setImageModalOpen(false)}>
-              Cerrar
-            </button>
+      <div className="modal">
+        <div className="modal-content">
+          <h3>Imágenes del Producto</h3>
+          <div className="image-gallery">
+            {selectedProductImages.map((image, index) => (
+              <img 
+                key={index} 
+                src={`data:image/jpeg;base64,${image}`}  // Asegúrate de que sea 'image/jpeg' o el tipo MIME correcto
+                alt={`Product Image ${index + 1}`} 
+                
+              />
+            ))}
           </div>
+          <button className="btn cancel-button" onClick={() => setImageModalOpen(false)}>
+            Cerrar
+          </button>
         </div>
-      )}
+      </div>
+    )}
     </div>
   );
 };

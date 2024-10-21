@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './css/Products.css';
 import mateImg from '../assets/Mate_1.png';
+import { Link } from 'react-router-dom';
 
 const Products = () => {
   const [productos, setProductos] = useState([]);
@@ -64,17 +65,19 @@ const Products = () => {
 
   const agregarAlCarrito = async (producto) => {
     try {
-      
+      const UserIdNumber = Number(userId); 
       let existingCart = null;
-
-      const cartResponse = await fetch(`http://localhost:4002/cart?userId=${userId}`);
+  
+      const cartResponse = await fetch(`http://localhost:4002/cart?userId=${UserIdNumber}`);
       if (cartResponse.ok) {
         const carts = await cartResponse.json();
-        if (carts.length > 0) {
-          existingCart = carts[0];
-        }
+        
+        
+        existingCart = carts.find(cart => cart.userId === UserIdNumber);
+      } else {
+        console.warn(`Error al buscar el carrito. Código: ${cartResponse.status}`);
       }
-
+  
       
       if (!existingCart) {
         const createResponse = await fetch('http://localhost:4002/cart', {
@@ -82,33 +85,31 @@ const Products = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ userId }),
+          body: JSON.stringify({ userId: UserIdNumber }),
         });
-
+  
         if (!createResponse.ok) {
-          throw new Error('Error al crear el carrito');
+          throw new Error(`Error al crear el carrito: ${createResponse.statusText}`);
         }
-
+  
         existingCart = await createResponse.json();
       }
-
+  
       
-      const addResponse = await fetch(`http://localhost:4002/catalogo/${existingCart.id}/add-product`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productId: producto.id, 
-          quantity: 1, 
-        }),
-      });
-
-      if (!addResponse.ok) {
-        const errorDetails = await addResponse.json();
+      const response = await fetch(
+        `http://localhost:4002/catalogo/${existingCart.id}/add-product`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId: producto.id, quantity: 1 })
+        }
+      );
+  
+      if (!response.ok) {
+        const errorDetails = await response.json();
         throw new Error(`Error al agregar el producto al carrito: ${errorDetails.message || 'Sin detalles'}`);
       }
-
+  
       alert(`${producto.name} agregado al carrito`);
     } catch (error) {
       console.error('Error:', error);
@@ -228,26 +229,38 @@ const Products = () => {
 <div className="productos-grid">
   {productos.map((producto) => (
     <div key={producto.id} className="producto-card">
-      <img 
-        src={`data:image/jpeg;base64,${producto.images[0]}`}  
-        className="producto-imagen" 
-      />
-      <h2>{producto.name}</h2>
-      {producto.discount && (
-        <span className="precio-anterior">
-          ${(producto.price * (1 + producto.discount)).toFixed(2)}
-        </span>
-      )}
-      <p className="precio">${producto.price.toFixed(2)}</p>
-      <button 
-        className="agregar-carrito-btn" 
-        onClick={() => agregarAlCarrito(producto)}
-      >
-        Agregar al carrito
-      </button>
-    </div>
-  ))}
-</div>
+      <Link to={`/view-product/${producto.id}`} className="producto-enlace">
+        <img 
+          src={`data:image/jpeg;base64,${producto.images[0]}`}  
+          className="producto-imagen" 
+          alt={producto.name} 
+        />
+        <h2>{producto.name}</h2>
+        {/* Mostrar el precio y el descuento */}
+        {producto.discount ? (
+          <>
+            {/* Mostrar el precio anterior */}
+            <span className="precio-anterior">
+              ${(producto.price).toFixed(2)}
+            </span>
+            {/* Calcular el precio con descuento, asegurando que no sea negativo */}
+            <p className="precio">
+              ${((producto.price * (1 - (producto.discount / 100))).toFixed(2))} {/* Asegúrate de dividir por 100 */}
+            </p>
+          </>
+        ) : (
+          <p className="precio">${producto.price.toFixed(2)}</p>
+        )}
+        </Link>
+        <button 
+          className="agregar-carrito-btn" 
+          onClick={() => agregarAlCarrito(producto)}
+        >
+          Agregar al carrito
+        </button>
+      </div>
+    ))}
+  </div>
 
     </div>
   );

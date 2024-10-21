@@ -44,7 +44,7 @@ const ViewCart = () => {
                     ...item,
                     productName: productData.name,
                     productPrice: productData.price,
-                    productImage: productData.image,
+                    productImage: productData.images.length > 0 ? productData.images[0] : null, // Usar la primera imagen
                   };
                 } else {
                   setError('Error al obtener los detalles del producto.');
@@ -52,6 +52,7 @@ const ViewCart = () => {
                 }
               })
             );
+            
             setCartItems(itemsWithDetails);
           } else {
             setError('El carrito no contiene items.');
@@ -167,7 +168,7 @@ const ViewCart = () => {
           <div className="cart-items">
             {cartItems.map((item) => (
               <div className="cart-item" key={item.id}>
-                <img src={item.productImage} alt={item.productName} className="cart-item-image" />
+                <img src={`data:image/jpeg;base64,${item.productImage}`} alt={item.productName} className="cart-item-image" />
                 <div className="cart-item-details">
                   <h2>{item.productName}</h2>
                   <p>Precio: ${item.productPrice}</p>

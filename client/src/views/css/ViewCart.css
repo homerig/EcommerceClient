@@ -83,3 +83,16 @@
   cursor: pointer;
   margin-top: 10px;
 }
+
+.remove-item-button {
+  background-color: transparent;
+  border: none;
+  color: #ff0000;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 5px;
+}
+
+.remove-item-button:hover {
+  color: #cc0000;
+}

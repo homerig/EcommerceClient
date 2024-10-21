@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './css/ViewCart.css';
 import FinishCart from './FinishCart'; // Importa el modal
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Importa FontAwesome
+import { faTrash } from '@fortawesome/free-solid-svg-icons'; // Importa el ícono de basura
 
 const ViewCart = () => {
   const [cartId, setCartId] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [error, setError] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
+  const [isModalOpen, setIsModalOpen] = useState(false); 
   const [userId, setUserId] = useState(() => {
     return localStorage.getItem('userId');
   });
@@ -87,7 +89,7 @@ const ViewCart = () => {
           )
         );
       } else {
-        setError('Error al incrementar la cantidad del producto.');
+        setError('No hay mas stock.');
       }
     } catch (err) {
       setError('Error al conectar con el servidor.');
@@ -177,6 +179,9 @@ const ViewCart = () => {
                   <span>{item.quantity}</span>
                   <button onClick={() => incrementProductQuantity(item.productId)}>+</button>
                 </div>
+                <button className="remove-item-button" onClick={() => removeItem(item.productId)}>
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
               </div>
             ))}
           </div>
@@ -189,7 +194,6 @@ const ViewCart = () => {
         </>
       )}
 
-      {/* Modal FinishCart */}
       <FinishCart isOpen={isModalOpen} onClose={closeModal} cartId={cartId} />
     </div>
   );

@@ -223,30 +223,30 @@ const Products = () => {
         </form>
       )}
 
-      <div className="productos-grid">
-        {productos.map((producto) => (
-          <div key={producto.id} className="producto-card">
-            <img 
-              src={producto.images?.[0]?.url || mateImg} 
-              alt={producto.name} 
-              className="producto-imagen" 
-            />
-            <h2>{producto.name}</h2>
-            {producto.discount && (
-              <span className="precio-anterior">
-                ${(producto.price * (1 + producto.discount)).toFixed(2)}
-              </span>
-            )}
-            <p className="precio">${producto.price.toFixed(2)}</p>
-            <button 
-              className="agregar-carrito-btn" 
-              onClick={() => agregarAlCarrito(producto)}
-            >
-              Agregar al carrito
-            </button>
-          </div>
-        ))}
-      </div>
+<div className="productos-grid">
+  {productos.map((producto) => (
+    <div key={producto.id} className="producto-card">
+      <img 
+        src={`data:image/jpeg;base64,${producto.images[0]}`}  // Asegúrate de que sea 'image/jpeg' o el tipo MIME correcto
+        className="producto-imagen" 
+      />
+      <h2>{producto.name}</h2>
+      {producto.discount && (
+        <span className="precio-anterior">
+          ${(producto.price * (1 + producto.discount)).toFixed(2)}
+        </span>
+      )}
+      <p className="precio">${producto.price.toFixed(2)}</p>
+      <button 
+        className="agregar-carrito-btn" 
+        onClick={() => agregarAlCarrito(producto)}
+      >
+        Agregar al carrito
+      </button>
+    </div>
+  ))}
+</div>
+
     </div>
   );
 };

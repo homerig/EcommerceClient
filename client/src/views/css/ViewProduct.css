@@ -84,3 +84,17 @@
     width: auto !important;        /* Maintain aspect ratio, adjust width accordingly */
     object-fit: cover !important;  /* This ensures the image covers the entire container without distortion */
   }
+
+
+.image-gallery{
+  justify-content: center;
+  flex-wrap: nowrap !important;
+  align-items: center;
+}
+.image-gallery img{
+  width: 50%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 20px;
+}
+

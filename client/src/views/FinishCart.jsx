@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './css/EditUser.css'; // Reutiliza el mismo archivo de estilos para uniformidad
+import './css/EditUser.css'; 
 
 const FinishCart = ({ isOpen, onClose, cartId }) => {
   const [formData, setFormData] = useState({
@@ -15,7 +15,7 @@ const FinishCart = ({ isOpen, onClose, cartId }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Hook para redirección
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     setFormData({
@@ -30,7 +30,6 @@ const FinishCart = ({ isOpen, onClose, cartId }) => {
     setError(null);
 
     try {
-      // Llamada para finalizar el carrito
       const finishCartResponse = await fetch(`http://localhost:4002/cart/${cartId}/finish`, {
         method: 'PUT',
         headers: {
@@ -46,7 +45,6 @@ const FinishCart = ({ isOpen, onClose, cartId }) => {
         console.warn('Se recibió un error 500 al finalizar la compra, pero se continuará con el proceso.');
       }
   
-      // Llamada para vaciar el carrito
       const clearCartResponse = await fetch(`http://localhost:4002/cart/${cartId}/clear`, {
         method: 'PUT',
         headers: {
@@ -60,11 +58,10 @@ const FinishCart = ({ isOpen, onClose, cartId }) => {
   
       console.log('Compra confirmada y carrito vaciado correctamente');
 
-      // Mostrar mensaje de éxito y redirigir a la página principal
       alert('¡Compra finalizada con éxito!');
-      navigate('/'); // Redirigir a la página de inicio
+      navigate('/'); 
 
-      onClose(); // Cerrar el modal
+      onClose(); 
     } catch (err) {
       setError(err.message);
       console.error('Error:', err);

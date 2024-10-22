@@ -31,23 +31,22 @@ const Categories = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:4002/categories', 
-        { description: newCategory }, // Cuerpo de la solicitud
+        { description: newCategory }, 
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Enviar token en el encabezado
-            'Content-Type': 'application/json', // Asegurarse que el tipo de contenido sea JSON
+            Authorization: `Bearer ${token}`, 
+            'Content-Type': 'application/json', 
           },
         }
       );
 
-      // Verificar si la respuesta es exitosa
       if (response.status !== 201) {
         throw new Error(`Error al agregar la categoría: ${response.data.message}`);
       }
 
       setNewCategory('');
       setShowInput(false); 
-      fetchCategories(); // Actualiza las categorías después de agregar una nueva
+      fetchCategories(); 
     } catch (err) {
       console.error('Error:', err);
       setError(err.message);

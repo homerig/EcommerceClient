@@ -1,8 +1,8 @@
 import React from 'react';
-import './css/EditUser.css'; // Si tienes una hoja de estilos específica
+import './css/EditUser.css';
 
 const EditUser = ({ isOpen, onClose, user, updatedUser, setUpdatedUser, handleUpdate }) => {
-  if (!isOpen) return null; // Si el modal no está abierto, no se muestra nada.
+  if (!isOpen) return null; 
 
   return (
     <div className="modal-overlay">

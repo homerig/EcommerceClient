@@ -147,7 +147,7 @@ const ViewCart = () => {
       if (response.ok) {
         setCartItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
       } else {
-        setError('Error al eliminar el producto del carrito.');
+        setError();
       }
     } catch (err) {
       setError('Error al conectar con el servidor.');

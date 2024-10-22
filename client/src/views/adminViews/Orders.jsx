@@ -15,12 +15,17 @@ const OrderTable = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
+      const token = localStorage.getItem('authToken'); // Obtener el token del localStorage
       try {
-        const response = await axios.get('http://localhost:4002/order');
+        const response = await axios.get('http://localhost:4002/order', {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        });
         setOrders(response.data);
-        setFilteredOrders(response.data); // Iniciar con todas las órdenes
+        setFilteredOrders(response.data);
       } catch (err) {
-        setError('Error al obtener las órdenes');
+        setError('Error al obtener las órdenes: ' + err.response.data.message || err.message); // Mejor manejo de errores
       } finally {
         setLoading(false);
       }

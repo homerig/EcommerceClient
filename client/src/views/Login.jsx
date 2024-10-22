@@ -11,7 +11,6 @@ const Login = () => {
   const [userRole, setUserRole] = useState(null);
   const navigate = useNavigate();
 
-  // Verificar si hay una sesión iniciada al cargar la vista
   useEffect(() => {
     const storedName = localStorage.getItem('userName');
     const storedEmail = localStorage.getItem('userEmail');
@@ -47,19 +46,19 @@ const Login = () => {
   
       const data = await response.json();
       
-      const decodedToken = JSON.parse(atob(data.access_token.split('.')[1])); // Decodificar el token
+      const decodedToken = JSON.parse(atob(data.access_token.split('.')[1])); 
       console.log('Rol del usuario:', data.role);
       console.log('data', data);
   
-      // Guardar los datos del usuario en localStorage
+
       localStorage.setItem('authToken', data.access_token);
       localStorage.setItem('userId', data.userId);
-      localStorage.setItem('userName', data.name); // Suponiendo que 'sub' contiene el nombre del usuario
+      localStorage.setItem('userName', data.name); 
       localStorage.setItem('userEmail', email);
-      localStorage.setItem('userRole', data.role); // Aquí guardamos el rol
+      localStorage.setItem('userRole', data.role); 
   
-      navigate('/'); // Redirigir a la página principal
-      window.location.reload(); // Refrescar la página después de iniciar sesión
+      navigate('/');
+      window.location.reload();
   
     } catch (err) {
       console.error('Error al autenticar:', err);
@@ -69,16 +68,14 @@ const Login = () => {
   
 
   const handleLogout = () => {
-    localStorage.clear(); // Limpiar la sesión
-    setUserName(null); // Borrar estado del usuario
+    localStorage.clear();
+    setUserName(null);
     setUserEmail(null);
     setUserRole(null);
-    navigate('/login'); // Redirigir al Login
-    window.location.reload(); // Refrescar la página después de cerrar sesión
+    navigate('/login');
+    window.location.reload(); 
   };
   
-
-  // Mostrar perfil si ya hay sesión activa
   if (userName && userEmail) {
     return (
       <div className="login-container">
@@ -93,7 +90,7 @@ const Login = () => {
     );
   }
 
-  // Mostrar formulario de login si no hay sesión activa
+ 
   return (
     <div className="login-container">
       <div className="login-modal">

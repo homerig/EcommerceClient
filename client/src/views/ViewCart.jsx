@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './css/ViewCart.css';
-import FinishCart from './FinishCart'; // Importa el modal
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Importa FontAwesome
-import { faTrash } from '@fortawesome/free-solid-svg-icons'; // Importa el ícono de basura
+import FinishCart from './FinishCart'; 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; 
+import { faTrash } from '@fortawesome/free-solid-svg-icons'; 
 
 const ViewCart = () => {
   const [cartId, setCartId] = useState(null);
@@ -46,7 +46,7 @@ const ViewCart = () => {
                     ...item,
                     productName: productData.name,
                     productPrice: productData.price,
-                    productImage: productData.images.length > 0 ? productData.images[0] : null, // Usar la primera imagen
+                    productImage: productData.images.length > 0 ? productData.images[0] : null,
                   };
                 } else {
                   setError('Error al obtener los detalles del producto.');

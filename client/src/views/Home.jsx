@@ -13,7 +13,6 @@ const Home = () => {
   const [errorProducts, setErrorProducts] = useState(null);
   const [errorCategories, setErrorCategories] = useState(null);
 
-  // Fetch de productos (limitar a 5 productos)
   useEffect(() => {
     fetch('http://localhost:4002/catalogo/products')
       .then((response) => {
@@ -23,7 +22,7 @@ const Home = () => {
         return response.json();
       })
       .then((data) => {
-        setProducts(data.slice(0, 5)); // Limitar a los primeros 5 productos
+        setProducts(data.slice(0, 5));
         setLoadingProducts(false);
       })
       .catch((error) => {
@@ -33,7 +32,6 @@ const Home = () => {
       });
   }, []);
 
-  // Fetch de categorías
   useEffect(() => {
     fetch('http://localhost:4002/categories')
       .then((response) => {
@@ -78,7 +76,7 @@ const Home = () => {
               key={product.id}
               product={{
                 ...product,
-                img: product.images.length > 0 ? product.images[0] : mateImg // Usar la primera imagen o un placeholder
+                img: product.images.length > 0 ? product.images[0] : mateImg 
               }}
             />
           ))}

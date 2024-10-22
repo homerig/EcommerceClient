@@ -5,7 +5,6 @@ import logo from '../assets/LogoMatecito.png';
 import './css/Navigation.css'; 
 
 const Navigation = () => {
-  // Obtener el rol del usuario desde localStorage
   const userRole = localStorage.getItem('userRole');
   console.log(userRole);
 

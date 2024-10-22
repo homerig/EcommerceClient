@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // For navigation
+import { useNavigate } from 'react-router-dom'; 
 import './css/Register.css';
 
 const Register = () => {
@@ -12,8 +12,8 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [passwordError, setPasswordError] = useState(null); // For password mismatch
-  const navigate = useNavigate(); // Navigation hook
+  const [passwordError, setPasswordError] = useState(null); 
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     setFormData({
@@ -28,7 +28,6 @@ const Register = () => {
     setError(null);
     setPasswordError(null);
 
-    // Check if passwords match before proceeding
     if (formData.password !== formData.confirmPassword) {
       setPasswordError('Las contraseñas no coinciden');
       setLoading(false);
@@ -53,15 +52,13 @@ const Register = () => {
       return response.json();
     })
     .then((data) => {
-      // Guardar el token en localStorage y otros datos del usuario
       const decodedToken = JSON.parse(atob(data.access_token.split('.')[1]));
       
       localStorage.setItem('authToken', data.access_token);
       localStorage.setItem('userId', data.userId);
-      localStorage.setItem('userName', decodedToken.sub); // Nombre del usuario
-      localStorage.setItem('userEmail', formData.email); // Guardar email
+      localStorage.setItem('userName', decodedToken.sub); 
+      localStorage.setItem('userEmail', formData.email);
 
-      // Redirigir al home o a la página deseada
       navigate('/');
 
     })
@@ -117,7 +114,6 @@ const Register = () => {
           </button>
         </form>
 
-        {/* Display any errors or success messages below the form */}
         {passwordError && <p className="error">{passwordError}</p>}
         {error && <p className="error">Error: {error}</p>}
         {success && <p className="success">¡Usuario registrado exitosamente!</p>}

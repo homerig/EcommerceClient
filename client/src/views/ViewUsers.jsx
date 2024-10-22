@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import './css/Users.css';
 import UserCard from './UserCard';
-import EditUser from './EditUser'; // Importamos el modal para editar
+import EditUser from './EditUser'; 
 
 const ViewUsers = () => {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [updatedUser, setUpdatedUser] = useState({ name: '', email: '', role: '' });
-  const [filter, setFilter] = useState('Todos'); // Filtro para los roles
-  const [searchTerm, setSearchTerm] = useState(''); // Barra de búsqueda
-  const [error, setError] = useState(null); // Manejamos los errores
-  const [loading, setLoading] = useState(true); // Estado de carga
-  const [orders, setOrders] = useState({}); // Estado para almacenar las órdenes por usuario
+  const [filter, setFilter] = useState('Todos'); 
+  const [searchTerm, setSearchTerm] = useState(''); 
+  const [error, setError] = useState(null); 
+  const [loading, setLoading] = useState(true); 
+  const [orders, setOrders] = useState({}); 
 
   const token = localStorage.getItem('authToken');
 
   useEffect(() => {
-    // Obtener los usuarios
     fetch('http://localhost:4002/users', {
       headers: {
-        'Authorization': `Bearer ${token}`, // Agrega el encabezado de autorización
+        'Authorization': `Bearer ${token}`, 
       },
     }).then(response => {
         if (!response.ok) {
@@ -30,12 +29,10 @@ const ViewUsers = () => {
       .then(data => {
         setUsers(data);
         setLoading(false);
-
-        // Obtener las órdenes de cada usuario
         data.forEach(user => {
           fetch(`http://localhost:4002/order/user/${user.id}`, {
             headers: {
-              'Authorization': `Bearer ${token}`, // Agrega el encabezado de autorización
+              'Authorization': `Bearer ${token}`,
             },
           })
             .then(response => {
@@ -47,7 +44,7 @@ const ViewUsers = () => {
             .then(orderData => {
               setOrders(prevOrders => ({
                 ...prevOrders,
-                [user.id]: orderData, // Guardamos las órdenes por userId
+                [user.id]: orderData,
               }));
             })
             .catch(err => setError(err.message));
@@ -95,13 +92,12 @@ const ViewUsers = () => {
           if (!response.ok) {
             throw new Error('Error al eliminar el usuario');
           }
-          setUsers(users.filter(user => user.id !== id)); // Eliminar usuario de la lista localmente
+          setUsers(users.filter(user => user.id !== id));
         })
         .catch(err => setError(err.message));
     }
   };
 
-  // Filtro de usuarios según el rol y búsqueda por nombre o email
   const filteredUsers = users.filter((user) => {
     if (filter !== 'Todos' && user.role !== filter) {
       return false;
@@ -120,7 +116,6 @@ const ViewUsers = () => {
     <div className="users-container">
       <h1>Usuarios</h1>
 
-      {/* Barra de búsqueda y filtro por rol */}
       <div className="search-filter">
         <select value={filter} onChange={(e) => setFilter(e.target.value)}>
           <option value="Todos">Todos</option>
@@ -140,14 +135,13 @@ const ViewUsers = () => {
           <UserCard 
             key={user.id} 
             user={user} 
-            orders={orders[user.id]} // Pasamos las órdenes al componente UserCard
+            orders={orders[user.id]}
             onEdit={() => handleEdit(user)} 
             onDelete={() => handleDelete(user.id)} 
           />
         ))}
       </div>
 
-      {/* Modal para editar usuario */}
       {editingUser && (
         <EditUser 
           isOpen={editingUser !== null} 

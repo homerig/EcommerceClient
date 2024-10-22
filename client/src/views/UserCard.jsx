@@ -10,7 +10,6 @@ const UserCard = ({ user, orders, onEdit, onDelete }) => {
       <p><strong>Email:</strong> {user.email}</p>
       <p><strong>Rol:</strong> {user.role}</p>
 
-      {/* Solo mostrar las órdenes si el usuario no es Administrador */}
       {user.role !== 'ADMIN' && (
         <>
           <h3>Órdenes:</h3>

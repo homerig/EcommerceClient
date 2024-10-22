@@ -22,7 +22,7 @@ const Home = () => {
         return response.json();
       })
       .then((data) => {
-        setProducts(data.slice(0, 5));
+        setProducts(data.slice(0, 6));
         setLoadingProducts(false);
       })
       .catch((error) => {

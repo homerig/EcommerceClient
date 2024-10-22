@@ -17,10 +17,8 @@
 
 .products-grid {
   display: flex;
-  gap: 20px;
-  padding: 20px;
   justify-content: space-evenly;
-  padding: 2% 10%;
+  padding-bottom: 3%;
 }
 
 /* Estilos del precio */

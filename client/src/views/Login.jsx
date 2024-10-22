@@ -8,65 +8,75 @@ const Login = () => {
   const [error, setError] = useState('');
   const [userName, setUserName] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
+  const [userRole, setUserRole] = useState(null);
   const navigate = useNavigate();
 
   // Verificar si hay una sesión iniciada al cargar la vista
   useEffect(() => {
     const storedName = localStorage.getItem('userName');
     const storedEmail = localStorage.getItem('userEmail');
+    const storedRole = localStorage.getItem('userRole');
     const token = localStorage.getItem('authToken');
 
     if (token && storedName && storedEmail) {
       setUserName(storedName);
       setUserEmail(storedEmail);
+      setUserRole(storedRole);
     }
   }, []);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
-        setError('Por favor completa todos los campos.');
-        return;
+      setError('Por favor completa todos los campos.');
+      return;
     }
-
+  
     try {
-        const response = await fetch('http://localhost:4002/api/v1/auth/authenticate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
-        });
-
-        if (!response.ok) {
-            throw new Error('Credenciales incorrectas o problema en el servidor.');
-        }
-
-        const data = await response.json();
-        const decodedToken = JSON.parse(atob(data.access_token.split('.')[1])); // Decodificar el token
-
-        console.log('Datos del token:', decodedToken); // Verificar los datos decodificados
-
-        // Guardar datos relevantes del usuario en localStorage
-        localStorage.setItem('authToken', data.access_token);
-        localStorage.setItem('userId', data.userId); // Usar el campo correcto de la respuesta
-        localStorage.setItem('userName', decodedToken.sub); // Suponiendo que 'sub' contiene el nombre del usuario
-        localStorage.setItem('userEmail', email); // Guardar el email del usuario
-        console.log('ID del usuario guardado:', data.userId); // Verificar el ID guardado
-
-        navigate('/');
+      const response = await fetch('http://localhost:4002/api/v1/auth/authenticate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Credenciales incorrectas o problema en el servidor.');
+      }
+  
+      const data = await response.json();
+      
+      const decodedToken = JSON.parse(atob(data.access_token.split('.')[1])); // Decodificar el token
+      console.log('Rol del usuario:', data.role);
+      console.log('data', data);
+  
+      // Guardar los datos del usuario en localStorage
+      localStorage.setItem('authToken', data.access_token);
+      localStorage.setItem('userId', data.userId);
+      localStorage.setItem('userName', data.name); // Suponiendo que 'sub' contiene el nombre del usuario
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userRole', data.role); // Aquí guardamos el rol
+  
+      navigate('/'); // Redirigir a la página principal
+      window.location.reload(); // Refrescar la página después de iniciar sesión
+  
     } catch (err) {
-        console.error('Error al autenticar:', err);
-        setError(err.message);
+      console.error('Error al autenticar:', err);
+      setError(err.message);
     }
-};
+  };
+  
 
   const handleLogout = () => {
     localStorage.clear(); // Limpiar la sesión
     setUserName(null); // Borrar estado del usuario
     setUserEmail(null);
+    setUserRole(null);
     navigate('/login'); // Redirigir al Login
+    window.location.reload(); // Refrescar la página después de cerrar sesión
   };
+  
 
   // Mostrar perfil si ya hay sesión activa
   if (userName && userEmail) {
@@ -76,7 +86,7 @@ const Login = () => {
           <h1>Perfil de Usuario</h1>
           <p><strong>Nombre:</strong> {userName}</p>
           <p><strong>Email:</strong> {userEmail}</p>
-          <p><strong>ID:</strong> {localStorage.getItem('userId')}</p> {/* Mostrar el ID del usuario */}
+          {/*<p><strong>ID:</strong> {localStorage.getItem('userId')}</p> { Mostrar el ID del usuario }*/}
           <button onClick={handleLogout}>Cerrar Sesión</button>
         </div>
       </div>

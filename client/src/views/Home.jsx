@@ -85,7 +85,7 @@ const Home = () => {
         </div>
       </section>
 
-      <CategoriesSection categories={categories} />
+      {/*<CategoriesSection categories={categories} />*/}
     </div>
   );
 };

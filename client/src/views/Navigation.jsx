@@ -5,6 +5,10 @@ import logo from '../assets/LogoMatecito.png';
 import './css/Navigation.css'; 
 
 const Navigation = () => {
+  // Obtener el rol del usuario desde localStorage
+  const userRole = localStorage.getItem('userRole');
+  console.log(userRole);
+
   return (
     <nav className="navbar">
       <div className="navbar-left">
@@ -19,12 +23,19 @@ const Navigation = () => {
         <li>
           <Link to="/Products">Products</Link>
         </li>
-        <li>
-          <Link to="/Orders">Orders</Link>
-        </li>
-        <li>
-          <Link to="/ViewUsers">Users</Link>
-        </li>
+        {userRole == 'ADMIN' && (
+          <>
+            <li>
+              <Link to="/Orders">Orders</Link>
+            </li>
+            <li>
+              <Link to="/ViewUsers">Users</Link>
+            </li>
+            <li>
+              <Link to="/Categories">Categorías</Link>
+            </li>
+          </>
+        )}
       </ul>
       <div className="navbar-icons">
         <Link to="/ViewCart">
@@ -33,9 +44,11 @@ const Navigation = () => {
         <Link to="/Login">
           <FontAwesomeIcon icon={faUser} className="icon" />
         </Link>
-        <Link to="/adminViews/ProductsAdmin">
-          <FontAwesomeIcon icon={faCog} className="icon" />
-        </Link>
+        {userRole == 'ADMIN' && (
+          <Link to="/adminViews/ProductsAdmin">
+            <FontAwesomeIcon icon={faCog} className="icon" />
+          </Link>
+        )}
       </div>
     </nav>
   );

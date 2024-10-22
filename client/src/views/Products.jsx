@@ -88,11 +88,14 @@ const Products = () => {
           body: JSON.stringify({ userId: UserIdNumber }),
         });
   
+  
         if (!createResponse.ok) {
           throw new Error(`Error al crear el carrito: ${createResponse.statusText}`);
         }
   
         existingCart = await createResponse.json();
+      } else if (cartResponse.ok) {
+        existingCart = await cartResponse.json();
       }
   
       
@@ -110,13 +113,14 @@ const Products = () => {
         throw new Error(`Error al agregar el producto al carrito: ${errorDetails.message || 'Sin detalles'}`);
       }
   
+  
       alert(`${producto.name} agregado al carrito`);
     } catch (error) {
       console.error('Error:', error);
       alert('No se pudo agregar el producto al carrito: ' + error.message);
     }
   };
-
+  
   
   const filterByCategory = (categoryId) => {
     fetch(`http://localhost:4002/catalogo/products/by-category/${categoryId}`)

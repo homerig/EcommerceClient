@@ -41,21 +41,27 @@ const Product = ({ product }) => {
         <img src={`data:image/jpeg;base64,${product.img}`} alt={product.name} className="product-image" />
         <div className="product-name">{product.name}</div>
         <div className="product-price-container">
-          {product.discount > 0 ? (
+          {product.stock === 0 ? (
+            <span className="product-out-of-stock">Sin stock</span>
+          ) : (
             <>
-              {product.discount && (
-                <span className="product-old-price">
-                  ${initialPrice}
+              {product.discount > 0 ? (
+                <>
+                  {product.discount && (
+                    <span className="product-old-price">
+                      ${initialPrice}
+                    </span>
+                  )}
+                  <span className="product-final-price">
+                    ${discountedPrice || 'Precio no disponible'}
+                  </span>
+                </>
+              ) : (
+                <span className="product-final-price">
+                  ${discountedPrice || 'Precio no disponible'}
                 </span>
               )}
-              <span className="product-final-price">
-                ${discountedPrice || 'Precio no disponible'}
-              </span>
             </>
-          ) : (
-            <span className="product-final-price">
-              ${discountedPrice || 'Precio no disponible'}
-            </span>
           )}
         </div>
       </div>

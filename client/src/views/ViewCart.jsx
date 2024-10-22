@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './css/ViewCart.css';
 import FinishCart from './FinishCart'; // Importa el modal
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Importa FontAwesome
+import { faTrash } from '@fortawesome/free-solid-svg-icons'; // Importa el ícono de basura
 
 const ViewCart = () => {
   const [cartId, setCartId] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [error, setError] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
+  const [isModalOpen, setIsModalOpen] = useState(false); 
   const [userId, setUserId] = useState(() => {
     return localStorage.getItem('userId');
   });
@@ -44,7 +46,7 @@ const ViewCart = () => {
                     ...item,
                     productName: productData.name,
                     productPrice: productData.price,
-                    productImage: productData.image,
+                    productImage: productData.images.length > 0 ? productData.images[0] : null, // Usar la primera imagen
                   };
                 } else {
                   setError('Error al obtener los detalles del producto.');
@@ -52,6 +54,7 @@ const ViewCart = () => {
                 }
               })
             );
+            
             setCartItems(itemsWithDetails);
           } else {
             setError('El carrito no contiene items.');
@@ -60,7 +63,7 @@ const ViewCart = () => {
           setError('No se encontró el carrito para el usuario.');
         }
       } else {
-        setError('Error al obtener el carrito.');
+        setError();
       }
     } catch (err) {
       setError('Error al conectar con el servidor.');
@@ -87,7 +90,7 @@ const ViewCart = () => {
           )
         );
       } else {
-        setError('Error al incrementar la cantidad del producto.');
+        setError('No hay mas stock.');
       }
     } catch (err) {
       setError('Error al conectar con el servidor.');
@@ -161,13 +164,13 @@ const ViewCart = () => {
       <h2>Carrito de Compras</h2>
       {error && <p>{error}</p>}
       {cartItems.length === 0 ? (
-        <p>El carrito está vacío (userId: {userId})</p>
+        <p>El carrito está vacío </p>
       ) : (
         <>
           <div className="cart-items">
             {cartItems.map((item) => (
               <div className="cart-item" key={item.id}>
-                <img src={item.productImage} alt={item.productName} className="cart-item-image" />
+                <img src={`data:image/jpeg;base64,${item.productImage}`} alt={item.productName} className="cart-item-image" />
                 <div className="cart-item-details">
                   <h2>{item.productName}</h2>
                   <p>Precio: ${item.productPrice}</p>
@@ -177,6 +180,9 @@ const ViewCart = () => {
                   <span>{item.quantity}</span>
                   <button onClick={() => incrementProductQuantity(item.productId)}>+</button>
                 </div>
+                <button className="remove-item-button" onClick={() => removeItem(item.productId)}>
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
               </div>
             ))}
           </div>
@@ -189,7 +195,6 @@ const ViewCart = () => {
         </>
       )}
 
-      {/* Modal FinishCart */}
       <FinishCart isOpen={isModalOpen} onClose={closeModal} cartId={cartId} />
     </div>
   );

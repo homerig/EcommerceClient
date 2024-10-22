@@ -13,6 +13,8 @@ const ViewUsers = () => {
   const [loading, setLoading] = useState(true); // Estado de carga
   const [orders, setOrders] = useState({}); // Estado para almacenar las órdenes por usuario
 
+  const token = localStorage.getItem('authToken');
+
   useEffect(() => {
     // Obtener los usuarios
     fetch('http://localhost:4002/users')
@@ -28,7 +30,11 @@ const ViewUsers = () => {
 
         // Obtener las órdenes de cada usuario
         data.forEach(user => {
-          fetch(`http://localhost:4002/order/user/${user.id}`)
+          fetch(`http://localhost:4002/order/user/${user.id}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`, // Agrega el encabezado de autorización
+            },
+          })
             .then(response => {
               if (!response.ok) {
                 throw new Error(`Error al obtener las órdenes del usuario ${user.id}`);
@@ -43,6 +49,7 @@ const ViewUsers = () => {
             })
             .catch(err => setError(err.message));
         });
+
       })
       .catch(err => {
         setError(err.message);

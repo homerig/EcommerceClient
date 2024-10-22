@@ -17,6 +17,7 @@ const Products = () => {
 
   const toggleFilters = () => setShowFilters(!showFilters);
 
+  const token = localStorage.getItem('authToken');
 
   const fetchProducts = () => {
     fetch('http://localhost:4002/catalogo/products')
@@ -97,8 +98,10 @@ const Products = () => {
       const addResponse = await fetch(`http://localhost:4002/catalogo/${existingCart.id}/add-product`, {
         method: 'PUT',
         headers: {
+          Authorization: `Bearer ${token}`, 
           'Content-Type': 'application/json',
         },
+
         body: JSON.stringify({
           cartId: existingCart.id,
           productId: producto.id,

@@ -35,6 +35,8 @@ const ProductTable = () => {
     setImages(e.target.files); // Guardar los archivos seleccionados
   };
 
+  const token = localStorage.getItem('authToken');
+
   useEffect(() => {
     fetch('http://localhost:4002/catalogo/products')
       .then((response) => response.json())
@@ -98,16 +100,22 @@ const ProductTable = () => {
     formData.append('price', formValues.price);
     formData.append('discount', formValues.discount);
     formData.append('stock', formValues.stock);
-
+  
     if (formValues.images) {
       for (let i = 0; i < formValues.images.length; i++) {
         formData.append('images', formValues.images[i]);
       }
     }
+  
+    // Suponiendo que el token está almacenado en el almacenamiento local
+    const token = localStorage.getItem('authToken'); // Cambia esto según tu implementación
 
     fetch(`http://localhost:4002/products/${editingProduct.id}`, {
       method: 'PUT',
       body: formData,
+      headers: {
+        'Authorization': `Bearer ${token}`, // Agrega el encabezado de autorización
+      },
     })
       .then((response) => {
         if (response.ok) {
@@ -128,8 +136,8 @@ const ProductTable = () => {
         alert('Hubo un problema al intentar actualizar el producto.');
       });
   };
-
-  const handleCreateProduct = () => {
+  
+const handleCreateProduct = () => {
     const formData = new FormData();
     formData.append('name', formValues.name);
     formData.append('description', formValues.description);
@@ -144,28 +152,38 @@ const ProductTable = () => {
       }
     }
 
+    const token = localStorage.getItem('authToken'); // Obtiene el token del localStorage
+
     fetch('http://localhost:4002/products', {
       method: 'POST',
       body: formData,
+      headers: {
+        Authorization: `Bearer ${token}`, // Enviar el token en el encabezado
+      },
     })
     .then((response) => {
       if (response.ok) {
         setCreateModalOpen(false);
         setFormValues({ name: '', description: '', price: 0, discount: 0, stock: 0, categoryId: '', images: null });
+        
+        // Refresca la lista de productos
         fetch('http://localhost:4002/catalogo/products')
         .then((response) => response.json())
         .then((data) => setProducts(data))
         .catch((error) => console.error('Error fetching data:', error));
       } else {
-        alert('Error al guardar el producto');
+        return response.json().then((errorDetails) => {
+          throw new Error(`Error al guardar el producto: ${errorDetails.message}`);
+        });
       }
     })
     .catch((error) => {
       console.error('Error al guardar el producto:', error);
       alert('Hubo un problema al intentar guardar el producto.');
     });
-  };
-  
+};
+
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

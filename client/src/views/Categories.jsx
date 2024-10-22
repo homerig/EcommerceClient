@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './css/Categories.css';
-
+import axios from 'axios';
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState('');
   const [error, setError] = useState(null);
   const [showInput, setShowInput] = useState(false); 
+
+  const token = localStorage.getItem('authToken');
 
   const fetchCategories = async () => {
     try {
@@ -28,27 +30,30 @@ const Categories = () => {
   const addCategory = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:4002/categories', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ description: newCategory }),
-      });
+      const response = await axios.post('http://localhost:4002/categories', 
+        { description: newCategory }, // Cuerpo de la solicitud
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Enviar token en el encabezado
+            'Content-Type': 'application/json', // Asegurarse que el tipo de contenido sea JSON
+          },
+        }
+      );
 
-      if (!response.ok) {
-        const errorDetails = await response.json();
-        throw new Error(`Error al agregar la categoría: ${errorDetails.message}`);
+      // Verificar si la respuesta es exitosa
+      if (response.status !== 201) {
+        throw new Error(`Error al agregar la categoría: ${response.data.message}`);
       }
 
       setNewCategory('');
       setShowInput(false); 
-      fetchCategories(); 
+      fetchCategories(); // Actualiza las categorías después de agregar una nueva
     } catch (err) {
       console.error('Error:', err);
       setError(err.message);
     }
   };
+
 
   return (
     <div className="categories-container">

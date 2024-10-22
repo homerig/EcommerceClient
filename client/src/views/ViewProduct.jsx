@@ -165,11 +165,11 @@ const ProductView = () => {
 
   return (
     <div className="product-view">
-      <h2>{product.name}</h2>
-
+      
 
       {product.images && product.images.length > 1 ? (
         <Carousel 
+        className="carouselProducto"
           showArrows={true}   
           infiniteLoop={true} 
           showThumbs={false} 
@@ -184,33 +184,38 @@ const ProductView = () => {
         <img src={`data:image/jpeg;base64,${product.images[0]}`} alt={product.name} className="product-image" />
       )}
 
-      <p>{product.description}</p>
+      <div>
+      <h2>{product.name}</h2>
 
-      <div className="product-price-container">
-        {product.discount > 0 ? (
-          <>
-            <span className="product-old-price">
-              ${product.price.toLocaleString()}
-            </span>
+        <p>{product.description}</p>
+
+        <div className="product-price-container">
+          {product.discount > 0 ? (
+            <>
+              <span className="product-old-price">
+                ${product.price.toLocaleString()}
+              </span>
+              <span className="product-final-price">
+                ${finalPrice} 
+              </span>
+            </>
+          ) : (
             <span className="product-final-price">
-              ${finalPrice} 
+              ${product.price.toLocaleString()} 
             </span>
-          </>
-        ) : (
-          <span className="product-final-price">
-            ${product.price.toLocaleString()} 
-          </span>
-        )}
-      </div>
+          )}
+        </div>
 
-         <button 
-                className="agregar-carrito-btn" 
-                onClick={() => agregarAlCarrito(product)}
-                disabled={product.stock === 0} 
-              ><FontAwesomeIcon icon={faShoppingCart} />
-              {product.stock === 0 ? "Sin stock" : "Agregar al carrito"}
-              
-          </button>
+          <button 
+                  className="agregar-carrito-btn" 
+                  onClick={() => agregarAlCarrito(product)}
+                  disabled={product.stock === 0} 
+                ><FontAwesomeIcon icon={faShoppingCart} />
+                {product.stock === 0 ? "Sin stock" : "Agregar al carrito"}
+                
+            </button>
+      </div>
+      
     </div>
   );
 };

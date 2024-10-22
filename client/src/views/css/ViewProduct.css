@@ -74,18 +74,27 @@
     gap: 10px;
   }
   
-  .carousel .carousel-slider {
+  .carouselProducto {
     height: 500px !important; 
     width: 500px !important;
   }
-  
-  .carousel .carousel-slider img {
-    height: 100% !important;       /* Ensure the image takes up the full height of the slider */
-    width: auto !important;        /* Maintain aspect ratio, adjust width accordingly */
-    object-fit: cover !important;  /* This ensures the image covers the entire container without distortion */
-  }
 
 
+  .carousel .slide img {
+    width: 500px;
+    vertical-align: top;
+    border: 0;
+    object-fit: cover;
+    height: 500px;
+}
+
+.product-view{
+  display: flex;
+  justify-content: center;
+  gap: 100px;
+  padding-top: 5%;
+  align-items: center;
+}
 .image-gallery{
   justify-content: center;
   flex-wrap: nowrap !important;

@@ -17,8 +17,11 @@ const ViewUsers = () => {
 
   useEffect(() => {
     // Obtener los usuarios
-    fetch('http://localhost:4002/users')
-      .then(response => {
+    fetch('http://localhost:4002/users', {
+      headers: {
+        'Authorization': `Bearer ${token}`, // Agrega el encabezado de autorización
+      },
+    }).then(response => {
         if (!response.ok) {
           throw new Error('Error al obtener los usuarios');
         }
@@ -52,7 +55,7 @@ const ViewUsers = () => {
 
       })
       .catch(err => {
-        setError(err.message);
+        setError("No tiene permisos para ver los usuarios");
         setLoading(false);
       });
   }, []);
@@ -66,7 +69,7 @@ const ViewUsers = () => {
     e.preventDefault();
     fetch(`http://localhost:4002/users/${editingUser.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${token}` },
       body: JSON.stringify(updatedUser),
     })
       .then(response => {
@@ -86,6 +89,7 @@ const ViewUsers = () => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
       fetch(`http://localhost:4002/users/${id}`, {
         method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
       })
         .then(response => {
           if (!response.ok) {

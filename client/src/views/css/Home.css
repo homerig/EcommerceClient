@@ -10,17 +10,17 @@
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   background-color: #E4E2DD;
-  padding: 40px;
+  padding: 40px 0px;
 }
 
-/* Productos grid */
 .products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  display: flex;
   gap: 20px;
   padding: 20px;
+  justify-content: space-evenly;
+  padding: 2% 10%;
 }
 
 /* Estilos del precio */
@@ -48,7 +48,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 20px; /* Separar del margen izquierdo y derecho */
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 /* Estilo para el título "Nuestros Productos" */

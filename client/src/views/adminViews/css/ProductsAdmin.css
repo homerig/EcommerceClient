@@ -106,12 +106,14 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    justify-content: space-evenly;
   }
   
-  .product-image {
-    width: 100px; /* Adjust size as needed */
-    height: auto;
-    border: 1px solid #ccc;
+  .image-gallery img {
+    width: 250px; 
+    height: 250px;
+    border-radius: 20px;
+    object-fit: cover;
   }
   
   .modal {

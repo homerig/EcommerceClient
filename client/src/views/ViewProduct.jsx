@@ -181,7 +181,7 @@ const ProductView = () => {
           ))}
         </Carousel>
       ) : (
-        <img src={`data:image/jpeg;base64,${product.images[0]}`} alt={product.name} className="product-image" />
+        <img src={`data:image/jpeg;base64,${product.images[0]}`} alt={product.name} className="productoEnVerImagen" />
       )}
 
       <div>

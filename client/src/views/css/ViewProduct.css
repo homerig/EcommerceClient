@@ -95,14 +95,12 @@
   padding-top: 5%;
   align-items: center;
 }
-.image-gallery{
-  justify-content: center;
-  flex-wrap: nowrap !important;
-  align-items: center;
-}
-.image-gallery img{
-  width: 50%;
-  height: 400px;
+
+
+
+.productoEnVerImagen{
+  width: 500px !important;
+  height: 500px !important;
   object-fit: cover;
   border-radius: 20px;
 }

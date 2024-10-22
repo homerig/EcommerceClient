@@ -232,20 +232,31 @@ const Products = () => {
     <div key={producto.id} className="producto-card">
       <img 
         src={`data:image/jpeg;base64,${producto.images[0]}`}  
+        alt={producto.name}
         className="producto-imagen" 
       />
       <h2>{producto.name}</h2>
-      {producto.discount && (
+
+      {/* Mostrar el precio anterior solo si el descuento es mayor a 0 */}
+      {producto.discount > 0 && (
         <span className="precio-anterior">
-          ${(producto.price * (1 + producto.discount)).toFixed(2)}
+          ${producto.price.toFixed(2)} {/* Precio original */}
         </span>
       )}
-      <p className="precio">${producto.price.toFixed(2)}</p>
+
+      {/* Mostrar el precio final con o sin descuento */}
+      <p className="precio">
+        ${producto.discount > 0 
+          ? (producto.price * (1 - producto.discount / 100)).toFixed(2) 
+          : producto.price.toFixed(2)}
+      </p>
+
       <button 
         className="agregar-carrito-btn" 
         onClick={() => agregarAlCarrito(producto)}
+        disabled={producto.stock === 0} // Desactivar el botón si no hay stock
       >
-        Agregar al carrito
+        {producto.stock === 0 ? "Sin stock" : "Agregar al carrito"}
       </button>
     </div>
   ))}

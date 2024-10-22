@@ -63,7 +63,7 @@ const ViewCart = () => {
           setError('No se encontró el carrito para el usuario.');
         }
       } else {
-        setError('Error al obtener el carrito.');
+        setError();
       }
     } catch (err) {
       setError('Error al conectar con el servidor.');
@@ -164,7 +164,7 @@ const ViewCart = () => {
       <h2>Carrito de Compras</h2>
       {error && <p>{error}</p>}
       {cartItems.length === 0 ? (
-        <p>El carrito está vacío (userId: {userId})</p>
+        <p>El carrito está vacío </p>
       ) : (
         <>
           <div className="cart-items">

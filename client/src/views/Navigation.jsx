@@ -31,6 +31,9 @@ const Navigation = () => {
             <li>
               <Link to="/ViewUsers">Users</Link>
             </li>
+            <li>
+              <Link to="/Categories">Categorías</Link>
+            </li>
           </>
         )}
       </ul>

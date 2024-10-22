@@ -48,23 +48,25 @@ const Login = () => {
       const data = await response.json();
       
       const decodedToken = JSON.parse(atob(data.access_token.split('.')[1])); // Decodificar el token
-      console.log('Rol del usuario:', data.role); // Agrega esto para verificar
-      console.log('data',data);
-
-
-      // Guardar el rol del usuario en localStorage
+      console.log('Rol del usuario:', data.role);
+      console.log('data', data);
+  
+      // Guardar los datos del usuario en localStorage
       localStorage.setItem('authToken', data.access_token);
       localStorage.setItem('userId', data.userId);
       localStorage.setItem('userName', data.name); // Suponiendo que 'sub' contiene el nombre del usuario
       localStorage.setItem('userEmail', email);
       localStorage.setItem('userRole', data.role); // Aquí guardamos el rol
   
-      navigate('/');
+      navigate('/'); // Redirigir a la página principal
+      window.location.reload(); // Refrescar la página después de iniciar sesión
+  
     } catch (err) {
       console.error('Error al autenticar:', err);
       setError(err.message);
     }
   };
+  
 
   const handleLogout = () => {
     localStorage.clear(); // Limpiar la sesión
@@ -72,7 +74,9 @@ const Login = () => {
     setUserEmail(null);
     setUserRole(null);
     navigate('/login'); // Redirigir al Login
+    window.location.reload(); // Refrescar la página después de cerrar sesión
   };
+  
 
   // Mostrar perfil si ya hay sesión activa
   if (userName && userEmail) {

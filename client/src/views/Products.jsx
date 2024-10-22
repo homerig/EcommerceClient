@@ -230,38 +230,37 @@ const Products = () => {
           </div>
         </form>
       )}
-
 <div className="productos-grid">
-        {productos.map((producto) => (
-          <Link to={`/ViewProduct/${producto.id}`} className="product-link" key={producto.id}>
-            <div className="producto-card">
-              <img 
-                src={`data:image/jpeg;base64,${producto.images[0]}`}  
-                alt={producto.name}
-                className="producto-imagen" 
-              />
-              <h2>{producto.name}</h2>
-              {producto.discount > 0 && (
-                <span className="precio-anterior">
-                  ${producto.price.toFixed(2)}
-                </span>
-              )}
-              <p className="precio">
-                ${producto.discount > 0 
-                  ? (producto.price * (1 - producto.discount / 100)).toFixed(2) 
-                  : producto.price.toFixed(2)}
-              </p>
-              <button 
-                className="agregar-carrito-btn" 
-                onClick={() => agregarAlCarrito(producto)}
-                disabled={producto.stock === 0} 
-              >
-                {producto.stock === 0 ? "Sin stock" : "Agregar al carrito"}
-              </button>
-            </div>
-          </Link>
-        ))}
-      </div>
+  {productos.map((producto) => (
+    <div className="producto-card" key={producto.id}>
+      <Link to={`/ViewProduct/${producto.id}`} className="product-link">
+        <img 
+          src={`data:image/jpeg;base64,${producto.images[0]}`}  
+          alt={producto.name}
+          className="producto-imagen" 
+        />
+        <h2>{producto.name}</h2>
+        {producto.discount > 0 && (
+          <span className="precio-anterior">
+            ${producto.price.toFixed(2)}
+          </span>
+        )}
+        <p className="precio">
+          ${producto.discount > 0 
+            ? (producto.price * (1 - producto.discount / 100)).toFixed(2) 
+            : producto.price.toFixed(2)}
+        </p>
+      </Link>
+      <button 
+        className="agregar-carrito-btn" 
+        onClick={() => agregarAlCarrito(producto)}
+        disabled={producto.stock === 0} 
+      >
+        {producto.stock === 0 ? "Sin stock" : "Agregar al carrito"}
+      </button>
+    </div>
+  ))}
+</div>
 
     </div>
   );

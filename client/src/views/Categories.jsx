@@ -1,64 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import './css/Categories.css';
-import axios from 'axios';
+// src/components/Categories.js
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategories, createCategory } from "../Redux/categoriesSlice";
+import "./css/Categories.css";
+
 const Categories = () => {
-  const [categories, setCategories] = useState([]);
-  const [newCategory, setNewCategory] = useState('');
-  const [error, setError] = useState(null);
-  const [showInput, setShowInput] = useState(false); 
+  const dispatch = useDispatch();
+  const { items: categories, loading, error } = useSelector((state) => state.categories);
 
-  const token = localStorage.getItem('authToken');
-
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch('http://localhost:4002/categories');
-      if (!response.ok) {
-        throw new Error('Error al obtener las categorías');
-      }
-      const data = await response.json();
-      setCategories(data);
-    } catch (err) {
-      console.error('Error:', err);
-      setError(err.message);
-    }
-  };
+  const [description, setNewCategory] = useState("");
+  const [showInput, setShowInput] = useState(false);
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
-  const addCategory = async (e) => {
+  const handleAddCategory = (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:4002/categories', 
-        { description: newCategory }, 
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, 
-            'Content-Type': 'application/json', 
-          },
-        }
-      );
-
-      if (response.status !== 201) {
-        throw new Error(`Error al agregar la categoría: ${response.data.message}`);
-      }
-
-      setNewCategory('');
-      setShowInput(false); 
-      fetchCategories(); 
-    } catch (err) {
-      console.error('Error:', err);
-      setError(err.message);
-    }
+    dispatch(createCategory({ description })).unwrap()  // Si la promesa se resuelve
+    .then(() => {
+      setNewCategory("");  // Limpia el campo de entrada
+      setShowInput(false);  // Cierra el formulario de agregar categoría
+    })
+    .catch((error) => {
+      // Aquí se manejarán los errores que vengan del backend
+      console.error("Error al agregar la categoría:", error);
+    });
+    
+    setNewCategory("");
+    setShowInput(false);
   };
-
 
   return (
     <div className="categories-container">
       <h1>Categorías</h1>
+      {loading && <p>Cargando categorías...</p>}
       {error && <p className="error">{error}</p>}
-      
+
       <ul className="categories-list">
         {categories.map((category) => (
           <li key={category.id}>{category.description}</li>
@@ -66,14 +44,14 @@ const Categories = () => {
       </ul>
 
       <button className="add-category-button" onClick={() => setShowInput(!showInput)}>
-        {showInput ? 'Cancelar' : 'Agregar Categoría'}
+        {showInput ? "Cancelar" : "Agregar Categoría"}
       </button>
 
       {showInput && (
-        <form onSubmit={addCategory} className="category-form">
+        <form onSubmit={handleAddCategory} className="category-form">
           <input
             type="text"
-            value={newCategory}
+            value={description}
             onChange={(e) => setNewCategory(e.target.value)}
             placeholder="Nueva categoría"
             required

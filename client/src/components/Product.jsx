@@ -36,8 +36,7 @@ const Product = ({ product }) => {
 
   return (
     <Link to={`/ViewProduct/${product.id}`} className="product-link">
-      <div className="product-card">
-        {/* Mostrar la imagen en formato Base64 */}
+      <div className="product-card">        
         <img src={`data:image/jpeg;base64,${product.img}`} alt={product.name} className="product-image" />
         <div className="product-name">{product.name}</div>
         <div className="product-price-container">

@@ -33,8 +33,6 @@ const OrderTable = () => {
     fetchOrders();
   }, []);
   
-
-  // Filtrar órdenes cuando el término de búsqueda cambia
   useEffect(() => {
     const results = orders.filter(order =>
       order.user.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -97,13 +95,21 @@ const OrderTable = () => {
         <div className="modal">
           <div className="modal-content">
             <h3>Detalles de la Orden #{selectedOrder.id}</h3>
-            <ul>
-              {selectedOrder.items.map((item) => (
-                <li key={item.id}>
-                  {item.product.name} - ${item.product.price} x {item.quantity}
-                </li>
-              ))}
-            </ul>
+            <div className="order-details">
+            {selectedOrder.items.map((item) => (
+              <div key={item.id} className="order-item">
+                <span>{item.product.name} x {item.quantity}</span>
+                <span>
+                  ${((item.product.price - item.product.price * (item.product.discount || 0) / 100) * item.quantity).toFixed(2)}
+                </span>
+              </div>
+            ))}
+
+              <div className="order-total">
+                <span>Total</span>
+                <span>${selectedOrder.totalPrice.toFixed(2)}</span>
+              </div>
+            </div>
             <button onClick={closePopup}>Cerrar</button>
           </div>
         </div>

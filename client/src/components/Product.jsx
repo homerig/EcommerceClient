@@ -1,43 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { fetchFinalPrice } from '../Redux/productosSlice';
 import './Product.css';
 
 const Product = ({ product }) => {
-  const [finalPrice, setFinalPrice] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const finalPrice = useSelector((state) => state.products.finalPrices[product.id]);
 
-  // Fetch del precio final
   useEffect(() => {
-    const fetchFinalPrice = async () => {
-      try {
-        const response = await fetch(`http://localhost:4002/products/${product.id}/final-price`);
-        if (!response.ok) {
-          throw new Error('Error al obtener el precio final');
-        }
-        const price = await response.json();
-        setFinalPrice(price);
-      } catch (err) {
-        console.error('Error:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (!finalPrice) {
+      dispatch(fetchFinalPrice(product.id));
+    }
+  }, [dispatch, product.id, finalPrice]);
+  
+  const initialPrice = product.price;
 
-    fetchFinalPrice();
-  }, [product.id]);
+  const discountedPrice = product.discount
+    ? initialPrice - (initialPrice * product.discount) / 100
+    : initialPrice;
 
-  if (loading) return <p>Cargando precio...</p>;
-  if (error) return <p>Error: {error}</p>;
-
-  const initialPrice = product.price.toLocaleString();
-  const discountedPrice = finalPrice?.toLocaleString();
+  const formattedInitialPrice = initialPrice.toLocaleString();
+  const formattedDiscountedPrice = discountedPrice.toLocaleString();
 
   return (
     <Link to={`/ViewProduct/${product.id}`} className="product-link">
-      <div className="product-card">        
-        <img src={`data:image/jpeg;base64,${product.img}`} alt={product.name} className="product-image" />
+      <div className="product-card">
+        <img
+          src={`data:image/jpeg;base64,${product.images.length > 0 ? product.images[0] : ''}`}
+          alt={product.name}
+          className="product-image"
+        />
         <div className="product-name">{product.name}</div>
         <div className="product-price-container">
           {product.stock === 0 ? (
@@ -46,19 +39,11 @@ const Product = ({ product }) => {
             <>
               {product.discount > 0 ? (
                 <>
-                  {product.discount && (
-                    <span className="product-old-price">
-                      ${initialPrice}
-                    </span>
-                  )}
-                  <span className="product-final-price">
-                    ${discountedPrice || 'Precio no disponible'}
-                  </span>
+                  <span className="product-old-price">${formattedInitialPrice}</span>
+                  <span className="product-final-price">${formattedDiscountedPrice}</span>
                 </>
               ) : (
-                <span className="product-final-price">
-                  ${discountedPrice || 'Precio no disponible'}
-                </span>
+                <span className="product-final-price">${formattedDiscountedPrice}</span>
               )}
             </>
           )}

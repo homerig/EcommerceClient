@@ -1,59 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Product from '../components/Product';
-import CategoriesSection from '../components/CategoriesSection';
+import { fetchProducts, fetchFinalPrice } from '../Redux/productosSlice';
 import './css/Home.css';
 import mateHome from '../assets/Mates_Home.png';
 
 const Home = () => {
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [loadingProducts, setLoadingProducts] = useState(true);
-  const [loadingCategories, setLoadingCategories] = useState(true);
-  const [errorProducts, setErrorProducts] = useState(null);
-  const [errorCategories, setErrorCategories] = useState(null);
+  const dispatch = useDispatch();
+  const { items: products, loading, error } = useSelector((state) => state.products);
 
   useEffect(() => {
-    fetch('http://localhost:4002/catalogo/products')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Error al obtener los productos');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setProducts(data.slice(0, 6));
-        setLoadingProducts(false);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        setErrorProducts(error.message);
-        setLoadingProducts(false);
-      });
-  }, []);
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
-  useEffect(() => {
-    fetch('http://localhost:4002/categories')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Error al obtener las categorías');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setCategories(data);
-        setLoadingCategories(false);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        setErrorCategories(error.message);
-        setLoadingCategories(false);
-      });
-  }, []);
-
-  if (loadingProducts || loadingCategories) return <p>Cargando...</p>;
-  if (errorProducts) return <p>Error al cargar productos: {errorProducts}</p>;
-  if (errorCategories) return <p>Error al cargar categorías: {errorCategories}</p>;
+  if (loading) return <p>Cargando productos...</p>;
+  if (error) return <p>Error al cargar productos: {error}</p>;
 
   return (
     <div className="home-container">
@@ -71,19 +33,11 @@ const Home = () => {
         </div>
 
         <div className="products-grid">
-          {products.map(product => (
-            <Product
-              key={product.id}
-              product={{
-                ...product,
-                img: product.images.length > 0 ? product.images[0] : mateImg 
-              }}
-            />
+          {products.map((product) => (
+            <Product key={product.id} product={product} />
           ))}
         </div>
       </section>
-
-      {/*<CategoriesSection categories={categories} />*/}
     </div>
   );
 };

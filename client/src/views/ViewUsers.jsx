@@ -1,61 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import './css/Users.css';
-import UserCard from './UserCard';
-import EditUser from './EditUser'; 
+// ViewUsers.js
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers, fetchUserOrders, updateUser, deleteUser } from "../Redux/userSlice";
+import UserCard from "./UserCard";
+import EditUser from "./EditUser";
+import "./css/Users.css";
 
 const ViewUsers = () => {
-  const [users, setUsers] = useState([]);
-  const [editingUser, setEditingUser] = useState(null);
-  const [updatedUser, setUpdatedUser] = useState({ name: '', email: '', role: '' });
-  const [filter, setFilter] = useState('Todos'); 
-  const [searchTerm, setSearchTerm] = useState(''); 
-  const [error, setError] = useState(null); 
-  const [loading, setLoading] = useState(true); 
-  const [orders, setOrders] = useState({}); 
+  const dispatch = useDispatch();
+  const { items: users, loading, error, orders } = useSelector((state) => state.users);
 
-  const token = localStorage.getItem('authToken');
+  const [editingUser, setEditingUser] = useState(null);
+  const [updatedUser, setUpdatedUser] = useState({ name: "", email: "", role: "" });
+  const [filter, setFilter] = useState("Todos");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetch('http://localhost:4002/users', {
-      headers: {
-        'Authorization': `Bearer ${token}`, 
-      },
-    }).then(response => {
-        if (!response.ok) {
-          throw new Error('Error al obtener los usuarios');
-        }
-        return response.json();
-      })
-      .then(data => {
-        setUsers(data);
-        setLoading(false);
-        data.forEach(user => {
-          fetch(`http://localhost:4002/order/user/${user.id}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-          })
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`Error al obtener las órdenes del usuario ${user.id}`);
-              }
-              return response.json();
-            })
-            .then(orderData => {
-              setOrders(prevOrders => ({
-                ...prevOrders,
-                [user.id]: orderData,
-              }));
-            })
-            .catch(err => setError(err.message));
-        });
-
-      })
-      .catch(err => {
-        setError("No tiene permisos para ver los usuarios");
-        setLoading(false);
+    dispatch(fetchUsers()).then((action) => {
+      action.payload.forEach(user => {
+        dispatch(fetchUserOrders(user.id));
       });
-  }, []);
+    });
+  }, [dispatch]);
 
   const handleEdit = (user) => {
     setEditingUser(user);
@@ -64,46 +30,22 @@ const ViewUsers = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    fetch(`http://localhost:4002/users/${editingUser.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${token}` },
-      body: JSON.stringify(updatedUser),
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Error al actualizar el usuario');
-        }
-        return response.json();
-      })
-      .then(updatedUserData => {
-        setUsers(users.map(user => (user.id === updatedUserData.id ? updatedUserData : user)));
-        setEditingUser(null);
-      })
-      .catch(err => setError(err.message));
+    dispatch(updateUser({ id: editingUser.id, userData: updatedUser }))
+      .unwrap()
+      .then(() => setEditingUser(null))
+      .catch((err) => console.error("Error updating user:", err));
   };
 
   const handleDelete = (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-      fetch(`http://localhost:4002/users/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` },
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Error al eliminar el usuario');
-          }
-          setUsers(users.filter(user => user.id !== id));
-        })
-        .catch(err => setError(err.message));
+    if (window.confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
+      dispatch(deleteUser(id)).catch((err) => console.error("Error deleting user:", err));
     }
   };
 
-  const filteredUsers = users.filter((user) => {
-    if (filter !== 'Todos' && user.role !== filter) {
-      return false;
-    }
-    if (searchTerm && !user.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !user.email.toLowerCase().includes(searchTerm.toLowerCase())) {
+  const filteredUsers = users.filter(user => {
+    if (filter !== "Todos" && user.role !== filter) return false;
+    if (searchTerm && !user.name.toLowerCase().includes(searchTerm.toLowerCase())
+      && !user.email.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false;
     }
     return true;
@@ -115,41 +57,38 @@ const ViewUsers = () => {
   return (
     <div className="users-container">
       <h1>Usuarios</h1>
-
       <div className="search-filter">
         <select value={filter} onChange={(e) => setFilter(e.target.value)}>
           <option value="Todos">Todos</option>
           <option value="USER">User</option>
           <option value="ADMIN">Administrador</option>
         </select>
-        <input 
-          type="text" 
-          placeholder="Buscar por nombre o email..." 
-          value={searchTerm} 
-          onChange={(e) => setSearchTerm(e.target.value)} 
+        <input
+          type="text"
+          placeholder="Buscar por nombre o email..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-
       <div className="user-list">
         {filteredUsers.map(user => (
-          <UserCard 
-            key={user.id} 
-            user={user} 
-            orders={orders[user.id]}
-            onEdit={() => handleEdit(user)} 
-            onDelete={() => handleDelete(user.id)} 
+          <UserCard
+            key={user.id}
+            user={user}
+            orders={orders[user.id] || []}
+            onEdit={() => handleEdit(user)}
+            onDelete={() => handleDelete(user.id)}
           />
         ))}
       </div>
-
       {editingUser && (
-        <EditUser 
-          isOpen={editingUser !== null} 
-          onClose={() => setEditingUser(null)} 
+        <EditUser
+          isOpen={!!editingUser}
+          onClose={() => setEditingUser(null)}
           user={editingUser}
-          updatedUser={updatedUser} 
-          setUpdatedUser={setUpdatedUser} 
-          handleUpdate={handleUpdate} 
+          updatedUser={updatedUser}
+          setUpdatedUser={setUpdatedUser}
+          handleUpdate={handleUpdate}
         />
       )}
     </div>

@@ -5,7 +5,6 @@ import axios from "axios";
 const BASE_URL = "http://localhost:4002/users";
 const token = localStorage.getItem("authToken");
 
-// Thunk para obtener usuarios
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
   const response = await axios.get(BASE_URL, {
     headers: { Authorization: `Bearer ${token}` }
@@ -13,7 +12,7 @@ export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
   return response.data;
 });
 
-// Thunk para actualizar un usuario
+
 export const updateUser = createAsyncThunk("users/updateUser", async ({ id, userData }) => {
   const response = await axios.put(`${BASE_URL}/${id}`, userData, {
     headers: {
@@ -24,7 +23,7 @@ export const updateUser = createAsyncThunk("users/updateUser", async ({ id, user
   return response.data;
 });
 
-// Thunk para eliminar un usuario
+
 export const deleteUser = createAsyncThunk("users/deleteUser", async (id) => {
   await axios.delete(`${BASE_URL}/${id}`, {
     headers: { Authorization: `Bearer ${token}` }
@@ -32,7 +31,7 @@ export const deleteUser = createAsyncThunk("users/deleteUser", async (id) => {
   return id;
 });
 
-// Thunk para obtener las órdenes de un usuario
+
 export const fetchUserOrders = createAsyncThunk("users/fetchUserOrders", async (userId) => {
   const response = await axios.get(`http://localhost:4002/order/user/${userId}`, {
     headers: { Authorization: `Bearer ${token}` },

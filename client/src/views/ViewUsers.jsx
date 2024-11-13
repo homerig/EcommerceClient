@@ -17,7 +17,6 @@ const ViewUsers = () => {
 
   useEffect(() => {
     dispatch(fetchUsers()).then((action) => {
-      // Fetch orders for each user after users are loaded
       action.payload.forEach(user => {
         dispatch(fetchUserOrders(user.id));
       });

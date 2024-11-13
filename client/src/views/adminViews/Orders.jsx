@@ -1,40 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faSearch } from '@fortawesome/free-solid-svg-icons';
-import './css/Orders.css';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchOrders } from "../../Redux/ordersSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faSearch } from "@fortawesome/free-solid-svg-icons";
+import "./css/Orders.css";
 
 const OrderTable = () => {
-  const [orders, setOrders] = useState([]);
-  const [filteredOrders, setFilteredOrders] = useState([]); // Estado para las órdenes filtradas
-  const [searchTerm, setSearchTerm] = useState(''); // Estado para almacenar el valor del input de búsqueda
+  const dispatch = useDispatch();
+  const { items: orders, loading, error } = useSelector((state) => state.orders);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      const token = localStorage.getItem('authToken'); // Obtener el token del localStorage
-      try {
-        const response = await axios.get('http://localhost:4002/order', {
-          headers: {
-            Authorization: `Bearer ${token}`, 
-          },
-        });
-        setOrders(response.data);
-        setFilteredOrders(response.data);
-      } catch (err) {
-        setError('Error al obtener las órdenes: ' + err.response.data.message || err.message); // Mejor manejo de errores
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchOrders();
-  }, []);
-  
+    dispatch(fetchOrders());
+  }, [dispatch]);
+
   useEffect(() => {
-    const results = orders.filter(order =>
+    const results = orders.filter((order) =>
       order.user.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredOrders(results);
@@ -57,11 +41,11 @@ const OrderTable = () => {
     <div className="order-table-container">
       <h2>Ver Órdenes</h2>
       <div className="search-bar">
-        <input 
-          type="text" 
-          placeholder="Buscar por email..." 
-          value={searchTerm} 
-          onChange={(e) => setSearchTerm(e.target.value)} // Actualizar el valor del input de búsqueda
+        <input
+          type="text"
+          placeholder="Buscar por email..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
         <FontAwesomeIcon icon={faSearch} className="search-icon" />
       </div>
@@ -79,8 +63,8 @@ const OrderTable = () => {
           {filteredOrders.map((order) => (
             <tr key={order.id}>
               <td>#{order.id}</td>
-              <td>{order.user.email}</td> {/* Accede a order.user.email aquí */}
-              <td>${order.totalPrice.toFixed(2)}</td> {/* Aquí usamos totalPrice */}
+              <td>{order.user.email}</td>
+              <td>${order.totalPrice.toFixed(2)}</td>
               <td>
                 <button className="view-button" onClick={() => handleViewOrder(order)}>
                   <FontAwesomeIcon icon={faEye} />
@@ -96,14 +80,14 @@ const OrderTable = () => {
           <div className="modal-content">
             <h3>Detalles de la Orden #{selectedOrder.id}</h3>
             <div className="order-details">
-            {selectedOrder.items.map((item) => (
-              <div key={item.id} className="order-item">
-                <span>{item.product.name} x {item.quantity}</span>
-                <span>
-                  ${((item.product.price - item.product.price * (item.product.discount || 0) / 100) * item.quantity).toFixed(2)}
-                </span>
-              </div>
-            ))}
+              {selectedOrder.items.map((item) => (
+                <div key={item.id} className="order-item">
+                  <span>{item.product.name} x {item.quantity}</span>
+                  <span>
+                    ${((item.product.price - item.product.price * (item.product.discount || 0) / 100) * item.quantity).toFixed(2)}
+                  </span>
+                </div>
+              ))}
 
               <div className="order-total">
                 <span>Total</span>

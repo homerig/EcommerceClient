@@ -93,7 +93,6 @@ const categoriesSlice = createSlice({
       .addCase(updateCategory.rejected, (state, action) => {
         state.error = action.error.message;
       })
-      // Delete Category
       .addCase(deleteCategory.fulfilled, (state, action) => {
         state.items = state.items.filter((cat) => cat.id !== action.payload);
       })

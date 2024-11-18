@@ -18,6 +18,7 @@ const Categories = () => {
 
   const handleAddCategory = (e) => {
     e.preventDefault();
+<<<<<<< HEAD
     dispatch(createCategory({ description: newDescription }))
       .unwrap()
       .then(() => {
@@ -46,6 +47,19 @@ const Categories = () => {
         console.error("Error al eliminar la categoría:", error)
       );
     }
+=======
+    dispatch(createCategory({ description })).unwrap()  
+    .then(() => {
+      setNewCategory("");  
+      setShowInput(false);  
+    })
+    .catch((error) => {
+      console.error("Error al agregar la categoría:", error);
+    });
+    
+    setNewCategory("");
+    setShowInput(false);
+>>>>>>> main
   };
 
   return (

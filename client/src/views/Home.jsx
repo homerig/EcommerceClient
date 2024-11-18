@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Product from '../components/Product';
-import { fetchProducts, fetchFinalPrice } from '../Redux/productosSlice';
+import { fetchProducts } from '../Redux/productosSlice';
 import './css/Home.css';
 import mateHome from '../assets/Mates_Home.png';
 
@@ -16,6 +16,11 @@ const Home = () => {
 
   if (loading) return <p>Cargando productos...</p>;
   if (error) return <p>Error al cargar productos: {error}</p>;
+  
+  const filteredProducts = products.filter(
+    (product) =>
+      product.stock != 0
+  ).slice(0, 6);
 
   return (
     <div className="home-container">
@@ -33,7 +38,7 @@ const Home = () => {
         </div>
 
         <div className="products-grid">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <Product key={product.id} product={product} />
           ))}
         </div>

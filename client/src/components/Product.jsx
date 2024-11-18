@@ -6,13 +6,20 @@ import './Product.css';
 
 const Product = ({ product }) => {
   const dispatch = useDispatch();
-  const finalPrice = useSelector((state) => state.products.finalPrices[product.id]);
+
+  // Extraer productos y estados de Redux
+  const { items: products, loading, error, finalPrices } = useSelector((state) => state.products);
+
+  const filteredProducts = products.filter((product) => product.stock !== 0).slice(0, 6);
 
   useEffect(() => {
-    if (!finalPrice) {
-      dispatch(fetchFinalPrice(product.id));
-    }
-  }, [dispatch, product.id, finalPrice]);
+    filteredProducts.forEach((product) => {
+      if (!finalPrices[product.id]) {
+        dispatch(fetchFinalPrice(product.id));
+      }
+    });
+  }, [dispatch, filteredProducts, finalPrices]);
+
   
   const initialPrice = product.price;
 

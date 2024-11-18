@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './css/Products.css';
-import mateImg from '../assets/Mate_1.png';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from '../Redux/productosSlice';
+import { fetchCategories } from "../Redux/categoriesSlice";
+
 
 const Products = () => {
-  const [productos, setProductos] = useState([]);
-  const [categorias, setCategorias] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  
-
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
 
@@ -18,51 +15,19 @@ const Products = () => {
 
   const toggleFilters = () => setShowFilters(!showFilters);
 
-  const token = localStorage.getItem('authToken');
+  const dispatch = useDispatch();
+  const { items: products, loadingProducts, errorProducts } = useSelector((state) => state.products);
+  const { items: categories, loadingCategories, errorCategories } = useSelector((state) => state.categories);
 
-  const fetchProducts = () => {
-    fetch('http://localhost:4002/catalogo/products')
-      .then((response) => {
-        if (!response.ok) {
-          
-          throw new Error('Error al obtener los productos');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setProductos(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        setError(error.message);
-        setLoading(false);
-      });
-  };
-
- 
-  const fetchCategories = () => {
-    fetch('http://localhost:4002/categories')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Error al obtener las categorías');
-        }
-        return response.json();
-      })
-      .then((data) => setCategorias(data))
-      .catch((error) => {
-        console.error('Error:', error);
-        setError(error.message);
-      });
-  };
 
   useEffect(() => {
-    fetchProducts();
-    fetchCategories(); 
-  }, []);
+    dispatch(fetchProducts());
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
-  if (loading) return <p>Cargando productos...</p>;
-  if (error) return <p>Error: {error}</p>;
+
+  if (loadingProducts) return <p>Cargando productos...</p>;
+  if (errorProducts) return <p>Error: {error}</p>;
 
   const agregarAlCarrito = async (producto) => {
     try {
@@ -194,7 +159,7 @@ const Products = () => {
           <div className="filtros">
             <div className="filtro-categorias">
               <h3>Categorías:</h3>
-              {categorias.map((categoria) => (
+              {categories.map((categoria) => (
                 <label key={categoria.id}>
                   <input 
                     type="checkbox" 
@@ -231,7 +196,7 @@ const Products = () => {
         </form>
       )}
 <div className="productos-grid">
-  {productos.map((producto) => (
+  {products.map((producto) => (
     <div className="producto-card" key={producto.id}>
       <Link to={`/ViewProduct/${producto.id}`} className="product-link">
         <img 

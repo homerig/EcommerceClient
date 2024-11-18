@@ -17,13 +17,12 @@ const Categories = () => {
 
   const handleAddCategory = (e) => {
     e.preventDefault();
-    dispatch(createCategory({ description })).unwrap()  // Si la promesa se resuelve
+    dispatch(createCategory({ description })).unwrap()  
     .then(() => {
-      setNewCategory("");  // Limpia el campo de entrada
-      setShowInput(false);  // Cierra el formulario de agregar categoría
+      setNewCategory("");  
+      setShowInput(false);  
     })
     .catch((error) => {
-      // Aquí se manejarán los errores que vengan del backend
       console.error("Error al agregar la categoría:", error);
     });
     

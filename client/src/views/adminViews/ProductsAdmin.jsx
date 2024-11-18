@@ -46,7 +46,7 @@ const ProductTable = () => {
       price: product.price,
       discount: product.discount,
       stock: product.stock,
-      categoryId: product.categoryId,
+      categoryDescription: product.categoryDescription,
       images: null,
     });
     setEditModalOpen(true);
@@ -142,6 +142,7 @@ const ProductTable = () => {
           discount: editingProduct.discount,
           stock: editingProduct.stock,
           images: null,
+          categoryDescription: editingProduct.categoryDescription
         }}
         editingProduct={editingProduct}
       />

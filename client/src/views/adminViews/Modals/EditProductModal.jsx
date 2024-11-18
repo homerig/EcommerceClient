@@ -4,20 +4,30 @@ import { fetchCategories } from "../../../Redux/categoriesSlice";
 import { updateProduct } from "../../../Redux/productosSlice";
 
 const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) => {
-    const [name, setname] = useState(initialValues.name);
-    const [description, setdescription] = useState(initialValues.description);
-    const [price, setprice] = useState(initialValues.price);
-    const [discount, setdiscount] = useState(initialValues.discount);
-    const [stock, setstock] = useState(initialValues.stock);
-    // const [categoryId, setcategoryId] = useState(initialValues.categoryId);
-    const [images, setimages] = useState([]);
-  
+  const [name, setname] = useState(initialValues.name);
+  const [description, setdescription] = useState(initialValues.description);
+  const [price, setprice] = useState(initialValues.price);
+  const [discount, setdiscount] = useState(initialValues.discount);
+  const [stock, setstock] = useState(initialValues.stock);
+  const [categoryDescription, setcategoryDescription] = useState(initialValues.categoryDescription);
+  const [categoryId, setcategoryId] = useState(null);
+  const [images, setimages] = useState([]);
+
   const dispatch = useDispatch();
-  const { items: categories, loading, error } = useSelector((state) => state.categories);
+  const { items: categories } = useSelector((state) => state.categories);
 
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (categories.length > 0 && categoryDescription) {
+      const selectedCategory = categories.find((item) => item.description === categoryDescription);
+      if (selectedCategory) {
+        setcategoryId(selectedCategory.id); 
+      }
+    }
+  }, [categories, categoryDescription]);
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
@@ -28,7 +38,7 @@ const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) =
     formData.append("price", price);
     formData.append("discount", discount);
     formData.append("stock", stock);
-    // formData.append("categoryId", categoryId);
+    formData.append("categoryId", categoryId);
 
 
     // Añadir imágenes al FormData
@@ -38,7 +48,10 @@ const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) =
       });
     }
 
-    dispatch(updateProduct({ id: editingProduct.id, productData: formData }));
+    dispatch(updateProduct({ id: editingProduct.id, productData: formData }))
+    .then(() => {
+      setEditModalOpen(false); // Cierra el modal al completar la acción
+    });
   };
 
   return (
@@ -47,7 +60,7 @@ const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) =
         <h3>Editar Producto</h3>
         <form onSubmit={handleEditSubmit}>
         <label>
-          Nombre:
+          Nombre
           <input
             type="text"
             name="name"
@@ -56,7 +69,7 @@ const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) =
           />
         </label>
         <label>
-          Descripción:
+          Descripción
           <input
             type="text"
             name="description"
@@ -64,19 +77,28 @@ const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) =
             onChange={(e) => setdescription(e.target.value)}
           />
         </label>
-        {/* <div>
+        <div>
             <label>Categoría</label>
-            <select name="categoryId" onChange={(e) => setcategoryId(e.target.value)} required>
-              <option value="">Seleccione una categoría</option>
-              {categories.map((category) => (
+            <select
+                name="categoryId"
+                value={categoryId} // Mantener el estado sincronizado con el valor seleccionado
+                onChange={(e) => setcategoryId(e.target.value)}
+                required
+            >
+                <option value="">Seleccione una categoría</option>
+                {categories.map((category) => (
                 <option key={category.id} value={category.id}>
-                  {category.description}
+                    {category.description}
                 </option>
-              ))}
+                ))}
             </select>
-          </div> */}
+        </div>
+
+          <div className="inputGroup">
+
+          
         <label>
-          Precio:
+          Precio
           <input
             type="number"
             name="price"
@@ -85,7 +107,7 @@ const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) =
           />
         </label>
         <label>
-          Descuento:
+          Descuento
           <input
             type="number"
             name="discount"
@@ -94,7 +116,7 @@ const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) =
           />
         </label>
         <label>
-          Stock:
+          Stock
           <input
             type="number"
             name="stock"
@@ -102,8 +124,9 @@ const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) =
             onChange={(e) => setstock(e.target.value)}
           />
         </label>
+        </div>
         <label>
-          Imágenes:
+          Imágenes
           <input
             type="file"
             name="images"
@@ -112,7 +135,7 @@ const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) =
           />
         </label>
 
-        <button className="btn save-button submit-button" type="submit">
+        <button className="btn save-button" type="submit">
           Guardar Cambios
         </button>
 

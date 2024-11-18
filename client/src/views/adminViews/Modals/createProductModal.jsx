@@ -6,9 +6,9 @@ import { createProduct } from "../../../Redux/productosSlice";
 const CreateForm = ({ setCreateModalOpen }) => {
   const [name, setname] = useState("");
   const [description, setdescription] = useState("");
-  const [price, setprice] = useState("");
-  const [discount, setdiscount] = useState("");
-  const [stock, setstock] = useState("");
+  const [price, setprice] = useState(0);
+  const [discount, setdiscount] = useState(0);
+  const [stock, setstock] = useState(0);
   const [categoryId, setcategoryId] = useState("");
   const [images, setimages] = useState([]);
 
@@ -42,9 +42,9 @@ const CreateForm = ({ setCreateModalOpen }) => {
     // Resetear los estados del formulario
     setname("");
     setdescription("");
-    setprice("");
-    setdiscount("");
-    setstock("");
+    setprice(0);
+    setdiscount(0);
+    setstock(0);
     setcategoryId("");
     setimages([]);
   };
@@ -63,7 +63,7 @@ const CreateForm = ({ setCreateModalOpen }) => {
               type="text"
               name="name"
               value={name}
-              onChange={(e) => setname(e.target.value)}
+              onChange={(e) => setname(e.target.value)} required
             />
           </label>
           <label>
@@ -72,7 +72,7 @@ const CreateForm = ({ setCreateModalOpen }) => {
               type="text"
               name="description"
               value={description}
-              onChange={(e) => setdescription(e.target.value)}
+              onChange={(e) => setdescription(e.target.value)} required
             />
           </label>
           <div>
@@ -93,7 +93,7 @@ const CreateForm = ({ setCreateModalOpen }) => {
                 type="number"
                 name="price"
                 value={price}
-                onChange={(e) => setprice(e.target.value)}
+                onChange={(e) => setprice(e.target.value)} required
               />
             </label>
             <label>
@@ -102,7 +102,7 @@ const CreateForm = ({ setCreateModalOpen }) => {
                 type="number"
                 name="discount"
                 value={discount}
-                onChange={(e) => setdiscount(e.target.value)}
+                onChange={(e) => setdiscount(e.target.value)} required
               />
             </label>
             <label>
@@ -111,7 +111,7 @@ const CreateForm = ({ setCreateModalOpen }) => {
                 type="number"
                 name="stock"
                 value={stock}
-                onChange={(e) => setstock(e.target.value)}
+                onChange={(e) => setstock(e.target.value)} required
               />
             </label>
           </div>
@@ -121,7 +121,7 @@ const CreateForm = ({ setCreateModalOpen }) => {
               type="file"
               name="images"
               multiple
-              onChange={(e) => setimages(e.target.files)}
+              onChange={(e) => setimages(e.target.files)} required
             />
           </label>
           <button className="btn save-button submit-button" type="submit">

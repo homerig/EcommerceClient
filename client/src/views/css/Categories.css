@@ -59,4 +59,50 @@
   .add-category-button:hover {
     background-color: #0056b3;
   }
+  .categories-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .category-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .icon-button {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 5px;
+  }
+  
+  .icon-button:hover {
+    color: #007bff; /* Color azul en hover */
+  }
+  
+  .add-category-button {
+    margin-top: 10px;
+  }
+  
+  .category-form input {
+    flex-grow: 1;
+    margin-right: 10px;
+  }
+  
+  .save-button,
+  .cancel-button {
+    margin-left: 5px;
+  }
+  
     

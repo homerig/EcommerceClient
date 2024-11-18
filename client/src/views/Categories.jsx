@@ -1,34 +1,54 @@
-// src/components/Categories.js
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCategories, createCategory } from "../Redux/categoriesSlice";
+import { fetchCategories, createCategory, updateCategory, deleteCategory } from "../Redux/categoriesSlice";
 import "./css/Categories.css";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 const Categories = () => {
   const dispatch = useDispatch();
   const { items: categories, loading, error } = useSelector((state) => state.categories);
 
-  const [description, setNewCategory] = useState("");
+  const [newDescription, setNewDescription] = useState("");
   const [showInput, setShowInput] = useState(false);
+  const [editCategory, setEditCategory] = useState(null);
 
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
 
+  // Manejar creación de categoría
   const handleAddCategory = (e) => {
     e.preventDefault();
-    dispatch(createCategory({ description })).unwrap()  // Si la promesa se resuelve
-    .then(() => {
-      setNewCategory("");  // Limpia el campo de entrada
-      setShowInput(false);  // Cierra el formulario de agregar categoría
-    })
-    .catch((error) => {
-      // Aquí se manejarán los errores que vengan del backend
-      console.error("Error al agregar la categoría:", error);
-    });
-    
-    setNewCategory("");
-    setShowInput(false);
+    dispatch(createCategory({ description: newDescription }))
+      .unwrap()
+      .then(() => {
+        setNewDescription("");
+        setShowInput(false);
+      })
+      .catch((error) => console.error("Error al agregar la categoría:", error));
+  };
+
+  // Manejar actualización de categoría
+  const handleUpdateCategory = (e) => {
+    e.preventDefault();
+    if (!editCategory) return;
+
+    dispatch(updateCategory({ categoryId: editCategory.id, description: newDescription }))
+      .unwrap()
+      .then(() => {
+        setEditCategory(null);
+        setNewDescription("");
+      })
+      .catch((error) => console.error("Error al actualizar la categoría:", error));
+  };
+
+  // Manejar eliminación de categoría
+  const handleDeleteCategory = (categoryId) => {
+    if (window.confirm("¿Estás seguro de que deseas eliminar esta categoría?")) {
+      dispatch(deleteCategory(categoryId)).catch((error) =>
+        console.error("Error al eliminar la categoría:", error)
+      );
+    }
   };
 
   return (
@@ -39,7 +59,46 @@ const Categories = () => {
 
       <ul className="categories-list">
         {categories.map((category) => (
-          <li key={category.id}>{category.description}</li>
+          <li key={category.id}>
+            <div className="category-item">
+              {editCategory && editCategory.id === category.id ? (
+                <form onSubmit={handleUpdateCategory} className="category-form">
+                  <input
+                    type="text"
+                    value={newDescription}
+                    onChange={(e) => setNewDescription(e.target.value)}
+                    placeholder="Editar categoría"
+                    required
+                  />
+                  <button type="submit" className="save-button">Guardar</button>
+                  <button type="button" onClick={() => setEditCategory(null)} className="cancel-button">Cancelar</button>
+                </form>
+              ) : (
+                <>
+                  <span>{category.description}</span>
+                  <div className="button-group">
+                    <button
+                      className="icon-button"
+                      onClick={() => {
+                        setEditCategory(category);
+                        setNewDescription(category.description);
+                      }}
+                      title="Editar categoría"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      className="icon-button"
+                      onClick={() => handleDeleteCategory(category.id)}
+                      title="Eliminar categoría"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </li>
         ))}
       </ul>
 
@@ -51,8 +110,8 @@ const Categories = () => {
         <form onSubmit={handleAddCategory} className="category-form">
           <input
             type="text"
-            value={description}
-            onChange={(e) => setNewCategory(e.target.value)}
+            value={newDescription}
+            onChange={(e) => setNewDescription(e.target.value)}
             placeholder="Nueva categoría"
             required
           />

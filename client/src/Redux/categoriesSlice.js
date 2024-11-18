@@ -1,13 +1,10 @@
-// Redux/categoriesSlice.jsx
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const BASE_URL = "http://localhost:4002/categories";
 const token = localStorage.getItem("authToken");
 
-// Thunks para las operaciones
-
-// Obtener todas las categorías (endpoint público)
 export const fetchCategories = createAsyncThunk("categories/fetchCategories", async () => {
   const response = await axios.get(BASE_URL);
   return response.data;
@@ -16,11 +13,11 @@ export const fetchCategories = createAsyncThunk("categories/fetchCategories", as
 export const createCategory = createAsyncThunk("categories/createCategory", async ({ description }) => {
   try {
     const response = await axios.post(
-      BASE_URL, // Endpoint correcto
-      { description }, // Datos enviados al backend
+      BASE_URL, 
+      { description }, 
       {
         headers: {
-          Authorization: `Bearer ${token}`, // Verifica que el token esté definido
+          Authorization: `Bearer ${token}`, 
           "Content-Type": "application/json",
         },
       }
@@ -28,7 +25,7 @@ export const createCategory = createAsyncThunk("categories/createCategory", asyn
     return response.data;
   } catch (error) {
     console.error("Error al hacer la solicitud:", error.response?.data || error.message);
-    throw error; // Reenvía el error para manejarlo en el componente
+    throw error;
   }
 });
 
@@ -57,7 +54,6 @@ export const deleteCategory = createAsyncThunk("categories/deleteCategory", asyn
   return categoryId;
 });
 
-// Slice para manejar el estado de las categorías
 const categoriesSlice = createSlice({
   name: "categories",
   initialState: {

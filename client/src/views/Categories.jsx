@@ -16,7 +16,6 @@ const Categories = () => {
     dispatch(fetchCategories());
   }, [dispatch]);
 
-  // Manejar creación de categoría
   const handleAddCategory = (e) => {
     e.preventDefault();
     dispatch(createCategory({ description: newDescription }))
@@ -28,7 +27,6 @@ const Categories = () => {
       .catch((error) => console.error("Error al agregar la categoría:", error));
   };
 
-  // Manejar actualización de categoría
   const handleUpdateCategory = (e) => {
     e.preventDefault();
     if (!editCategory) return;
@@ -42,7 +40,6 @@ const Categories = () => {
       .catch((error) => console.error("Error al actualizar la categoría:", error));
   };
 
-  // Manejar eliminación de categoría
   const handleDeleteCategory = (categoryId) => {
     if (window.confirm("¿Estás seguro de que deseas eliminar esta categoría?")) {
       dispatch(deleteCategory(categoryId)).catch((error) =>

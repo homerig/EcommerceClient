@@ -1,17 +1,6 @@
-
-//
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts, fetchCategories, filterByCategory, filterByPrice, agregarAlCarrito } from "../Redux/catalogoSlice";
 import { Link } from 'react-router-dom';
 import './css/Products.css';
-<<<<<<< HEAD
-
-const Products = () => {
-  const dispatch = useDispatch();
-  const { productos, categorias, loading, error } = useSelector((state) => state.catalogo);
-  
-=======
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from '../Redux/productosSlice';
 import { fetchCategories } from "../Redux/categoriesSlice";
@@ -19,20 +8,13 @@ import { fetchCategories } from "../Redux/categoriesSlice";
 
 const Products = () => {
   const [showFilters, setShowFilters] = useState(false);
->>>>>>> main
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
-  const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    dispatch(fetchProducts());
-    dispatch(fetchCategories());
-  }, [dispatch]);
+  const userId = localStorage.getItem('userId');
 
   const toggleFilters = () => setShowFilters(!showFilters);
 
-<<<<<<< HEAD
-=======
   const dispatch = useDispatch();
   const { items: products, loadingProducts, errorProducts } = useSelector((state) => state.products);
   const { items: categories, loadingCategories, errorCategories } = useSelector((state) => state.categories);
@@ -139,28 +121,26 @@ const Products = () => {
 
 
   
->>>>>>> main
   const handleFilterSubmit = (e) => {
     e.preventDefault();
     if (selectedCategories.length > 0) {
-      dispatch(filterByCategory(selectedCategories[0]));
+      filterByCategory(selectedCategories[0]); 
     } else {
-      dispatch(filterByPrice(priceRange));
+      filterByPrice();
     }
   };
 
+ 
   const clearFilters = () => {
     setSelectedCategories([]);
-    setPriceRange({ min: '', max: '' });
-    dispatch(fetchProducts());
+    setPriceRange({ min: '', max: '' }); 
+    setShowFilters(false); 
+    const checkboxes = document.querySelectorAll('.filtro-categorias input[type="checkbox"]');
+    checkboxes.forEach((checkbox) => (checkbox.checked = false)); 
+
+    fetchProducts(); 
   };
 
-  const handleAddToCart = (producto) => {
-    dispatch(agregarAlCarrito(producto));
-  };
-
-  if (loading) return <p>Cargando productos...</p>;
-  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="productos-container">
@@ -215,8 +195,6 @@ const Products = () => {
           </div>
         </form>
       )}
-<<<<<<< HEAD
-=======
 <div className="productos-grid">
   {products.map((producto) => (
     <div className="producto-card" key={producto.id}>
@@ -248,39 +226,7 @@ const Products = () => {
     </div>
   ))}
 </div>
->>>>>>> main
 
-      <div className="productos-grid">
-        {productos.map((producto) => (
-          <div className="producto-card" key={producto.id}>
-            <Link to={`/ViewProduct/${producto.id}`} className="product-link">
-              <img 
-                src={producto.images && producto.images.length > 0 ? `data:image/jpeg;base64,${producto.images[0]}` : 'ruta-por-defecto.jpg'}  
-                alt={producto.name}
-                className="producto-imagen" 
-              />
-              <h2>{producto.name}</h2>
-              {producto.discount > 0 && (
-                <span className="precio-anterior">
-                  ${producto.price.toFixed(2)}
-                </span>
-              )}
-              <p className="precio">
-                ${producto.discount > 0 
-                  ? (producto.price * (1 - producto.discount / 100)).toFixed(2) 
-                  : producto.price.toFixed(2)}
-              </p>
-            </Link>
-            <button 
-              className="agregar-carrito-btn" 
-              onClick={() => handleAddToCart(producto)}
-              disabled={producto.stock === 0} 
-            >
-              {producto.stock === 0 ? "Sin stock" : "Agregar al carrito"}
-            </button>
-          </div>
-        ))}
-      </div>
     </div>
   );
 };

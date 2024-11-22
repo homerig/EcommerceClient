@@ -3,9 +3,11 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const BASE_URL = "http://localhost:4002/users";
-const token = localStorage.getItem("authToken");
 
-export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
+
+export const fetchUsers = createAsyncThunk("users/fetchUsers", async (_, { getState }) => {
+  const state = getState(); 
+  const token = state.auth?.user?.access_token; 
   const response = await axios.get(BASE_URL, {
     headers: { Authorization: `Bearer ${token}` }
   });
@@ -13,8 +15,11 @@ export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
 });
 
 
-export const updateUser = createAsyncThunk("users/updateUser", async ({ id, userData }) => {
+export const updateUser = createAsyncThunk("users/updateUser", async ({ id, userData }, { getState }) => {
+  const state = getState(); 
+  const token = state.auth?.user?.access_token; 
   const response = await axios.put(`${BASE_URL}/${id}`, userData, {
+    
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json"
@@ -24,7 +29,9 @@ export const updateUser = createAsyncThunk("users/updateUser", async ({ id, user
 });
 
 
-export const deleteUser = createAsyncThunk("users/deleteUser", async (id) => {
+export const deleteUser = createAsyncThunk("users/deleteUser", async (id, { getState }) => {
+  const state = getState(); 
+  const token = state.auth?.user?.access_token; 
   await axios.delete(`${BASE_URL}/${id}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
@@ -32,7 +39,9 @@ export const deleteUser = createAsyncThunk("users/deleteUser", async (id) => {
 });
 
 
-export const fetchUserOrders = createAsyncThunk("users/fetchUserOrders", async (userId) => {
+export const fetchUserOrders = createAsyncThunk("users/fetchUserOrders", async (userId, { getState }) => {
+  const state = getState(); 
+  const token = state.auth?.user?.access_token; 
   const response = await axios.get(`http://localhost:4002/order/user/${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });

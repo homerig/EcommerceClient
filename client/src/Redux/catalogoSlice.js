@@ -1,4 +1,3 @@
-// Redux/CatalogoSlice.jsx
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -30,7 +29,7 @@ export const agregarAlCarrito = createAsyncThunk("catalogo/agregarAlCarrito", as
   const state = getState(); 
   const token = state.auth?.user?.access_token; 
   const userId = state.auth?.user?.userId;
-  
+
   let cartResponse = await axios.get(`http://localhost:4002/cart/user/${userId}`);
 
   if (cartResponse.status === 404) {

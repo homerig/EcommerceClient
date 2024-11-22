@@ -2,9 +2,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const BASE_URL = "http://localhost:4002/order";
-const token = localStorage.getItem("authToken");
 
-export const fetchOrders = createAsyncThunk("orders/fetchOrders", async () => {
+export const fetchOrders = createAsyncThunk("orders/fetchOrders", async (_, { getState }) => {
+  const state = getState(); 
+  const token = state.auth?.user?.access_token; 
   const response = await axios.get(BASE_URL, {
     headers: {
       Authorization: `Bearer ${token}`,

@@ -15,30 +15,55 @@ export const registerUser = createAsyncThunk(
         headers: { "Content-Type": "application/json" },
       });
 
-      const { access_token, userId } = userResponse.data;
-
-      // Guarda el token y el userId en localStorage
-      localStorage.setItem("authToken", access_token);
-      localStorage.setItem("userId", userId);
+      var user = userResponse.data;
 
       // Crear un carrito para el usuario registrado
       const cartResponse = await axios.post(
         CART_URL,
-        { userId }, // Asegúrate de que el backend espera este formato
-        { headers: { Authorization: `Bearer ${access_token}` } }
+        { userId: user.userId }, // Clave 'userId' con el valor correspondiente
+        { headers: { Authorization: `Bearer ${user.access_token}` } }
       );
-
-      return { userId, cart: cartResponse.data };
+      
+      return user;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error inesperado");
     }
   }
 );
 
-// Slice para manejar la autenticación
+
+export const loginUser = createAsyncThunk(
+  'login/loginUser',
+  async ({ email, password }, thunkAPI) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/authenticate`, { email, password });
+      const data = response.data;
+      const decodedToken = JSON.parse(atob(data.access_token.split('.')[1]));
+
+      // Guardar datos en localStorage
+      // localStorage.setItem('authToken', data.access_token);
+      // localStorage.setItem('userId', data.userId);
+      // localStorage.setItem('userName', data.name);
+      // localStorage.setItem('userEmail', email);
+      // localStorage.setItem('userRole', data.role);
+
+      return { ...data, decodedToken };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 'Error al iniciar sesión.'
+      );
+    }
+  }
+);
+
+
 const authSlice = createSlice({
   name: "auth",
-  initialState: { userId: null, loading: false, error: null },
+  initialState: { 
+    user: null,
+    loading: false, 
+    error: null,
+  },
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -48,13 +73,26 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.userId = action.payload.userId;
+        state.user = action.payload;
       })
       .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

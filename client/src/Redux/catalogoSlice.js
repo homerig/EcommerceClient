@@ -28,9 +28,9 @@ export const filterByPrice = createAsyncThunk("catalogo/filterByPrice", async ({
 
 export const agregarAlCarrito = createAsyncThunk("catalogo/agregarAlCarrito", async (producto, { getState }) => {
   const state = getState(); 
-  const token = state.login?.user?.access_token; 
-  const userId = state.login?.user?.userId;
-
+  const token = state.auth?.user?.access_token; 
+  const userId = state.auth?.user?.userId;
+  
   let cartResponse = await axios.get(`http://localhost:4002/cart/user/${userId}`);
 
   if (cartResponse.status === 404) {

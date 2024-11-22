@@ -8,7 +8,7 @@ import './css/Navigation.css';
 
 const Navigation = () => {
 
-  const { user, loading, error } = useSelector((state) => state.login);
+  const { user, loading, error } = useSelector((state) => state.auth);
 
   var userRole = '';
   if(user != null){ 

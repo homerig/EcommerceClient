@@ -4,24 +4,36 @@ import axios from "axios";
 const BASE_URL_Catalog = "http://localhost:4002/catalogo/products";
 const BASE_URL_Products = "http://localhost:4002/products";
 
-const token = localStorage.getItem("authToken");
 
-// Acción para obtener los productos
 export const fetchProducts = createAsyncThunk("products/fetchProducts", async () => {
   const { data } = await axios.get(BASE_URL_Catalog);
   return data;
 });
 
-// Acción para obtener el precio final
+
 export const fetchFinalPrice = createAsyncThunk(
   "products/fetchFinalPrice",
-  async (productId) => {
-    const { data } = await axios.get(`${BASE_URL_Products}/${productId}/final-price`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return { productId, finalPrice: data };
+  async (productId, { getState, rejectWithValue }) => {
+    const state = getState();
+    const token = state.login?.user?.access_token; 
+
+    if (!token) {
+      return rejectWithValue("Usuario no autenticado. No se puede obtener el precio final.");
+    }
+
+    try {
+      const { data } = await axios.get(`${BASE_URL_Products}/${productId}/final-price`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      return { productId, finalPrice: data };
+    } catch (error) {
+      console.error("Error al obtener el precio final:", error);
+      return rejectWithValue(error.response?.data || "Error desconocido");
+    }
   }
 );
+
 export const createProduct = createAsyncThunk(
   "products/createProduct",
   async (productData, { rejectWithValue }) => {

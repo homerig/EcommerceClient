@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { loginUser, logout } from '../Redux/LoginSlice';
+import { loginUser, logout } from '../Redux/authSlice';
 import './css/Login.css';
 
 const Login = () => {
@@ -9,7 +9,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, loading, error, role } = useSelector((state) => state.login);
+  const { user, loading, error, role } = useSelector((state) => state.auth);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,7 +28,6 @@ const Login = () => {
           <h1>Perfil de Usuario</h1>
           <p><strong>Nombre:</strong> {user.name}</p>
           <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Rol:</strong> {user.role}</p>
           <button onClick={handleLogout}>Cerrar Sesión</button>
         </div>
       </div>

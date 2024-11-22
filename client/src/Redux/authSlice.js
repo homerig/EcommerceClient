@@ -24,8 +24,7 @@ export const registerUser = createAsyncThunk(
 
       const cartId = cartResponse.data.Id;
 
-      // Actualizar el estado global del carrito
-      dispatch(updateCartId(cartId)); // Aquí se usa correctamente la acción de Redux.
+     
 
       return user;
     } catch (error) {

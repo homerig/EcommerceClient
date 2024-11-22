@@ -1,26 +1,22 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Endpoint base para la autenticación
 const BASE_URL = "http://localhost:4002/api/v1/auth";
-const CART_URL = "http://localhost:4002/cart"; // URL para crear el carrito
+const CART_URL = "http://localhost:4002/cart";
 
-// Acción asíncrona para registrar un nuevo usuario y crear un carrito
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData, { rejectWithValue }) => {
     try {
-      // Solicitud para registrar al usuario
       const userResponse = await axios.post(`${BASE_URL}/register`, userData, {
         headers: { "Content-Type": "application/json" },
       });
 
       var user = userResponse.data;
 
-      // Crear un carrito para el usuario registrado
       const cartResponse = await axios.post(
         CART_URL,
-        { userId: user.userId }, // Clave 'userId' con el valor correspondiente
+        { userId: user.userId },
         { headers: { Authorization: `Bearer ${user.access_token}` } }
       );
       

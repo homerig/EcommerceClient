@@ -79,9 +79,6 @@ const catalogoSlice = createSlice({
       .addCase(filterByPrice.fulfilled, (state, action) => {
         state.productos = action.payload;
       })
-      .addCase(agregarAlCarrito.fulfilled, (state, action) => {
-        // Lógica para agregar el producto al carrito localmente si es necesario
-      });
   },
 });
 

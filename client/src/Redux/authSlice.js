@@ -4,6 +4,7 @@ import axios from "axios";
 const BASE_URL = "http://localhost:4002/api/v1/auth";
 const CART_URL = "http://localhost:4002/cart";
 
+// Acción para registrar un usuario
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData, { rejectWithValue }) => {
@@ -12,14 +13,14 @@ export const registerUser = createAsyncThunk(
         headers: { "Content-Type": "application/json" },
       });
 
-      var user = userResponse.data;
+      const user = userResponse.data;
 
-      const cartResponse = await axios.post(
+      await axios.post(
         CART_URL,
         { userId: user.userId },
         { headers: { Authorization: `Bearer ${user.access_token}` } }
       );
-      
+
       return user;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error inesperado");
@@ -27,42 +28,45 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-
+// Acción para iniciar sesión
 export const loginUser = createAsyncThunk(
-  'login/loginUser',
+  "auth/loginUser",
   async ({ email, password }, thunkAPI) => {
     try {
-      const response = await axios.post(`${BASE_URL}/authenticate`, { email, password });
+      const response = await axios.post(`${BASE_URL}/authenticate`, {
+        email,
+        password,
+      });
       const data = response.data;
-      const decodedToken = JSON.parse(atob(data.access_token.split('.')[1]));
+      const decodedToken = JSON.parse(atob(data.access_token.split(".")[1]));
 
       // Guardar datos en localStorage
-      // localStorage.setItem('authToken', data.access_token);
-      // localStorage.setItem('userId', data.userId);
-      // localStorage.setItem('userName', data.name);
-      // localStorage.setItem('userEmail', email);
-      // localStorage.setItem('userRole', data.role);
+      const userData = { ...data, decodedToken };
+      localStorage.setItem("user", JSON.stringify(userData)); // Guardar usuario
 
-      return { ...data, decodedToken };
+      return userData;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || 'Error al iniciar sesión.'
+        error.response?.data?.message || "Error al iniciar sesión."
       );
     }
   }
 );
 
+// Recuperar usuario de localStorage al cargar la app
+const savedUser = JSON.parse(localStorage.getItem("user"));
 
 const authSlice = createSlice({
   name: "auth",
-  initialState: { 
-    user: null,
-    loading: false, 
+  initialState: {
+    user: savedUser || null, // Recuperar usuario desde localStorage
+    loading: false,
     error: null,
   },
   reducers: {
     logout: (state) => {
-      state.user = null; 
+      state.user = null;
+      localStorage.removeItem("user"); // Limpiar localStorage al cerrar sesión
     },
   },
   extraReducers: (builder) => {
@@ -74,6 +78,7 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
+        localStorage.setItem("user", JSON.stringify(action.payload)); // Guardar usuario al registrarse
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;

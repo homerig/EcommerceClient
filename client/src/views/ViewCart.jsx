@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCart, incrementProductQuantity, decrementProductQuantity, removeItem ,resetCartState } from "../Redux/cartSlice";
+import { fetchCart, incrementProductQuantity, decrementProductQuantity, removeItem } from "../Redux/cartSlice";
 import FinishCart from "./FinishCart";
 import "./css/ViewCart.css";
 
 const ViewCart = () => {
   const dispatch = useDispatch();
+
+  // Extraer datos del estado global
   const { items: cartItems, cartId, loading, error } = useSelector((state) => state.cart);
-  const userId = localStorage.getItem("userId");
+  const userId = useSelector((state) => state.auth.user?.userId); // Obtener userId desde el estado global
 
   // Estado para controlar el modal
   const [isModalOpen, setModalOpen] = useState(false);
 
+  // Fetch del carrito al cargar el componente
   useEffect(() => {
     if (userId) {
       dispatch(fetchCart(userId));
@@ -22,7 +25,11 @@ const ViewCart = () => {
   const closeModal = () => setModalOpen(false);
 
   if (loading) return <p>Cargando carrito...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (error) {
+    const errorMessage =
+      typeof error === "string" ? error : error.message || "Ha ocurrido un error inesperado.";
+    return <p>Error: {errorMessage}</p>;
+  }
 
   return (
     <div className="cart-container">
@@ -74,9 +81,8 @@ const ViewCart = () => {
         </>
       )}
 
-      {/* Modal de FinishCart: solo se renderiza si isModalOpen es true */}
+      {/* Modal de FinishCart */}
       {isModalOpen && <FinishCart isOpen={isModalOpen} onClose={closeModal} cartId={cartId} />}
-      
     </div>
   );
 };

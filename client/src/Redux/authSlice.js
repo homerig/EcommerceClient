@@ -13,7 +13,7 @@ export const registerUser = createAsyncThunk(
         headers: { "Content-Type": "application/json" },
       });
 
-      var user = userResponse.data;
+      const user = userResponse.data;
 
       // Crear carrito para el nuevo usuario
       const cartResponse = await axios.post(
@@ -25,10 +25,7 @@ export const registerUser = createAsyncThunk(
       const cartId = cartResponse.data.Id;
 
       // Actualizar el estado global del carrito
-      dispatch({
-        type: "cart/updateCartId",
-        payload: cartId,
-      });
+      dispatch(updateCartId(cartId)); // Aquí se usa correctamente la acción de Redux.
 
       return user;
     } catch (error) {
@@ -36,7 +33,6 @@ export const registerUser = createAsyncThunk(
     }
   }
 );
-
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password }, { rejectWithValue, dispatch }) => {
@@ -45,7 +41,7 @@ export const loginUser = createAsyncThunk(
       const user = response.data;
 
       // Obtener carrito asociado al usuario
-      dispatch(fetchCart(user.userId));
+      await dispatch(fetchCart(user.userId)); // fetchCart actualizará el cartId en el estado del carrito.
 
       return user;
     } catch (error) {
@@ -53,6 +49,7 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
+
 
 const authSlice = createSlice({
   name: "auth",

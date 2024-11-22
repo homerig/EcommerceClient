@@ -18,6 +18,7 @@ const Login = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(resetCartState());
     navigate('/login');
   };
 

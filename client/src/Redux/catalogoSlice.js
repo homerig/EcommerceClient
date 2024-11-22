@@ -29,6 +29,8 @@ export const agregarAlCarrito = createAsyncThunk("catalogo/agregarAlCarrito", as
   const state = getState(); 
   const token = state.auth?.user?.access_token; 
   const userId = state.auth?.user?.userId;
+  const cartId = state.cart?.cartDTO?.id;
+
 
   let cartResponse = await axios.get(`http://localhost:4002/cart/user/${userId}`);
 
@@ -37,7 +39,6 @@ export const agregarAlCarrito = createAsyncThunk("catalogo/agregarAlCarrito", as
     cartResponse = createResponse;
   }
 
-  const cartId = cartResponse.data.id;
   await axios.put(`${BASE_URL}/${cartId}/add-product`, {
     cartId,
     productId: producto.id,

@@ -1,36 +1,44 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
- 
+
 const BASE_URL = "http://localhost:4002/cart";
 const PRODUCTS_URL = "http://localhost:4002/products";
 
- 
-// Thunks
-export const fetchCart = createAsyncThunk("cart/fetchCart", async (userId, { getState }) => {
-    const state = getState(); 
-    const token = state.auth?.user?.access_token; 
-    const response = await axios.get(`${BASE_URL}/user/${userId}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
- 
-  if (response.data?.items) {
-    const itemsWithDetails = await Promise.all(
-      response.data.items.map(async (item) => {
-        const productResponse = await axios.get(`${PRODUCTS_URL}/${item.productId}`);
-        return {
-          ...item,
-          productName: productResponse.data.name,
-          productPrice: productResponse.data.price,
-          productImage: productResponse.data.images[0] || null,
-        };
-      })
-    );
-    return { ...response.data, items: itemsWithDetails };
+export const fetchCart = createAsyncThunk(
+  "cart/fetchCart",
+  async (userId, { getState, rejectWithValue }) => {
+    try {
+      const state = getState();
+      const token = state.auth?.user?.access_token;
+
+      const response = await axios.get(`${BASE_URL}/user/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const cart = response.data;
+
+      if (response.data?.items) {
+        const itemsWithDetails = await Promise.all(
+          response.data.items.map(async (item) => {
+            const productResponse = await axios.get(`${PRODUCTS_URL}/${item.productId}`);
+            return {
+              ...item,
+              productName: productResponse.data.name,
+              productPrice: productResponse.data.price,
+              productImage: productResponse.data.images[0] || null,
+            };
+          })
+        );
+        return { ...response.data, items: itemsWithDetails, cart };
+      }
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue("Error al cargar el carrito.");
+    }
   }
- 
-  return response.data;
-});
- 
+);
+
 export const incrementProductQuantity = createAsyncThunk(
   "cart/incrementProductQuantity",
   async ({ cartId, productId }) => {
@@ -38,7 +46,7 @@ export const incrementProductQuantity = createAsyncThunk(
     return productId;
   }
 );
- 
+
 export const decrementProductQuantity = createAsyncThunk(
   "cart/decrementProductQuantity",
   async ({ cartId, productId }) => {
@@ -46,7 +54,7 @@ export const decrementProductQuantity = createAsyncThunk(
     return productId;
   }
 );
- 
+
 export const removeItem = createAsyncThunk(
   "cart/removeItem",
   async ({ cartId, productId }) => {
@@ -54,12 +62,28 @@ export const removeItem = createAsyncThunk(
     return productId;
   }
 );
- 
+
+export const finishCart = createAsyncThunk(
+  "cart/finishcart",
+  async ({ cartId}) => {
+    await axios.put(`${BASE_URL}/${cartId}/finish`);
+    return finalprice;
+  }
+);
+
 // Slice
 const cartSlice = createSlice({
   name: "cart",
   initialState: { items: [], cartId: null, loading: false, error: null },
-  reducers: {},
+  reducers: {
+    updateCartId: (state, action) => {
+      state.cartId = action.payload;
+    },
+    resetCartState: (state) => {
+      state.items = [];
+      state.cartId = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCart.pending, (state) => {
@@ -88,5 +112,7 @@ const cartSlice = createSlice({
       });
   },
 });
- 
+
+export const { updateCartId, resetCartState } = cartSlice.actions;
+
 export default cartSlice.reducer;

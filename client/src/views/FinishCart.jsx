@@ -1,21 +1,26 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './css/EditUser.css'; 
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { finishCart, resetState } from "../Redux/finishCartSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import "./css/EditUser.css";
 
-const FinishCart = ({ isOpen, onClose, cartId }) => {
+const FinishCart = () => {
+  const { cartId } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    dni: '',
-    pais: '',
-    direccion: '',
-    ciudad: '',
-    metodoPago: '',
-    numeroTarjeta: '',
-    vencimiento: '',
-    codigoSeguridad: ''
+    dni: "",
+    pais: "",
+    direccion: "",
+    ciudad: "",
+    metodoPago: "",
+    numeroTarjeta: "",
+    vencimiento: "",
+    codigoSeguridad: "",
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate(); 
+
+  const { loading, error, success } = useSelector((state) => state.finishCart);
 
   const handleChange = (e) => {
     setFormData({
@@ -24,58 +29,20 @@ const FinishCart = ({ isOpen, onClose, cartId }) => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      const finishCartResponse = await fetch(`http://localhost:4002/cart/${cartId}/finish`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-  
-      if (finishCartResponse.status !== 500 && !finishCartResponse.ok) {
-        throw new Error('Error al finalizar la compra');
-      }
-  
-      if (finishCartResponse.status === 500) {
-        console.warn('Se recibió un error 500 al finalizar la compra, pero se continuará con el proceso.');
-      }
-  
-      const clearCartResponse = await fetch(`http://localhost:4002/cart/${cartId}/clear`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-  
-      if (!clearCartResponse.ok) {
-        throw new Error('Error al vaciar el carrito');
-      }
-  
-      console.log('Compra confirmada y carrito vaciado correctamente');
-
-      alert('¡Compra finalizada con éxito!');
-      navigate('/'); 
-
-      onClose(); 
-    } catch (err) {
-      setError(err.message);
-      console.error('Error:', err);
-    } finally {
-      setLoading(false);
-    }
+    dispatch(finishCart({ cartId, formData }));
   };
-  
-  if (!isOpen) return null;
+
+  if (success) {
+    alert("¡Compra finalizada con éxito!");
+    dispatch(resetState());
+    navigate("/");
+  }
 
   return (
     <div className="modal-overlay">
       <div className="modal-container">
-        <button className="close-button" onClick={onClose}>✕</button>
         <h2>Complete sus datos</h2>
         {error && <p className="error-message">{error}</p>}
         <form className="form-container" onSubmit={handleSubmit}>
@@ -119,15 +86,15 @@ const FinishCart = ({ isOpen, onClose, cartId }) => {
             <option value="tarjeta">Tarjeta</option>
           </select>
 
-          {formData.metodoPago === 'efectivo' && (
+          {formData.metodoPago === "efectivo" && (
             <p>Realizar el pago antes de las 48 horas. Enviar comprobante al mail Matecito@gmail.com</p>
           )}
 
-          {formData.metodoPago === 'transferencia' && (
+          {formData.metodoPago === "transferencia" && (
             <p>Realizar el pago antes de las 48 horas. Enviar comprobante al mail Matecito@gmail.com</p>
           )}
 
-          {formData.metodoPago === 'tarjeta' && (
+          {formData.metodoPago === "tarjeta" && (
             <>
               <input
                 type="text"
@@ -157,7 +124,7 @@ const FinishCart = ({ isOpen, onClose, cartId }) => {
           )}
 
           <button type="submit" className="submit-button" disabled={loading}>
-            {loading ? 'Confirmando...' : 'Confirmar compra'}
+            {loading ? "Confirmando..." : "Confirmar compra"}
           </button>
         </form>
       </div>

@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { fetchCart, resetCartState } from "./cartSlice"; // Importa las acciones del carrito
 
 const BASE_URL = "http://localhost:4002/api/v1/auth";
 const CART_URL = "http://localhost:4002/cart";
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
-  async (userData, { rejectWithValue }) => {
+  async (userData, { rejectWithValue, dispatch }) => {
     try {
       const userResponse = await axios.post(`${BASE_URL}/register`, userData, {
         headers: { "Content-Type": "application/json" },
@@ -14,12 +15,21 @@ export const registerUser = createAsyncThunk(
 
       var user = userResponse.data;
 
+      // Crear carrito para el nuevo usuario
       const cartResponse = await axios.post(
         CART_URL,
         { userId: user.userId },
         { headers: { Authorization: `Bearer ${user.access_token}` } }
       );
-      
+
+      const cartId = cartResponse.data.Id;
+
+      // Actualizar el estado global del carrito
+      dispatch({
+        type: "cart/updateCartId",
+        payload: cartId,
+      });
+
       return user;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error inesperado");
@@ -27,42 +37,33 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-
 export const loginUser = createAsyncThunk(
-  'login/loginUser',
-  async ({ email, password }, thunkAPI) => {
+  "auth/loginUser",
+  async ({ email, password }, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.post(`${BASE_URL}/authenticate`, { email, password });
-      const data = response.data;
-      const decodedToken = JSON.parse(atob(data.access_token.split('.')[1]));
+      const user = response.data;
 
-      // Guardar datos en localStorage
-      // localStorage.setItem('authToken', data.access_token);
-      // localStorage.setItem('userId', data.userId);
-      // localStorage.setItem('userName', data.name);
-      // localStorage.setItem('userEmail', email);
-      // localStorage.setItem('userRole', data.role);
+      // Obtener carrito asociado al usuario
+      dispatch(fetchCart(user.userId));
 
-      return { ...data, decodedToken };
+      return user;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || 'Error al iniciar sesión.'
-      );
+      return rejectWithValue(error.response?.data?.message || "Error al iniciar sesión.");
     }
   }
 );
 
-
 const authSlice = createSlice({
   name: "auth",
-  initialState: { 
+  initialState: {
     user: null,
-    loading: false, 
+    loading: false,
     error: null,
   },
   reducers: {
     logout: (state) => {
-      state.user = null; 
+      state.user = null;
     },
   },
   extraReducers: (builder) => {
@@ -95,4 +96,5 @@ const authSlice = createSlice({
 });
 
 export const { logout } = authSlice.actions;
+
 export default authSlice.reducer;

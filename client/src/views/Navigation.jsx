@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faShoppingCart, faUser, faCog } from '@fortawesome/free-solid-svg-icons';
@@ -5,7 +7,13 @@ import logo from '../assets/LogoMatecito.png';
 import './css/Navigation.css'; 
 
 const Navigation = () => {
-  const userRole = localStorage.getItem('userRole');
+
+  const { user, loading, error } = useSelector((state) => state.login);
+
+  var userRole = '';
+  if(user != null){ 
+    userRole = user.role;
+  }
   console.log(userRole);
 
   return (

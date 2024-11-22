@@ -10,15 +10,14 @@ export const loginUser = createAsyncThunk(
       const response = await axios.post(BASE_URL, { email, password });
       const data = response.data;
 
-      // Decodificar el token JWT
       const decodedToken = JSON.parse(atob(data.access_token.split('.')[1]));
 
       // Guardar datos en localStorage
-      localStorage.setItem('authToken', data.access_token);
-      localStorage.setItem('userId', data.userId);
-      localStorage.setItem('userName', data.name);
-      localStorage.setItem('userEmail', email);
-      localStorage.setItem('userRole', data.role);
+      // localStorage.setItem('authToken', data.access_token);
+      // localStorage.setItem('userId', data.userId);
+      // localStorage.setItem('userName', data.name);
+      // localStorage.setItem('userEmail', email);
+      // localStorage.setItem('userRole', data.role);
 
       return { ...data, decodedToken };
     } catch (error) {
@@ -35,7 +34,6 @@ const loginSlice = createSlice({
   initialState: {
     user: null,
     token: null,
-    role: null,
     loading: false,
     error: null,
   },
@@ -55,9 +53,8 @@ const loginSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.name;
+        state.user = action.payload;
         state.token = action.payload.access_token;
-        state.role = action.payload.role;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;

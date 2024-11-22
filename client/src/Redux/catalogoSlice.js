@@ -3,7 +3,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const BASE_URL = "http://localhost:4002/catalogo";
-const token = localStorage.getItem("authToken");
 
 export const fetchProducts = createAsyncThunk("catalogo/fetchProducts", async () => {
   const response = await axios.get(`${BASE_URL}/products`);
@@ -27,8 +26,11 @@ export const filterByPrice = createAsyncThunk("catalogo/filterByPrice", async ({
   return response.data;
 });
 
-export const agregarAlCarrito = createAsyncThunk("catalogo/agregarAlCarrito", async (producto) => {
-  const userId = localStorage.getItem("userId");
+export const agregarAlCarrito = createAsyncThunk("catalogo/agregarAlCarrito", async (producto, { getState }) => {
+  const state = getState(); 
+  const token = state.login?.user?.access_token; 
+  const userId = state.login?.user?.userId;
+
   let cartResponse = await axios.get(`http://localhost:4002/cart/user/${userId}`);
 
   if (cartResponse.status === 404) {

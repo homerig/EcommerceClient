@@ -26,9 +26,9 @@ const Login = () => {
       <div className="login-container">
         <div className="login-modal">
           <h1>Perfil de Usuario</h1>
-          <p><strong>Nombre:</strong> {user}</p>
-          <p><strong>Email:</strong> {email}</p>
-          <p><strong>Rol:</strong> {role}</p>
+          <p><strong>Nombre:</strong> {user.name}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>Rol:</strong> {user.role}</p>
           <button onClick={handleLogout}>Cerrar Sesión</button>
         </div>
       </div>

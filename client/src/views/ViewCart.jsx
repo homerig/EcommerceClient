@@ -1,186 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import './css/ViewCart.css';
-import FinishCart from './FinishCart'; 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; 
-import { faTrash } from '@fortawesome/free-solid-svg-icons'; 
-
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCart, incrementProductQuantity, decrementProductQuantity, removeItem } from "../Redux/cartSlice";
+import FinishCart from "./FinishCart";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import "./css/ViewCart.css";
+ 
 const ViewCart = () => {
-  const [cartId, setCartId] = useState(null);
-  const [cartItems, setCartItems] = useState([]);
-  const [error, setError] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); 
-  const [userId, setUserId] = useState(() => {
-    return localStorage.getItem('userId');
-  });
-
+  const dispatch = useDispatch();
+  const { items: cartItems, cartId, loading, error } = useSelector((state) => state.cart);
+  const userId = localStorage.getItem("userId");
+ 
   useEffect(() => {
     if (userId) {
-      fetchCart();
-    } else {
-      setError('El ID de usuario no está disponible.');
+      dispatch(fetchCart(userId));
     }
-  }, [userId]);
-
-  const openModal = () => {
-    setIsModalOpen(true);
+  }, [dispatch, userId]);
+ 
+  const handleIncrement = (productId) => {
+    dispatch(incrementProductQuantity({ cartId, productId }));
   };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
+ 
+  const handleDecrement = (productId) => {
+    dispatch(decrementProductQuantity({ cartId, productId }));
   };
-
-  const fetchCart = async () => {
-    try {
-      const response = await fetch(`http://localhost:4002/cart/user/${userId}`);
-      if (response.ok) {
-        const cart = await response.json();
-        if (cart && cart.id) {
-          setCartId(cart.id);
-          if (cart.items && Array.isArray(cart.items)) {
-            const itemsWithDetails = await Promise.all(
-              cart.items.map(async (item) => {
-                const productResponse = await fetch(`http://localhost:4002/products/${item.productId}`);
-                if (productResponse.ok) {
-                  const productData = await productResponse.json();
-                  return {
-                    ...item,
-                    productName: productData.name,
-                    productPrice: productData.price,
-                    productImage: productData.images.length > 0 ? productData.images[0] : null,
-                  };
-                } else {
-                  setError('Error al obtener los detalles del producto.');
-                  return item;
-                }
-              })
-            );
-            
-            setCartItems(itemsWithDetails);
-          } else {
-            setError('El carrito no contiene items.');
-          }
-        } else {
-          setError('No se encontró el carrito para el usuario.');
-        }
-      } else {
-        setError();
-      }
-    } catch (err) {
-      setError('Error al conectar con el servidor.');
-      console.error(err);
-    }
+ 
+  const handleRemove = (productId) => {
+    dispatch(removeItem({ cartId, productId }));
   };
-
-  const incrementProductQuantity = async (productId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:4002/cart/incOne?cartId=${cartId}&productId=${productId}`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-
-      if (response.ok) {
-        setCartItems((prevItems) =>
-          prevItems.map((item) =>
-            item.productId === productId
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          )
-        );
-      } else {
-        setError('No hay mas stock.');
-      }
-    } catch (err) {
-      setError('Error al conectar con el servidor.');
-      console.error(err);
-    }
-  };
-
-  const decrementProductQuantity = async (productId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:4002/cart/decOne?cartId=${cartId}&productId=${productId}`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-
-      if (response.ok) {
-        setCartItems((prevItems) => {
-          const item = prevItems.find((item) => item.productId === productId);
-          if (item) {
-            if (item.quantity > 1) {
-              return prevItems.map((item) =>
-                item.productId === productId
-                  ? { ...item, quantity: item.quantity - 1 }
-                  : item
-              );
-            } else {
-              removeItem(productId);
-              return prevItems.filter((item) => item.productId !== productId);
-            }
-          }
-          return prevItems;
-        });
-      } else {
-        setError('Error al decrementar la cantidad del producto.');
-      }
-    } catch (err) {
-      setError('Error al conectar con el servidor.');
-      console.error(err);
-    }
-  };
-
-  const removeItem = async (productId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:4002/cart/remove-product?cartId=${cartId}&productId=${productId}`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-
-      if (response.ok) {
-        setCartItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
-      } else {
-        setError();
-      }
-    } catch (err) {
-      setError('Error al conectar con el servidor.');
-      console.error(err);
-    }
-  };
-
-  const finishCart = () => {
-    openModal(); 
-  };
-
+ 
+  if (loading) return <p>Cargando carrito...</p>;
+  if (error) return <p>Error: {error}</p>;
+ 
   return (
     <div className="cart-container">
       <h2>Carrito de Compras</h2>
-      {error && <p>{error}</p>}
       {cartItems.length === 0 ? (
-        <p>El carrito está vacío </p>
+        <p>El carrito está vacío</p>
       ) : (
         <>
           <div className="cart-items">
             {cartItems.map((item) => (
-              <div className="cart-item" key={item.id}>
+              <div className="cart-item" key={item.productId}>
                 <img src={`data:image/jpeg;base64,${item.productImage}`} alt={item.productName} className="cart-item-image" />
                 <div className="cart-item-details">
                   <h2>{item.productName}</h2>
                   <p>Precio: ${item.productPrice}</p>
                 </div>
                 <div className="cart-item-quantity">
-                  <button onClick={() => decrementProductQuantity(item.productId)}>-</button>
+                {item.quantity > 0 && (
+                    <button onClick={() => handleDecrement(item.productId)}>-</button>
+                  )}
                   <span>{item.quantity}</span>
-                  <button onClick={() => incrementProductQuantity(item.productId)}>+</button>
+                  <button onClick={() => handleIncrement(item.productId)}>+</button>
                 </div>
-                <button className="remove-item-button" onClick={() => removeItem(item.productId)}>
+                <button className="remove-item-button" onClick={() => handleRemove(item.productId)}>
                   <FontAwesomeIcon icon={faTrash} />
                 </button>
               </div>
@@ -190,14 +64,13 @@ const ViewCart = () => {
             <h3>Resumen de compra</h3>
             <p>Productos ({cartItems.length})</p>
             <p>Total: ${cartItems.reduce((acc, item) => acc + item.quantity * item.productPrice, 0)}</p>
-            <button className="confirm-cart-button" onClick={finishCart}>Confirmar carrito</button>
+            <button className="confirm-cart-button">Confirmar carrito</button>
           </div>
         </>
       )}
-
-      <FinishCart isOpen={isModalOpen} onClose={closeModal} cartId={cartId} />
+      <FinishCart />
     </div>
   );
 };
-
+ 
 export default ViewCart;

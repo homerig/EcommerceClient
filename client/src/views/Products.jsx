@@ -3,10 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts, fetchCategories, filterByCategory, filterByPrice, agregarAlCarrito } from "../Redux/catalogoSlice";
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; 
 import './css/Products.css';
 
 const Products = () => {
   const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
   const { productos, categorias, loading, error } = useSelector((state) => state.catalogo);
   
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -34,10 +36,19 @@ const Products = () => {
     setPriceRange({ min: '', max: '' });
     dispatch(fetchProducts());
   };
+  const navigate = useNavigate(); 
 
   const handleAddToCart = (producto) => {
+    if (!auth?.user?.access_token) {
+      alert("Debes iniciar sesión para agregar productos al carrito.");
+      navigate("/Login"); 
+      return;
+    }
     dispatch(agregarAlCarrito(producto));
   };
+
+  
+  
 
   if (loading) return <p>Cargando productos...</p>;
   if (error) return <p>Error: {error}</p>;

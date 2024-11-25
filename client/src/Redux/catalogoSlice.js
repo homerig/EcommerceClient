@@ -29,7 +29,7 @@ export const agregarAlCarrito = createAsyncThunk("catalogo/agregarAlCarrito", as
   const state = getState(); 
   const token = state.auth?.user?.access_token; 
   const userId = state.auth?.user?.userId;
-  const cartId = state.cart?.cartId; // Asegúrate de que esto esté definido.
+  const cartId = state.cart?.cartId; 
 
   let cartResponse = await axios.get(`http://localhost:4002/cart/user/${userId}`);
 

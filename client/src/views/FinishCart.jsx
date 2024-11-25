@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { finishCart, resetState } from "../Redux/finishCartSlice";
+import { finishCart} from "../Redux/cartSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import "./css/EditUser.css";
 
@@ -20,7 +20,7 @@ const FinishCart = () => {
     codigoSeguridad: "",
   });
 
-  const { loading, error, success } = useSelector((state) => state.finishCart);
+  const { loading, error, success } = useSelector((state) => state.cart);
 
   const handleChange = (e) => {
     setFormData({
@@ -34,11 +34,6 @@ const FinishCart = () => {
     dispatch(finishCart({ cartId, formData }));
   };
 
-  if (success) {
-    alert("¡Compra finalizada con éxito!");
-    dispatch(resetState());
-    navigate("/");
-  }
 
   return (
     <div className="modal-overlay">

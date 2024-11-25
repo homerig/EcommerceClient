@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchFinalPrice } from '../Redux/productosSlice';
 import './Product.css';
 
 const Product = ({ product }) => {
@@ -11,15 +10,6 @@ const Product = ({ product }) => {
   const { items: products, loading, error, finalPrices } = useSelector((state) => state.products);
 
   const filteredProducts = products.filter((product) => product.stock !== 0).slice(0, 6);
-
-  useEffect(() => {
-    filteredProducts.forEach((product) => {
-      if (!finalPrices[product.id]) {
-        dispatch(fetchFinalPrice(product.id));
-      }
-    });
-  }, [dispatch, filteredProducts, finalPrices]);
-
   
   const initialPrice = product.price;
 

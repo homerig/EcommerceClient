@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, logout } from '../Redux/authSlice';
+import { resetCartState } from "../Redux/cartSlice"; 
+import { fetchCart } from "../Redux/cartSlice";
 import './css/Login.css';
-
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, loading, error, role } = useSelector((state) => state.auth);
-
+  const { items: cartItems, cartId } = useSelector((state) => state.cart);
+  const userId = useSelector((state) => state.auth.user?.userId);
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(loginUser({ email, password }));
@@ -18,9 +20,16 @@ const Login = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(resetCartState());
     navigate('/login');
   };
 
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchCart(userId)); // Obtener carrito desde Redux
+    }
+  }, [userId, dispatch]);
+  
   if (user) {
     return (
       <div className="login-container">

@@ -1,38 +1,44 @@
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const BASE_URL = "http://localhost:4002/categories";
-const token = localStorage.getItem("authToken");
 
-export const fetchCategories = createAsyncThunk("categories/fetchCategories", async () => {
-  const response = await axios.get(BASE_URL);
-  return response.data;
-});
+export const fetchCategories = createAsyncThunk(
+  "categories/fetchCategories",
+  async (_, { getState }) => {
+    const state = getState();
+    const token = state.auth?.user?.access_token; 
+    const response = await axios.get(BASE_URL, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  }
+);
 
-export const createCategory = createAsyncThunk("categories/createCategory", async ({ description }) => {
-  try {
+export const createCategory = createAsyncThunk(
+  "categories/createCategory",
+  async ({ description }, { getState }) => {
+    const state = getState();
+    const token = state.auth?.user?.access_token; 
     const response = await axios.post(
-      BASE_URL, 
-      { description }, 
+      BASE_URL,
+      { description },
       {
         headers: {
-          Authorization: `Bearer ${token}`, 
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       }
     );
     return response.data;
-  } catch (error) {
-    console.error("Error al hacer la solicitud:", error.response?.data || error.message);
-    throw error;
   }
-});
-
+);
 
 export const updateCategory = createAsyncThunk(
   "categories/updateCategory",
-  async ({ categoryId, description }) => {
+  async ({ categoryId, description }, { getState }) => {
+    const state = getState();
+    const token = state.auth?.user?.access_token; 
     const response = await axios.put(
       `${BASE_URL}/${categoryId}`,
       { description },
@@ -47,12 +53,17 @@ export const updateCategory = createAsyncThunk(
   }
 );
 
-export const deleteCategory = createAsyncThunk("categories/deleteCategory", async (categoryId) => {
-  await axios.delete(`${BASE_URL}/${categoryId}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return categoryId;
-});
+export const deleteCategory = createAsyncThunk(
+  "categories/deleteCategory",
+  async (categoryId, { getState }) => {
+    const state = getState();
+    const token = state.auth?.user?.access_token; 
+    await axios.delete(`${BASE_URL}/${categoryId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return categoryId;
+  }
+);
 
 const categoriesSlice = createSlice({
   name: "categories",
@@ -63,7 +74,6 @@ const categoriesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Categories
       .addCase(fetchCategories.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -76,14 +86,12 @@ const categoriesSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-      // Create Category
       .addCase(createCategory.fulfilled, (state, action) => {
         state.items.push(action.payload);
       })
       .addCase(createCategory.rejected, (state, action) => {
         state.error = action.error.message;
       })
-      // Update Category
       .addCase(updateCategory.fulfilled, (state, action) => {
         const index = state.items.findIndex((cat) => cat.id === action.payload.id);
         if (index !== -1) {

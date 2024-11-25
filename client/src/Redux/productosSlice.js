@@ -73,7 +73,6 @@ export const updateProduct = createAsyncThunk(
   }
 );
 
-
 export const deleteProduct = createAsyncThunk("products/deleteProduct", async (id, { getState }) => {
   const state = getState(); 
   const token = state.auth?.user?.access_token; 

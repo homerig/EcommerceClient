@@ -21,7 +21,7 @@ const Categories = () => {
     dispatch(createCategory({ description: newDescription }))
       .unwrap()
       .then(() => {
-        setNewDescription("");
+        setNewDescription(" ");
         setShowInput(false);
       })
       .catch((error) => console.error("Error al agregar la categoría:", error));

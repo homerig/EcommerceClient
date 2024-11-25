@@ -154,7 +154,7 @@ const ViewCart = () => {
       )}
 
       {/* Modal para finalizar carrito */}
-      {isModalOpen && <FinishCart isOpen={isModalOpen} onClose={() => setModalOpen(false)} cartId={cartId} />}
+      {isModalOpen && <FinishCart setModalOpen={setModalOpen} />}
     </div>
   );
 };

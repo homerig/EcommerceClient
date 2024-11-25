@@ -4,7 +4,7 @@ import { finishCart } from "../Redux/cartSlice";
 import { useParams } from "react-router-dom";
 import "./css/EditUser.css";
 
-const FinishCart = ({ isOpen, onClose }) => {
+const FinishCart = ({ setModalOpen }) => {
   const { cartId } = useParams();
   const dispatch = useDispatch();
 
@@ -30,24 +30,17 @@ const FinishCart = ({ isOpen, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(finishCart({ cartId, formData }));
+    dispatch(finishCart({ cartId, formData }))
+    .then(() => {
+      setModalOpen(false); // Cierra el modal al completar la acción
+    });
   };
-
-  // Cerrar el modal automáticamente si la acción es exitosa
-  useEffect(() => {
-    if (success) {
-      onClose(); // Llama a la función de cierre pasada como prop
-    }
-  }, [success, onClose]);
-
-  // Evitar renderizar si el modal no está abierto
-  if (!isOpen) return null;
 
   return (
     <div className="modal-overlay">
       <div className="modal-container">
         {/* Botón para cerrar el modal */}
-        <button className="close-button" onClick={onClose}>
+        <button className="close-button" onClick={() => setModalOpen(false)}>
           &times;
         </button>
         <h2>Complete sus datos</h2>

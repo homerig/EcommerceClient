@@ -46,8 +46,10 @@ export const createProduct = createAsyncThunk(
           "Content-Type": "multipart/form-data",
         },
       });
+      console.log(data);
       return data;
     } catch (error) {
+      debugger;
       return rejectWithValue(error.response.data);
     }
   }
@@ -64,7 +66,6 @@ export const updateProduct = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error updating product");

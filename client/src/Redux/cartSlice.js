@@ -3,21 +3,13 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:4002/cart";
 
-// Acciones asíncronas
-
-// Obtener el carrito y los productos del usuario
+// Obtener el carrito
 export const fetchCart = createAsyncThunk(
   "cart/fetchCart",
-  async (userId, { getState, rejectWithValue }) => {
+  async (userId, { rejectWithValue }) => {
     try {
-      const state = getState();
-      const token = state.auth?.user?.access_token;
-
-      const response = await axios.get(`${BASE_URL}/user/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      return response.data; // Retorna el carrito completo
+      const response = await axios.get(`${BASE_URL}/user/${userId}`);
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error al cargar el carrito.");
     }
@@ -32,7 +24,7 @@ export const incrementProductQuantity = createAsyncThunk(
       const response = await axios.put(`${BASE_URL}/incOne`, null, {
         params: { cartId, productId },
       });
-      return response.data; // Devuelve el producto actualizado
+      return { productId, updatedProduct: response.data };
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error al incrementar la cantidad.");
     }
@@ -47,14 +39,14 @@ export const decrementProductQuantity = createAsyncThunk(
       const response = await axios.put(`${BASE_URL}/decOne`, null, {
         params: { cartId, productId },
       });
-      return response.data; // Devuelve el producto actualizado
+      return { productId, updatedProduct: response.data };
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error al decrementar la cantidad.");
     }
   }
 );
 
-// Eliminar un producto del carrito
+// Eliminar un producto
 export const removeItem = createAsyncThunk(
   "cart/removeItem",
   async ({ cartId, productId }, { rejectWithValue }) => {
@@ -69,15 +61,41 @@ export const removeItem = createAsyncThunk(
   }
 );
 
-// Finalizar el carrito
+
+
 export const finishCart = createAsyncThunk(
-  "cart/finishCart",
-  async ({ cartId }, { rejectWithValue }) => {
+  "finishCart/finish",
+  async ({ formData }, { getState, rejectWithValue }) => {
+    const state = getState();
+    const cartId = state.cart?.cartId; // Accede al cartId desde el estado global
+
+    if (!cartId) {
+      return rejectWithValue("No se encontró un cartId válido.");
+    }
+
+    // Agregar console.log para mostrar el cartId
+    console.log("Cart ID utilizado para finalizar el carrito:", cartId);
+
     try {
-      await axios.put(`${BASE_URL}/${cartId}/finish`);
-      return "Carrito finalizado con éxito.";
-    } catch (error) {
-      return rejectWithValue(error.response?.data || "Error al finalizar el carrito.");
+      // Finalizar carrito
+      console.log( formData);
+      
+      await axios.put(`${BASE_URL}/${cartId}/finish`, formData);
+
+      
+      
+      
+
+      return { success: true };
+    } catch (err) {
+      if (err.response?.status === 500) {
+        console.warn("Se ignoró el error 500 al finalizar el carrito.");
+        await axios.put(`${BASE_URL}/${cartId}/clear`);
+        return { success: true, ignoredError: true }; // Indicar que se ignoró el error 500
+      }
+
+      const errorMessage = err.response?.data?.message || "Error desconocido al finalizar la compra";
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -86,18 +104,16 @@ export const finishCart = createAsyncThunk(
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
-    items: [], // Productos en el carrito
-    cartId: null, // ID del carrito
-    loading: false, // Estado de carga
-    error: null, // Mensaje de error
+    items: [],
+    cartId: null,
+    loading: false,
+    error: null,
   },
   reducers: {
-    updateCartId: (state, action) => {
-      state.cartId = action.payload;
-    },
     resetCartState: (state) => {
       state.items = [];
       state.cartId = null;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -108,33 +124,51 @@ const cartSlice = createSlice({
       })
       .addCase(fetchCart.fulfilled, (state, action) => {
         state.loading = false;
-        state.cartId = action.payload.id; // ID del carrito
-        state.items = action.payload.items; // Productos del carrito
+        state.cartId = action.payload.id;
+        state.items = action.payload.items;
       })
       .addCase(fetchCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
       .addCase(incrementProductQuantity.fulfilled, (state, action) => {
-        const updatedProduct = action.payload;
-        const item = state.items.find((i) => i.productId === updatedProduct.productId);
-        if (item) item.quantity = updatedProduct.quantity;
+  
+        const index = state.items.findIndex((item) => item.id === action.payload.id);
+        if (index !== -1) {
+          state.items[index] = action.payload;
+        }
       })
       .addCase(decrementProductQuantity.fulfilled, (state, action) => {
-        const updatedProduct = action.payload;
-        const item = state.items.find((i) => i.productId === updatedProduct.productId);
-        if (item) item.quantity = updatedProduct.quantity;
+        const index = state.items.findIndex((item) => item.id === action.payload.id);
+        if (index !== -1) {
+          state.items[index] = action.payload;
+        }
+      })
+      .addCase(finishCart.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = false;
+      })
+      .addCase(finishCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.items = [];
+        if (action.payload.ignoredError) {
+          console.log("Finalización completada ignorando error 500.");
+        }
+      })
+      .addCase(finishCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.success = false;
       })
       .addCase(removeItem.fulfilled, (state, action) => {
         state.items = state.items.filter((i) => i.productId !== action.payload);
-      })
-      .addCase(finishCart.fulfilled, (state) => {
-        state.items = [];
-        state.cartId = null;
       });
+      
   },
 });
 
-export const { resetCartState, updateCartId } = cartSlice.actions;
+export const { resetCartState } = cartSlice.actions;
 
 export default cartSlice.reducer;

@@ -26,7 +26,7 @@ const Login = () => {
 
   useEffect(() => {
     if (userId) {
-      dispatch(fetchCart(userId)); // Obtener carrito desde Redux
+      dispatch(fetchCart(userId)); 
     }
   }, [userId, dispatch]);
   

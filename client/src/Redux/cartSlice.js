@@ -16,6 +16,20 @@ export const fetchCart = createAsyncThunk(
   }
 );
 
+export const fetchProductDetails = createAsyncThunk(
+  "cart/fetchProductDetails",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`http://localhost:4002/products/${productId}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error al obtener detalles del producto ${productId}:`, error);
+      return rejectWithValue(error.response?.data || "Error al obtener detalles del producto.");
+    }
+  }
+);
+
+
 export const incrementProductQuantity = createAsyncThunk(
   "cart/incrementProductQuantity",
   async ({ cartId, productId }, { rejectWithValue }) => {
@@ -75,8 +89,10 @@ export const finishCart = createAsyncThunk(
       await axios.put(`${BASE_URL}/${cartId}/finish`, formData);
 
       await axios.put(`${BASE_URL}/${cartId}/clear`);
+      alert('Compra finalizada con exito!');
 
       return cartId;
+
       
     } catch (err) {
       console.error("Error detectado:", err);
@@ -87,15 +103,6 @@ export const finishCart = createAsyncThunk(
         console.error("No hubo respuesta del servidor:", err.request);
       } else {
         console.error("Error durante la configuración de la solicitud:", err.message);
-      }
-    
-      if (err.response?.status === 500) {
-        try {
-          return { success: true, ignoredError: true };
-        } catch (clearError) {
-          console.error("Error al intentar limpiar el carrito:", clearError);
-          return rejectWithValue("Error al intentar limpiar el carrito.");
-        }
       }
     
       const errorMessage = err.response?.data?.message || "Error desconocido al finalizar la compra";

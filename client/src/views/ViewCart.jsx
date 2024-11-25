@@ -5,18 +5,15 @@ import {
   incrementProductQuantity,
   decrementProductQuantity,
   removeItem,
+  fetchProductDetails, // Nuevo import
 } from "../Redux/cartSlice";
 import FinishCart from "./FinishCart";
 import "./css/ViewCart.css";
-import axios from "axios";
 
 const ViewCart = () => {
   const dispatch = useDispatch();
-
-  
   const { items: cartItems, cartId, loading, error } = useSelector((state) => state.cart);
   const userId = useSelector((state) => state.auth.user?.userId);
-
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [detailedCartItems, setDetailedCartItems] = useState([]);
@@ -25,20 +22,20 @@ const ViewCart = () => {
     try {
       const itemsWithDetails = await Promise.all(
         items.map(async (item) => {
-          try {
-            const response = await axios.get(`http://localhost:4002/products/${item.productId}`);
-            const product = response.data;
-            return {
-              ...item,
-              productName: product.name,
-              productPrice: product.price * (1 - product.discount / 100),
-              productImage: product.images.length > 0 ? product.images[0] : null,
-              stock: product.stock,
-            };
-          } catch (error) {
-            console.error(`Error al obtener detalles del producto ${item.productId}:`, error);
-            return item; 
-          }
+          const productDetails = await dispatch(fetchProductDetails(item.productId));
+          return productDetails.payload
+            ? {
+                ...item,
+                productName: productDetails.payload.name,
+                productPrice:
+                  productDetails.payload.price * (1 - productDetails.payload.discount / 100),
+                productImage:
+                  productDetails.payload.images.length > 0
+                    ? productDetails.payload.images[0]
+                    : null,
+                stock: productDetails.payload.stock,
+              }
+            : item; // En caso de error, devolver el item sin modificar.
         })
       );
       setDetailedCartItems(itemsWithDetails);
@@ -57,13 +54,12 @@ const ViewCart = () => {
     syncDetailedCartItems(cartItems);
   }, [cartItems]);
 
+  
 
   const handleQuantityChange = async (type, productId) => {
     const action = type === "increment" ? incrementProductQuantity : decrementProductQuantity;
-
     const response = await dispatch(action({ cartId, productId }));
     if (response.meta.requestStatus === "fulfilled") {
-
       setDetailedCartItems((prevItems) =>
         prevItems.map((item) =>
           item.productId === productId
@@ -79,7 +75,6 @@ const ViewCart = () => {
   const handleRemoveItem = async (productId) => {
     const response = await dispatch(removeItem({ cartId, productId }));
     if (response.meta.requestStatus === "fulfilled") {
-
       setDetailedCartItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
     } else {
       console.error(response.payload || "Error al eliminar el producto.");
@@ -138,7 +133,8 @@ const ViewCart = () => {
           </div>
           <div className="cart-summary">
             <h3>Resumen de Compra</h3>
-            <p>Total: $
+            <p>
+              Total: $
               {detailedCartItems
                 .reduce((acc, item) => acc + item.quantity * item.productPrice, 0)
                 .toFixed(2)}
@@ -150,7 +146,6 @@ const ViewCart = () => {
         </>
       )}
 
-      {}
       {isModalOpen && <FinishCart setModalOpen={setModalOpen} />}
     </div>
   );

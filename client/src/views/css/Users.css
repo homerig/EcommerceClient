@@ -11,18 +11,18 @@
 
 .search-filter {
   display: flex;
-  justify-content: flex-start; /* Alinea todo hacia el lado izquierdo */
+  justify-content: flex-start; 
   align-items: center;
   margin-bottom: 20px;
-  gap: 150px; /* Espacio entre el filtro y la barra de búsqueda */
+  gap: 150px;
 }
 
 .search-filter select {
   padding: 12px;
-  font-size: 18px; /* Tamaño de texto más pequeño */
+  font-size: 18px; 
   border-radius: 18px;
   border: 1px solid #ccc;
-  width: 200px; /* Ancho reducido del filtro */
+  width: 200px;
 }
 
 .search-filter input {
@@ -30,11 +30,11 @@
   font-size: 18px;
   border-radius: 18px;
   border: 1px solid #ccc;
-  width: 1000px; /* Ancho aumentado de la barra de búsqueda */
+  width: 1000px;
   background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4gPHBhdGggZD0iTTE0LjMxIDIwLjcxbDQuODctNC44NmEuNzkuNzkgMCAwIDAgMC0xLjEyTDExLjgyIDExLjhhNyA3IDAgMSAwLS43OTkuNzk5bDcuMjg4IDcuMjk2YS43OS43OSAwIDAgMCAxLjEyIDB6bS0xMy40LTkuNzY4YTYuMDk3IDYuMDk3IDAgMSAxIDEyLjE5NCAwIDYuMDk3IDYuMDk3IDAgMCAxLTEyLjE5NCAweiIvPjwvc3ZnPg==');
-  background-position: 98% center; /* Posición de la lupa */
+  background-position: 98% center; 
   background-repeat: no-repeat;
-  background-size: 20px; /* Tamaño de la lupa */
+  background-size: 20px;
   
 }
 

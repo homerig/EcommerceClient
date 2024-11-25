@@ -32,14 +32,14 @@ const FinishCart = ({ setModalOpen }) => {
     e.preventDefault();
     dispatch(finishCart({ cartId, formData }))
     .then(() => {
-      setModalOpen(false); // Cierra el modal al completar la acción
+      setModalOpen(false); 
     });
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-container">
-        {/* Botón para cerrar el modal */}
+        {}
         <button className="close-button" onClick={() => setModalOpen(false)}>
           &times;
         </button>

@@ -1,11 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { fetchCart, resetCartState } from "./cartSlice"; // Importa las acciones del carrito
+import { fetchCart, resetCartState } from "./cartSlice"; 
 
 const BASE_URL = "http://localhost:4002/api/v1/auth";
 const CART_URL = "http://localhost:4002/cart";
 
-// Recuperar usuario de localStorage al cargar la app
 const savedUser = JSON.parse(localStorage.getItem("user")) || null;
 
 export const registerUser = createAsyncThunk(
@@ -18,14 +17,12 @@ export const registerUser = createAsyncThunk(
 
       const user = userResponse.data;
 
-      // Crear carrito para el nuevo usuario
       await axios.post(
         CART_URL,
         { userId: user.userId },
         { headers: { Authorization: `Bearer ${user.access_token}` } }
       );
 
-      // Guardar usuario en localStorage
       localStorage.setItem("user", JSON.stringify(user));
 
       return user;
@@ -42,14 +39,12 @@ export const loginUser = createAsyncThunk(
       const response = await axios.post(`${BASE_URL}/authenticate`, { email, password });
       const user = response.data;
 
-      // Obtener carrito asociado al usuario
       const cartResponse = await axios.get(`http://localhost:4002/cart/user/${user.userId}`, {
         headers: { Authorization: `Bearer ${user.access_token}` },
       });
 
       const cartId = cartResponse.data.id;
 
-      // Guardar usuario y cartId en localStorage
       const userData = { ...user, cartId };
       localStorage.setItem("user", JSON.stringify(userData));
 
@@ -64,14 +59,14 @@ export const loginUser = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: savedUser, // Cargar usuario desde localStorage
+    user: savedUser, 
     loading: false,
     error: null,
   },
   reducers: {
     logout: (state) => {
       state.user = null;
-      localStorage.removeItem("user"); // Limpiar localStorage al cerrar sesión
+      localStorage.removeItem("user");
     },
   },
   extraReducers: (builder) => {

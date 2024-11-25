@@ -3,7 +3,7 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:4002/cart";
 
-// Obtener el carrito
+
 export const fetchCart = createAsyncThunk(
   "cart/fetchCart",
   async (userId, { rejectWithValue }) => {
@@ -16,7 +16,6 @@ export const fetchCart = createAsyncThunk(
   }
 );
 
-// Incrementar la cantidad de un producto
 export const incrementProductQuantity = createAsyncThunk(
   "cart/incrementProductQuantity",
   async ({ cartId, productId }, { rejectWithValue }) => {
@@ -31,7 +30,7 @@ export const incrementProductQuantity = createAsyncThunk(
   }
 );
 
-// Decrementar la cantidad de un producto
+
 export const decrementProductQuantity = createAsyncThunk(
   "cart/decrementProductQuantity",
   async ({ cartId, productId }, { rejectWithValue }) => {
@@ -46,7 +45,6 @@ export const decrementProductQuantity = createAsyncThunk(
   }
 );
 
-// Eliminar un producto
 export const removeItem = createAsyncThunk(
   "cart/removeItem",
   async ({ cartId, productId }, { rejectWithValue }) => {
@@ -67,7 +65,7 @@ export const finishCart = createAsyncThunk(
   "finishCart/finish",
   async ({ formData }, { getState, rejectWithValue }) => {
     const state = getState();
-    const cartId = state.cart?.cartId; // Accede al cartId desde el estado global
+    const cartId = state.cart?.cartId;
 
     if (!cartId) {
       return rejectWithValue("No se encontró un cartId válido.");
@@ -107,7 +105,7 @@ export const finishCart = createAsyncThunk(
   }
 );
 
-// Slice
+
 const cartSlice = createSlice({
   name: "cart",
   initialState: {

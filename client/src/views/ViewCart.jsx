@@ -13,15 +13,14 @@ import axios from "axios";
 const ViewCart = () => {
   const dispatch = useDispatch();
 
-  // Estado global
+  
   const { items: cartItems, cartId, loading, error } = useSelector((state) => state.cart);
   const userId = useSelector((state) => state.auth.user?.userId);
 
-  // Estado local
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [detailedCartItems, setDetailedCartItems] = useState([]);
 
-  // Función para sincronizar los detalles de los productos
   const syncDetailedCartItems = async (items) => {
     try {
       const itemsWithDetails = await Promise.all(
@@ -38,7 +37,7 @@ const ViewCart = () => {
             };
           } catch (error) {
             console.error(`Error al obtener detalles del producto ${item.productId}:`, error);
-            return item; // Devuelve el item sin detalles en caso de error
+            return item; 
           }
         })
       );
@@ -48,25 +47,23 @@ const ViewCart = () => {
     }
   };
 
-  // Cargar carrito y sincronizar detalles al iniciar
   useEffect(() => {
     if (userId) {
-      dispatch(fetchCart(userId)); // Obtener carrito desde Redux
+      dispatch(fetchCart(userId));
     }
   }, [userId, dispatch]);
 
   useEffect(() => {
-    syncDetailedCartItems(cartItems); // Sincronizar detalles cada vez que cambie `cartItems`
+    syncDetailedCartItems(cartItems);
   }, [cartItems]);
 
-  // Manejo de cantidad (incrementar o decrementar)
+
   const handleQuantityChange = async (type, productId) => {
     const action = type === "increment" ? incrementProductQuantity : decrementProductQuantity;
 
-    // Actualizar cantidad en Redux
     const response = await dispatch(action({ cartId, productId }));
     if (response.meta.requestStatus === "fulfilled") {
-      // Actualizar el estado local
+
       setDetailedCartItems((prevItems) =>
         prevItems.map((item) =>
           item.productId === productId
@@ -82,7 +79,7 @@ const ViewCart = () => {
   const handleRemoveItem = async (productId) => {
     const response = await dispatch(removeItem({ cartId, productId }));
     if (response.meta.requestStatus === "fulfilled") {
-      // Remover del estado local
+
       setDetailedCartItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
     } else {
       console.error(response.payload || "Error al eliminar el producto.");
@@ -153,7 +150,7 @@ const ViewCart = () => {
         </>
       )}
 
-      {/* Modal para finalizar carrito */}
+      {}
       {isModalOpen && <FinishCart setModalOpen={setModalOpen} />}
     </div>
   );

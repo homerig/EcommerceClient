@@ -33,11 +33,11 @@ const Register = () => {
       return;
     }
 
-    // Despacha la acción para registrar el usuario
+
     dispatch(registerUser(formData))
       .unwrap()
       .then(() => {
-        navigate("/"); // Redirige al usuario a la página principal tras el registro
+        navigate("/"); 
       })
       .catch((err) => {
         console.error("Error al registrar el usuario:", err);

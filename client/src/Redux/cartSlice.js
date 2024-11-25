@@ -73,29 +73,37 @@ export const finishCart = createAsyncThunk(
       return rejectWithValue("No se encontró un cartId válido.");
     }
 
-    
-
     try {
-      // Finalizar carrito
-      
-      
       await axios.put(`${BASE_URL}/${cartId}/finish`, formData);
 
-      
-      
-      
+      await axios.put(`${BASE_URL}/${cartId}/clear`);
 
-      return { success: true };
+      return cartId;
+      
     } catch (err) {
-      if (err.response?.status === 500) {
-        
-        await axios.put(`${BASE_URL}/${cartId}/clear`);
-        return { success: true, ignoredError: true }; // Indicar que se ignoró el error 500
+      console.error("Error detectado:", err);
+    
+      if (err.response) {
+        console.error("Detalles de la respuesta del error:", err.response);
+      } else if (err.request) {
+        console.error("No hubo respuesta del servidor:", err.request);
+      } else {
+        console.error("Error durante la configuración de la solicitud:", err.message);
       }
-
+    
+      if (err.response?.status === 500) {
+        try {
+          return { success: true, ignoredError: true };
+        } catch (clearError) {
+          console.error("Error al intentar limpiar el carrito:", clearError);
+          return rejectWithValue("Error al intentar limpiar el carrito.");
+        }
+      }
+    
       const errorMessage = err.response?.data?.message || "Error desconocido al finalizar la compra";
       return rejectWithValue(errorMessage);
     }
+    
   }
 );
 
@@ -144,17 +152,18 @@ const cartSlice = createSlice({
         }
       })
       .addCase(finishCart.pending, (state) => {
+        console.log("Finalizando carrito: pendiente...");
         state.loading = true;
         state.error = null;
-        state.success = false;
       })
       .addCase(finishCart.fulfilled, (state, action) => {
+        console.log("Finalizando carrito: éxito", action.payload);
         state.loading = false;
         state.success = true;
         state.items = [];
-        
       })
       .addCase(finishCart.rejected, (state, action) => {
+        console.error("Finalizando carrito: error", action.payload || action.error.message);
         state.loading = false;
         state.error = action.payload;
         state.success = false;

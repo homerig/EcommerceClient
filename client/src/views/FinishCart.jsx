@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { finishCart} from "../Redux/cartSlice";
-import { useNavigate, useParams } from "react-router-dom";
+import { finishCart } from "../Redux/cartSlice";
+import { useParams } from "react-router-dom";
 import "./css/EditUser.css";
 
-const FinishCart = () => {
+const FinishCart = ({ isOpen, onClose }) => {
   const { cartId } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     dni: "",
@@ -34,10 +33,23 @@ const FinishCart = () => {
     dispatch(finishCart({ cartId, formData }));
   };
 
+  // Cerrar el modal automáticamente si la acción es exitosa
+  useEffect(() => {
+    if (success) {
+      onClose(); // Llama a la función de cierre pasada como prop
+    }
+  }, [success, onClose]);
+
+  // Evitar renderizar si el modal no está abierto
+  if (!isOpen) return null;
 
   return (
     <div className="modal-overlay">
       <div className="modal-container">
+        {/* Botón para cerrar el modal */}
+        <button className="close-button" onClick={onClose}>
+          &times;
+        </button>
         <h2>Complete sus datos</h2>
         {error && <p className="error-message">{error}</p>}
         <form className="form-container" onSubmit={handleSubmit}>
@@ -74,20 +86,17 @@ const FinishCart = () => {
             required
           />
 
-          <select name="metodoPago" value={formData.metodoPago} onChange={handleChange} required>
+          <select
+            name="metodoPago"
+            value={formData.metodoPago}
+            onChange={handleChange}
+            required
+          >
             <option value="">Seleccione un método de pago</option>
             <option value="efectivo">Efectivo</option>
             <option value="transferencia">Transferencia</option>
             <option value="tarjeta">Tarjeta</option>
           </select>
-
-          {formData.metodoPago === "efectivo" && (
-            <p>Realizar el pago antes de las 48 horas. Enviar comprobante al mail Matecito@gmail.com</p>
-          )}
-
-          {formData.metodoPago === "transferencia" && (
-            <p>Realizar el pago antes de las 48 horas. Enviar comprobante al mail Matecito@gmail.com</p>
-          )}
 
           {formData.metodoPago === "tarjeta" && (
             <>
@@ -119,7 +128,7 @@ const FinishCart = () => {
           )}
 
           <button type="submit" className="submit-button" disabled={loading}>
-            {loading ? "Confirmando..." : "Confirmar compra"}
+            {loading ? "Procesando..." : "Finalizar Compra"}
           </button>
         </form>
       </div>

@@ -73,12 +73,11 @@ export const finishCart = createAsyncThunk(
       return rejectWithValue("No se encontró un cartId válido.");
     }
 
-    // Agregar console.log para mostrar el cartId
-    console.log("Cart ID utilizado para finalizar el carrito:", cartId);
+    
 
     try {
       // Finalizar carrito
-      console.log( formData);
+      
       
       await axios.put(`${BASE_URL}/${cartId}/finish`, formData);
 
@@ -89,7 +88,7 @@ export const finishCart = createAsyncThunk(
       return { success: true };
     } catch (err) {
       if (err.response?.status === 500) {
-        console.warn("Se ignoró el error 500 al finalizar el carrito.");
+        
         await axios.put(`${BASE_URL}/${cartId}/clear`);
         return { success: true, ignoredError: true }; // Indicar que se ignoró el error 500
       }
@@ -153,9 +152,7 @@ const cartSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.items = [];
-        if (action.payload.ignoredError) {
-          console.log("Finalización completada ignorando error 500.");
-        }
+        
       })
       .addCase(finishCart.rejected, (state, action) => {
         state.loading = false;

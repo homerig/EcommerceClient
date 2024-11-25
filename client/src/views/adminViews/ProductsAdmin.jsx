@@ -129,10 +129,10 @@ const ProductTable = () => {
       </div>
       
 
-      {/* Modal de creación */}
+      
       {createModalOpen && <CreateForm setCreateModalOpen={setCreateModalOpen} />}
 
-      {/* Modal de edición */}
+      
       {editModalOpen && ( <EditProductModal
         setEditModalOpen={setEditModalOpen}
         initialValues={{
@@ -148,7 +148,7 @@ const ProductTable = () => {
       />
       )}
 
-      {/* Modal de visualización de imágenes */}
+      
       {imageModalOpen && (
       <div className="modal">
         <div className="modal-content">
@@ -157,7 +157,7 @@ const ProductTable = () => {
             {selectedProductImages.map((image, index) => (
               <img 
                 key={index} 
-                src={`data:image/jpeg;base64,${image}`}  // Asegúrate de que sea 'image/jpeg' o el tipo MIME correcto
+                src={`data:image/jpeg;base64,${image}`}
                 alt={`Product Image ${index + 1}`} 
                 
               />

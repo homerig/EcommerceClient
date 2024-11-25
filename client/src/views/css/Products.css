@@ -1,4 +1,3 @@
-/* src/Products.css */
 body {
   margin: 0;
   font-family: 'Arial', sans-serif;
@@ -129,7 +128,7 @@ body {
   padding: 20px 20px 80px 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  height: 300px; /* Asegura una altura uniforme para todas las tarjetas */
+  height: 300px; 
 }
 
 .producto-imagen {
@@ -145,20 +144,20 @@ body {
 }
 
 .agregar-carrito-btn {
-  background-color: #808080; /* Color gris */
+  background-color: #808080; 
   color: white;
   border: none;
   padding: 8px 12px;
   cursor: pointer;
   border-radius: 4px;
-  margin-top: auto; /* Alinea el botón al final de la tarjeta */
-  width: 100%; /* Asegura que el botón ocupe todo el ancho disponible */
-  max-width: 180px; /* Tamaño máximo para un mejor aspecto */
+  margin-top: auto; 
+  width: 100%; 
+  max-width: 180px;
   text-align: center;
 }
 
 .agregar-carrito-btn:hover {
-  background-color: #696969; /* Cambia a un tono más oscuro al pasar el mouse */
+  background-color: #696969; 
 }
 
 
@@ -166,39 +165,39 @@ button {
   margin-top: 1em;
 }
 
-/* src/Products.css */
+
 
 .filtros {
   display: flex;
-  flex-wrap: wrap; /* Permite que los filtros se ajusten en múltiples líneas si es necesario */
+  flex-wrap: wrap;
   justify-content: space-between;
-  margin: 10px 0; /* Reducir el margen superior e inferior */
-  padding: 10px; /* Espacio interno para evitar que el contenido esté pegado al borde */
-  border: 1px solid #ddd; /* Para mantener el estilo del borde */
-  border-radius: 8px; /* Bordes redondeados */
+  margin: 10px 0; 
+  padding: 10px; 
+  border: 1px solid #ddd;
+  border-radius: 8px; 
 }
 
 .filtro-categorias,
 .filtro-colores,
 .filtro-precio {
-  flex: 1 1 30%; /* Permitirá que cada filtro ocupe al menos el 30% del ancho, y se ajuste según sea necesario */
-  margin: 5px; /* Espaciado uniforme entre los filtros */
+  flex: 1 1 30%; 
+  margin: 5px; 
 }
 
 .filtros h3 {
-  margin: 5px 0; /* Reducir el margen de los títulos de los filtros */
-  font-size: 1em; /* Tamaño de fuente más pequeño */
+  margin: 5px 0; 
+  font-size: 1em;
 }
 
 label {
-  font-size: 0.85em; /* Hacer las etiquetas un poco más pequeñas */
-  margin-right: 0.5em; /* Espaciado entre las etiquetas */
+  font-size: 0.85em; 
+  margin-right: 0.5em;
 }
 
 .filtro-precio input {
-  margin: 5px 0; /* Espaciado más pequeño para los inputs */
-  padding: 5px; /* Un poco de padding para los inputs */
-  width: 80%; /* Ajustar el ancho de los inputs */
+  margin: 5px 0; 
+  padding: 5px; 
+  width: 80%; 
 }
 
 .aplicar-filtros {
@@ -206,8 +205,8 @@ label {
   color: white;
   border: none;
   border-radius: 5px;
-  padding: 8px; /* Hacer el botón un poco más pequeño */
+  padding: 8px; 
   cursor: pointer;
-  margin-top: 5px; /* Espaciado más pequeño */
-  width: 100%; /* Asegurar que el botón ocupe todo el ancho disponible */
+  margin-top: 5px; 
+  width: 100%; 
 }

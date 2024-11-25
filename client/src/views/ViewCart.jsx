@@ -5,7 +5,7 @@ import {
   incrementProductQuantity,
   decrementProductQuantity,
   removeItem,
-  fetchProductDetails, // Nuevo import
+  fetchProductDetails, 
 } from "../Redux/cartSlice";
 import FinishCart from "./FinishCart";
 import "./css/ViewCart.css";
@@ -35,7 +35,7 @@ const ViewCart = () => {
                     : null,
                 stock: productDetails.payload.stock,
               }
-            : item; // En caso de error, devolver el item sin modificar.
+            : item; 
         })
       );
       setDetailedCartItems(itemsWithDetails);

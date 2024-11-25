@@ -30,7 +30,7 @@ const CreateForm = ({ setCreateModalOpen }) => {
     formData.append("stock", stock);
     formData.append("categoryId", categoryId);
 
-    // Añadir imágenes al FormData
+    
     if (images.length > 0) {
       Array.from(images).forEach((image) => {
         formData.append("images", image);
@@ -39,7 +39,7 @@ const CreateForm = ({ setCreateModalOpen }) => {
 
     dispatch(createProduct(formData));
 
-    // Resetear los estados del formulario
+    
     setname("");
     setdescription("");
     setprice(0);

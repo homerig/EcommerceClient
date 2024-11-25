@@ -6,7 +6,7 @@ import './Product.css';
 const Product = ({ product }) => {
   const dispatch = useDispatch();
 
-  // Extraer productos y estados de Redux
+  
   const { items: products, loading, error, finalPrices } = useSelector((state) => state.products);
 
   const filteredProducts = products.filter((product) => product.stock !== 0).slice(0, 6);

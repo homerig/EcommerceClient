@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faShoppingCart, faUser, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart, faUser, faCog } from '@fortawesome/free-solid-svg-icons';
 import logo from '../assets/LogoMatecito.png';
 import './css/Navigation.css'; 
 

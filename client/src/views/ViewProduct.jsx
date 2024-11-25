@@ -21,7 +21,7 @@ const ProductView = () => {
   useEffect(() => {
     dispatch(fetchProducts());
     if (userId) {
-      dispatch(fetchCart(userId)); // Cargar carrito desde Redux
+      dispatch(fetchCart(userId)); 
     }
   }, [dispatch, userId]);
 

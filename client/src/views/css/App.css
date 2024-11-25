@@ -10,8 +10,6 @@ body{
   transition: filter 300ms;
 }
 
-
-/* Solo mantén las animaciones si son necesarias */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -27,7 +25,6 @@ body{
   }
 }
 
-/* Si estas clases no se están utilizando en tu vista actual, coméntalas */
 .card {
   padding: 2em;
 }

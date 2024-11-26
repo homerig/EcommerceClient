@@ -70,34 +70,44 @@ const Categories = () => {
   };
 
   const handleDeleteCategory = (categoryId) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar esta categoría?")) {
-      dispatch(deleteCategory(categoryId))
-        .unwrap()
-        .then(() => {
-          Swal.fire({
-            toast: true,
-            position: "top-end",
-            icon: "success",
-            title: "Categoría eliminada correctamente",
-            showConfirmButton: false,
-            timer: 2000,
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "¿Quieres eliminar esta categoría?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteCategory(categoryId))
+          .unwrap()
+          .then(() => {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "success",
+              title: "Categoría eliminada correctamente",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          })
+          .catch(() => {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "No se puede eliminar una categoría que tenga asociada productos.",
+            });
           });
-        })
-        .catch(() => {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "No se pudo eliminar la categoría.",
-          });
-        });
-    }
+      }
+    });
   };
+  
 
   return (
     <div className="categories-container">
       <h2>Categorías</h2>
       {loading && <p>Cargando categorías...</p>}
-      {error && <p className="error">{error}</p>}
 
       <ul className="categories-list">
         {categories.map((category) => (

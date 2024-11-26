@@ -42,12 +42,11 @@ const ProductTable = () => {
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(deleteProduct(id)).then(() => {
+        dispatch(deleteProduct(id)).unwrap().then(() => {
           Swal.fire({
             title: "Eliminado",
             text: "El producto ha sido eliminado exitosamente.",
@@ -57,12 +56,18 @@ const ProductTable = () => {
             toast: true,
             position: "top-end",
           });
-        });
+        }).catch(() => {
+          Swal.fire({
+            title: "No se ha podido eliminar",
+            text: "No se puede eliminar un producto que está agregado a un carrito.",
+            icon: "error",
+            showConfirmButton: true,
+          });
+        });;
       }
     });
   };
   
-
   const handleEditClick = (product) => {
     setEditingProduct(product);
     setFormValues({
@@ -129,7 +134,7 @@ const ProductTable = () => {
     
 
   </div>);
-  if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
+
   return (
     <div className="product-table-container">
       <div className="table-actions">

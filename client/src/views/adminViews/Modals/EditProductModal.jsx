@@ -2,6 +2,8 @@ import { React, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "../../../Redux/categoriesSlice";
 import { updateProduct } from "../../../Redux/productosSlice";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 
 const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) => {
   const [name, setname] = useState(initialValues.name);
@@ -24,7 +26,7 @@ const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) =
     if (categories.length > 0 && categoryDescription) {
       const selectedCategory = categories.find((item) => item.description === categoryDescription);
       if (selectedCategory) {
-        setcategoryId(selectedCategory.id); 
+        setcategoryId(selectedCategory.id);
       }
     }
   }, [categories, categoryDescription]);
@@ -40,8 +42,6 @@ const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) =
     formData.append("stock", stock);
     formData.append("categoryId", categoryId);
 
-
-    
     if (images.length > 0) {
       Array.from(images).forEach((image) => {
         formData.append("images", image);
@@ -49,9 +49,21 @@ const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) =
     }
 
     dispatch(updateProduct({ id: editingProduct.id, productData: formData }))
-    .then(() => {
-      setEditModalOpen(false);
-    });
+      .then(() => {
+        // Mostrar SweetAlert2
+        Swal.fire({
+          title: "¡Producto Editado!",
+          text: "Los cambios se guardaron correctamente.",
+          icon: "success",
+          timer: 3000, // Desaparece automáticamente después de 3 segundos
+          showConfirmButton: false,
+          toast: true, // Aparece como un toast (pequeño mensaje en esquina)
+          position: "top-end", // Posición del mensaje
+        });
+
+        // Cerrar el modal
+        setEditModalOpen(false);
+      });
   };
 
   return (
@@ -59,89 +71,86 @@ const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) =
       <div className="modal-content">
         <h3>Editar Producto</h3>
         <form onSubmit={handleEditSubmit}>
-        <label>
-          Nombre
-          <input
-            type="text"
-            name="name"
-            value={name}
-            onChange={(e) => setname(e.target.value)}
-          />
-        </label>
-        <label>
-          Descripción
-          <input
-            type="text"
-            name="description"
-            value={description}
-            onChange={(e) => setdescription(e.target.value)}
-          />
-        </label>
-        <div>
+          <label>
+            Nombre
+            <input
+              type="text"
+              name="name"
+              value={name}
+              onChange={(e) => setname(e.target.value)}
+            />
+          </label>
+          <label>
+            Descripción
+            <input
+              type="text"
+              name="description"
+              value={description}
+              onChange={(e) => setdescription(e.target.value)}
+            />
+          </label>
+          <div>
             <label>Categoría</label>
             <select
-                name="categoryId"
-                value={categoryId} 
-                onChange={(e) => setcategoryId(e.target.value)}
-                required
+              name="categoryId"
+              value={categoryId}
+              onChange={(e) => setcategoryId(e.target.value)}
+              required
             >
-                <option value="">Seleccione una categoría</option>
-                {categories.map((category) => (
+              <option value="">Seleccione una categoría</option>
+              {categories.map((category) => (
                 <option key={category.id} value={category.id}>
-                    {category.description}
+                  {category.description}
                 </option>
-                ))}
+              ))}
             </select>
-        </div>
-
+          </div>
           <div className="inputGroup">
+            <label>
+              Precio
+              <input
+                type="number"
+                name="price"
+                value={price}
+                onChange={(e) => setprice(e.target.value)}
+              />
+            </label>
+            <label>
+              Descuento
+              <input
+                type="number"
+                name="discount"
+                value={discount}
+                onChange={(e) => setdiscount(e.target.value)}
+              />
+            </label>
+            <label>
+              Stock
+              <input
+                type="number"
+                name="stock"
+                value={stock}
+                onChange={(e) => setstock(e.target.value)}
+              />
+            </label>
+          </div>
+          <label>
+            Imágenes
+            <input
+              type="file"
+              name="images"
+              multiple
+              onChange={(e) => setimages(e.target.files)}
+            />
+          </label>
 
-          
-        <label>
-          Precio
-          <input
-            type="number"
-            name="price"
-            value={price}
-            onChange={(e) => setprice(e.target.value)}
-          />
-        </label>
-        <label>
-          Descuento
-          <input
-            type="number"
-            name="discount"
-            value={discount}
-            onChange={(e) => setdiscount(e.target.value)}
-          />
-        </label>
-        <label>
-          Stock
-          <input
-            type="number"
-            name="stock"
-            value={stock}
-            onChange={(e) => setstock(e.target.value)}
-          />
-        </label>
-        </div>
-        <label>
-          Imágenes
-          <input
-            type="file"
-            name="images"
-            multiple
-            onChange={(e) => setimages(e.target.files)}
-          />
-        </label>
+          <button className="btn save-button" type="submit">
+            Guardar Cambios
+          </button>
 
-        <button className="btn save-button" type="submit">
-          Guardar Cambios
-        </button>
-
-        <button className="btn cancel-button" onClick={() => setEditModalOpen(false)}>
-          Cancelar
-        </button>
+          <button className="btn cancel-button" onClick={() => setEditModalOpen(false)}>
+            Cancelar
+          </button>
         </form>
       </div>
     </div>

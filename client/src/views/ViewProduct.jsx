@@ -9,6 +9,8 @@ import './css/ViewProduct.css';
 import { fetchProducts } from '../Redux/productosSlice';
 import { fetchCart } from '../Redux/cartSlice';
 import { agregarAlCarrito } from "../Redux/catalogoSlice";
+import loader from '../assets/gifLoader.gif';
+
 const ProductView = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -33,7 +35,7 @@ const ProductView = () => {
     }
   };
 
-  if (loading) return <p>Cargando producto...</p>;
+  if (loading) return <div className="containerLoader"><img src={loader} alt="Cargando.." className="loader" /><p> Cargando producto...</p></div>;
   if (error) return <p>Error: {error}</p>;
   if (!product) return <p>Producto no encontrado.</p>;
 

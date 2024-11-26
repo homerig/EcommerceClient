@@ -9,6 +9,10 @@ import { fetchCategories } from "../../Redux/categoriesSlice";
 import CreateForm from './Modals/createProductModal';
 import EditProductModal from './Modals/EditProductModal';
 
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
+import loader from '../../assets/gifLoader.gif';
+
 const ProductTable = () => {
   const dispatch = useDispatch();
   const { items: products, loading, error } = useSelector((state) => state.products);
@@ -32,11 +36,32 @@ const ProductTable = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm(`¿Estás seguro de que quieres eliminar el producto con ID ${id}?`)) {
-      dispatch(deleteProduct(id));
-    }
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: `¿Quieres eliminar el producto con ID ${id}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteProduct(id)).then(() => {
+          Swal.fire({
+            title: "Eliminado",
+            text: "El producto ha sido eliminado exitosamente.",
+            icon: "success",
+            timer: 3000,
+            showConfirmButton: false,
+            toast: true,
+            position: "top-end",
+          });
+        });
+      }
+    });
   };
-
+  
 
   const handleEditClick = (product) => {
     setEditingProduct(product);
@@ -63,7 +88,7 @@ const ProductTable = () => {
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
-  if (loading) return <p>Cargando productos...</p>;
+  if (loading) return <div className="containerLoader"><img src={loader} alt="Cargando.." className="loader" /><p> Cargando productos...</p></div>;
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
   return (
     <div className="product-table-container">

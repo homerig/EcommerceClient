@@ -36,7 +36,6 @@
   .search-bar {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
   }
   
   .search-bar input {
@@ -100,3 +99,6 @@
     text-align: center;
   }
   
+  .bottom{
+    margin-bottom: 20px;
+  }

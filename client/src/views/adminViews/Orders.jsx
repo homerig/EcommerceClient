@@ -40,7 +40,7 @@ const OrderTable = () => {
   return (
     <div className="order-table-container">
       <h2>Ver Órdenes</h2>
-      <div className="search-bar">
+      <div className="search-bar bottom">
         <input
           type="text"
           placeholder="Buscar por email..."

@@ -55,7 +55,6 @@ export const agregarAlCarrito = createAsyncThunk("catalogo/agregarAlCarrito", as
       },
     });
 
-    alert('Producto agregado al carrito');
     return producto;
 
   } catch (error) {

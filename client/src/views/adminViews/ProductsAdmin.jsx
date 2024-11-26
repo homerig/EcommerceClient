@@ -100,6 +100,7 @@ const ProductTable = () => {
           type="text"
           placeholder="Buscar..."
           value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="searchBar"
         />
         <FontAwesomeIcon icon={faSearch} className="search-icon" />

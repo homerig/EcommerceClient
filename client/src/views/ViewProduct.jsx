@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux';
@@ -29,9 +30,32 @@ const ProductView = () => {
 
   const agregarProducto = () => {
     if (cartId) {
-      dispatch(agregarAlCarrito(product));
+      dispatch(agregarAlCarrito(product))
+        .then(() => {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Producto agregado al carrito',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+          });
+        })
+        .catch(() => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'No se pudo agregar el producto al carrito',
+          });
+        });
     } else {
-      alert('No se encontró un carrito para este usuario.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Atención',
+        text: 'Debe iniciar sesión para agregar un producto al carrito',
+      });
+      navigate("/Login");
     }
   };
 
@@ -80,11 +104,11 @@ const ProductView = () => {
         </div>
 
         <button
-          className="agregar-carrito-btn"
+          className="agregarCarrito"
           onClick={agregarProducto}
           disabled={product.stock === 0}
         >
-          <FontAwesomeIcon icon={faShoppingCart} />
+          <FontAwesomeIcon icon={faShoppingCart} className='buttonIcon' />
           {product.stock === 0 ? 'Sin stock' : 'Agregar al carrito'}
         </button>
       </div>

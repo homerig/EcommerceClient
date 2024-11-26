@@ -96,8 +96,6 @@
   align-items: center;
 }
 
-
-
 .productoEnVerImagen{
   width: 500px !important;
   height: 500px !important;
@@ -105,3 +103,14 @@
   border-radius: 20px;
 }
 
+.buttonIcon{
+  padding-right: 10px;
+}
+
+
+.agregarCarrito{
+ border-radius: 99rem;
+ background-color: #808080; 
+  color: white;
+  border: none;
+}

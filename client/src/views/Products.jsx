@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts, fetchCategories, filterByCategory, filterByPrice, agregarAlCarrito } from "../Redux/catalogoSlice";
@@ -7,6 +8,7 @@ import './css/Products.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import loader from '../assets/gifLoader.gif';
+
 const Products = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
@@ -53,12 +55,25 @@ const Products = () => {
 
   const handleAddToCart = async (producto) => {
     if (!auth?.user?.access_token) {
-      alert("Debes iniciar sesión para agregar productos al carrito.");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Atención',
+        text: 'Debe iniciar sesión para agregar un producto al carrito',
+      });
       navigate("/Login");
       return;
     }
     const resultAction = await dispatch(agregarAlCarrito(producto));
     if (agregarAlCarrito.fulfilled.match(resultAction)) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Producto agregado al carrito',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
     } else if (agregarAlCarrito.rejected.match(resultAction)) {
       const warningMessage = resultAction.payload?.warning || "No se pudo agregar el producto al carrito.";
       alert(warningMessage); 

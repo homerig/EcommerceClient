@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts, fetchCategories, filterByCategory, filterByPrice, agregarAlCarrito } from "../Redux/catalogoSlice";
@@ -11,7 +10,7 @@ const Products = () => {
   const auth = useSelector((state) => state.auth);
   const { productos, categorias, loading, error } = useSelector((state) => state.catalogo);
   
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]); // Solo se puede seleccionar una categoría a la vez
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [showFilters, setShowFilters] = useState(false);
 
@@ -20,22 +19,36 @@ const Products = () => {
     dispatch(fetchCategories());
   }, [dispatch]);
 
-  const toggleFilters = () => setShowFilters(!showFilters);
+  const handleCategoryChange = (e) => {
+    setSelectedCategories([e.target.value]); // Actualiza con la categoría seleccionada
+    dispatch(filterByCategory(e.target.value)); // Filtra por categoría al seleccionar
+  };
 
-  const handleFilterSubmit = (e) => {
-    e.preventDefault();
-    if (selectedCategories.length > 0) {
-      dispatch(filterByCategory(selectedCategories[0]));
-    } else {
+  const handlePriceChange = () => {
+    // Filtra automáticamente cuando el rango de precio cambie
+    if (priceRange.min || priceRange.max) {
       dispatch(filterByPrice(priceRange));
+    } else {
+      dispatch(fetchProducts()); // Si no hay rango de precio, resetear a todos los productos
     }
+  };
+
+  const handlePriceInputChange = (e) => {
+    const { name, value } = e.target;
+    setPriceRange((prev) => {
+      const newPriceRange = { ...prev, [name]: value };
+      // Aplica el filtro automáticamente al escribir el precio
+      dispatch(filterByPrice(newPriceRange));
+      return newPriceRange;
+    });
   };
 
   const clearFilters = () => {
     setSelectedCategories([]);
     setPriceRange({ min: '', max: '' });
-    dispatch(fetchProducts());
+    dispatch(fetchProducts()); // Resetear filtros y cargar todos los productos
   };
+
   const navigate = useNavigate(); 
 
   const handleAddToCart = (producto) => {
@@ -47,9 +60,6 @@ const Products = () => {
     dispatch(agregarAlCarrito(producto));
   };
 
-  
-  
-
   if (loading) return <p>Cargando productos...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -57,56 +67,54 @@ const Products = () => {
     <div className="productos-container">
       <header className="productos-header">
         <h1>Productos</h1>
-        <button className="filtro-button" onClick={toggleFilters}>
+        <button className="filtro-button" onClick={() => setShowFilters(!showFilters)}>
           Filtrar <span>🔽</span>
         </button>
         <button className="limpiar-filtros-button" onClick={clearFilters}>
           Limpiar Filtros
         </button>
       </header>
-
+  
       {showFilters && (
-        <form onSubmit={handleFilterSubmit}>
-          <div className="filtros">
+        <div className="filtros-container">
+          <div className="filtros-flex">
             <div className="filtro-categorias">
               <h3>Categorías:</h3>
               {categorias.map((categoria) => (
                 <label key={categoria.id}>
-                  <input 
-                    type="checkbox" 
-                    value={categoria.id} 
-                    onChange={(e) => 
-                      setSelectedCategories(prev => 
-                        e.target.checked 
-                          ? [...prev, e.target.value] 
-                          : prev.filter(c => c !== e.target.value)
-                      )
-                    } 
+                  <input
+                    type="radio"
+                    name="categoria"
+                    value={categoria.id}
+                    checked={selectedCategories[0] === categoria.id.toString()}
+                    onChange={handleCategoryChange}
                   />
                   {categoria.description}
                 </label>
               ))}
             </div>
+  
             <div className="filtro-precio">
               <h3>Precio:</h3>
-              <input 
-                type="number" 
-                placeholder="Desde" 
-                value={priceRange.min} 
-                onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })} 
+              <input
+                type="number"
+                name="min"
+                placeholder="Desde"
+                value={priceRange.min}
+                onChange={handlePriceInputChange} // Aplica el filtro mientras escribe
               />
-              <input 
-                type="number" 
-                placeholder="Hasta" 
-                value={priceRange.max} 
-                onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })} 
+              <input
+                type="number"
+                name="max"
+                placeholder="Hasta"
+                value={priceRange.max}
+                onChange={handlePriceInputChange} // Aplica el filtro mientras escribe
               />
             </div>
-            <button type="submit">Aplicar Filtros</button>
           </div>
-        </form>
+        </div>
       )}
-
+  
       <div className="productos-grid">
         {productos.map((producto) => (
           <div className="producto-card" key={producto.id}>
@@ -140,6 +148,8 @@ const Products = () => {
       </div>
     </div>
   );
+  
+  
 };
 
 export default Products;

@@ -90,6 +90,21 @@ const FinishCart = ({ setModalOpen }) => {
             <option value="transferencia">Transferencia</option>
             <option value="tarjeta">Tarjeta</option>
           </select>
+          {formData.metodoPago === "transferencia" && (
+             <>
+             <h4>Realizar el pago antes de las 48hs. Enviar comprobante al mail matecito@gmail.com. </h4>
+             <h4> CBU: 0000003100081555502173, ALIAS: matecito.mates, Matecito SA </h4>
+             </>
+
+          )}
+             {formData.metodoPago === "efectivo" && (
+             <>
+             <h4>Realizar el pago antes de las 48hs en RapiPago. Enviar comprobante al mail matecito@gmail.com. </h4>
+             <h4> CBU: 0000003100081555502173, ALIAS: matecito.mates, Matecito SA </h4>
+             </>
+
+          )}
+
 
           {formData.metodoPago === "tarjeta" && (
             <>

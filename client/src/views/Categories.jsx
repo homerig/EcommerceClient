@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories, createCategory, updateCategory, deleteCategory } from "../Redux/categoriesSlice";
+import Swal from "sweetalert2";
 import "./css/Categories.css";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
@@ -21,10 +22,24 @@ const Categories = () => {
     dispatch(createCategory({ description: newDescription }))
       .unwrap()
       .then(() => {
-        setNewDescription(" ");
+        setNewDescription("");
         setShowInput(false);
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Categoría agregada correctamente",
+          showConfirmButton: false,
+          timer: 2000,
+        });
       })
-      .catch((error) => console.error("Error al agregar la categoría:", error));
+      .catch(() => {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se pudo agregar la categoría.",
+        });
+      });
   };
 
   const handleUpdateCategory = (e) => {
@@ -36,17 +51,46 @@ const Categories = () => {
       .then(() => {
         setEditCategory(null);
         setNewDescription("");
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Categoría actualizada correctamente",
+          showConfirmButton: false,
+          timer: 2000,
+        });
       })
-      .catch((error) => console.error("Error al actualizar la categoría:", error));
+      .catch(() => {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se pudo actualizar la categoría.",
+        });
+      });
   };
 
   const handleDeleteCategory = (categoryId) => {
     if (window.confirm("¿Estás seguro de que deseas eliminar esta categoría?")) {
-      dispatch(deleteCategory(categoryId)).catch((error) =>
-        console.error("Error al eliminar la categoría:", error)
-      );
+      dispatch(deleteCategory(categoryId))
+        .unwrap()
+        .then(() => {
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "Categoría eliminada correctamente",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+        })
+        .catch(() => {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo eliminar la categoría.",
+          });
+        });
     }
-
   };
 
   return (
@@ -118,7 +162,6 @@ const Categories = () => {
           </form>
         )}
       </div>
-      
     </div>
   );
 };

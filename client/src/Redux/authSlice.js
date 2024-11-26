@@ -9,9 +9,9 @@ const savedUser = JSON.parse(localStorage.getItem("user")) || null;
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
-  async (userData, { rejectWithValue }) => {
+  async (userData1, { rejectWithValue }) => {
     try {
-      const userResponse = await axios.post(`${BASE_URL}/register`, userData, {
+      const userResponse = await axios.post(`${BASE_URL}/register`, userData1, {
         headers: { "Content-Type": "application/json" },
       });
 
@@ -23,9 +23,16 @@ export const registerUser = createAsyncThunk(
         { headers: { Authorization: `Bearer ${user.access_token}` } }
       );
 
-      localStorage.setItem("user", JSON.stringify(user));
+      const cartResponse = await axios.get(`http://localhost:4002/cart/user/${user.userId}`, {
+        headers: { Authorization: `Bearer ${user.access_token}` },
+      });
 
-      return user;
+      const cartId = cartResponse.data.id;
+      
+
+      const userData = { ...user, cartId };
+      localStorage.setItem("user", JSON.stringify(userData));
+      return userData;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error inesperado");
     }
@@ -47,7 +54,6 @@ export const loginUser = createAsyncThunk(
 
       const userData = { ...user, cartId };
       localStorage.setItem("user", JSON.stringify(userData));
-
       return userData;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Error al iniciar sesión.");

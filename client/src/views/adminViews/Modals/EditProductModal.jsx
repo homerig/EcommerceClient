@@ -50,18 +50,15 @@ const EditProductModal = ({ setEditModalOpen, initialValues, editingProduct }) =
 
     dispatch(updateProduct({ id: editingProduct.id, productData: formData }))
       .then(() => {
-        // Mostrar SweetAlert2
         Swal.fire({
           title: "¡Producto Editado!",
           text: "Los cambios se guardaron correctamente.",
           icon: "success",
-          timer: 3000, // Desaparece automáticamente después de 3 segundos
+          timer: 3000, 
           showConfirmButton: false,
-          toast: true, // Aparece como un toast (pequeño mensaje en esquina)
-          position: "top-end", // Posición del mensaje
+          toast: true, 
+          position: "top-end",
         });
-
-        // Cerrar el modal
         setEditModalOpen(false);
       });
   };

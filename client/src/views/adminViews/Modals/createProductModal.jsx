@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "../../../Redux/categoriesSlice";
 import { createProduct } from "../../../Redux/productosSlice";
-import Swal from "sweetalert2"; // Importar SweetAlert2
+import Swal from "sweetalert2"; 
 import "sweetalert2/dist/sweetalert2.min.css";
 
 const CreateForm = ({ setCreateModalOpen }) => {

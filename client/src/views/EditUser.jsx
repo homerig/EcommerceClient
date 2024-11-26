@@ -18,24 +18,23 @@ const EditUser = ({
   if (!isOpen) return null;
 
   const handleFormSubmit = (e) => {
-    e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+    e.preventDefault(); 
   
-    // Asegúrate de pasar el ID del usuario y los datos de usuario correctamente
-    dispatch(updateUser({ id: user.id, userData: updatedUser })) // Aquí pasas el id y los datos de usuario
+    dispatch(updateUser({ id: user.id, userData: updatedUser })) 
     
       .then(() => {
-        // Mostrar alerta de éxito con SweetAlert2
+
         Swal.fire({
           title: "¡Usuario Actualizado!",
           text: "Usuario actualizado exitosamente.",
           icon: "success",
-          timer: 3000, // Desaparece automáticamente después de 3 segundos
+          timer: 3000, 
           showConfirmButton: false,
           toast: true,
           position: "top-end",
         });
   
-        onClose(); // Cerrar el modal después de la actualización
+        onClose(); 
       })
       .catch((error) => {
         console.error("Error al actualizar el usuario:", error);

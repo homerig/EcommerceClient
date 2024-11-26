@@ -35,12 +35,11 @@ const FinishCart = ({ setModalOpen }) => {
     e.preventDefault();
     dispatch(finishCart({ cartId, formData }))
       .then(() => {
-        // Mostrar SweetAlert2 al finalizar la compra
         Swal.fire({
           title: "¡Compra Finalizada!",
           text: "Tu compra se realizó con éxito.",
           icon: "success",
-          timer: 3000, // Desaparece automáticamente después de 3 segundos
+          timer: 3000, 
           showConfirmButton: false,
           toast: true,
           position: "top-end",

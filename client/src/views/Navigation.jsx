@@ -8,19 +8,19 @@ import './css/Navigation.css';
 
 const Navigation = () => {
   const { user } = useSelector((state) => state.auth);
-  const [showAdminLinks, setShowAdminLinks] = useState(false); // Estado para controlar los enlaces de admin
+  const [showAdminLinks, setShowAdminLinks] = useState(false);
   const navigate = useNavigate();
 
   const userRole = user?.role || '';
 
-  // Función para alternar los enlaces de administración
+
   const toggleAdminLinks = () => {
     if (showAdminLinks) {
       setShowAdminLinks(false);
-      navigate('/'); // Redirige a Home
+      navigate('/');
     } else {
       setShowAdminLinks(true);
-      navigate('/adminViews/ProductsAdmin'); // Redirige a Admin Products
+      navigate('/adminViews/ProductsAdmin'); 
     }
   };
 

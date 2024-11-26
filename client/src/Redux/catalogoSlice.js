@@ -25,34 +25,45 @@ export const filterByPrice = createAsyncThunk("catalogo/filterByPrice", async ({
   return response.data;
 });
 
-export const agregarAlCarrito = createAsyncThunk("catalogo/agregarAlCarrito", async (producto, { getState }) => {
-  const state = getState(); 
-  const token = state.auth?.user?.access_token; 
+export const agregarAlCarrito = createAsyncThunk("catalogo/agregarAlCarrito", async (producto, { getState, rejectWithValue }) => {
+  const state = getState();
+  const token = state.auth?.user?.access_token;
   const userId = state.auth?.user?.userId;
-  const cartId = state.cart?.cartId; 
+  const cartId = state.cart?.cartId;
 
-  let cartResponse = await axios.get(`http://localhost:4002/cart/user/${userId}`);
+  try {
+    let cartResponse = await axios.get(`http://localhost:4002/cart/user/${userId}`);
 
-  if (cartResponse.status === 404) {
-    const createResponse = await axios.post(`http://localhost:4002/cart`, { userId });
-    cartResponse = createResponse;
+    if (cartResponse.status === 404) {
+      const createResponse = await axios.post(`http://localhost:4002/cart`, { userId });
+      cartResponse = createResponse;
+    }
+    const existingProductInCart = cartResponse.data.items.find(item => item.productId === producto.id);
+    const currentQuantityInCart = existingProductInCart ? existingProductInCart.quantity : 0;
+    if (currentQuantityInCart + 1 > producto.stock) {
+      alert("No puedes agregar más unidades de este producto. Stock insuficiente.");
+      return null; 
+    }
+    await axios.put(`${BASE_URL}/${cartId}/add-product`, {
+      cartId,
+      productId: producto.id,
+      quantity: 1,
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    alert('Producto agregado al carrito');
+    return producto;
+
+  } catch (error) {
+    return rejectWithValue(error.response?.data || "Error al agregar el producto al carrito.");
   }
-  
-
-  await axios.put(`${BASE_URL}/${cartId}/add-product`, {
-    cartId,
-    productId: producto.id,
-    quantity: 1,
-  }, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
-  alert('Producto agregado al carrito');
-
-  return producto;
 });
+
+
 
 const catalogoSlice = createSlice({
   name: "catalogo",
@@ -80,6 +91,29 @@ const catalogoSlice = createSlice({
       .addCase(filterByPrice.fulfilled, (state, action) => {
         state.productos = action.payload;
       })
+      .addCase(agregarAlCarrito.fulfilled, (state, action) => {
+        if (action.payload?.warning) {
+          state.error = action.payload.warning; 
+        } else {
+          const updatedProduct = action.payload;
+          if (updatedProduct && updatedProduct.id) {
+            const productIndex = state.productos.findIndex(
+              (producto) => producto.id === updatedProduct.id
+            );
+            if (productIndex !== -1) {
+              state.productos[productIndex].quantity =
+                (state.productos[productIndex].quantity || 0) + 1;
+            }
+          }
+        }
+      })
+      .addCase(agregarAlCarrito.rejected, (state, action) => {
+        if (action.payload?.warning) {
+          state.error = action.payload.warning;
+        } else {
+          state.error = action.payload || "Error al agregar el producto al carrito.";
+        }
+      });
   },
 });
 

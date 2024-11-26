@@ -10,7 +10,6 @@ const UserCard = ({ user, orders, onEdit, onDelete }) => {
       <p><strong>Email:</strong> {user.email}</p>
       <p><strong>Rol:</strong> {user.role}</p>
 
-      {user.role !== 'ADMIN' && (
         <>
           <h3>Órdenes:</h3>
           {orders && orders.length > 0 ? (
@@ -23,7 +22,6 @@ const UserCard = ({ user, orders, onEdit, onDelete }) => {
             <p>No tiene órdenes.</p>
           )}
         </>
-      )}
 
       <div className="user-actions">
         <button onClick={() => onEdit(user)}>

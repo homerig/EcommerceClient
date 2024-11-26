@@ -51,14 +51,9 @@ const Navigation = () => {
         )}
       </ul>
       <div className="navbar-icons">
-        {!showAdminLinks && (
-          <>
-            <Link to="/ViewCart">
+        <Link to="/ViewCart">
               <FontAwesomeIcon icon={faShoppingCart} className="icon" />
             </Link>
-            
-          </>
-        )}
         <Link to="/Login">
               <FontAwesomeIcon icon={faUser} className="icon" />
             </Link>

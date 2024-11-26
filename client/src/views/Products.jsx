@@ -51,14 +51,22 @@ const Products = () => {
 
   const navigate = useNavigate(); 
 
-  const handleAddToCart = (producto) => {
+  const handleAddToCart = async (producto) => {
     if (!auth?.user?.access_token) {
       alert("Debes iniciar sesión para agregar productos al carrito.");
-      navigate("/Login"); 
+      navigate("/Login");
       return;
     }
-    dispatch(agregarAlCarrito(producto));
+    const resultAction = await dispatch(agregarAlCarrito(producto));
+    if (agregarAlCarrito.fulfilled.match(resultAction)) {
+    } else if (agregarAlCarrito.rejected.match(resultAction)) {
+      const warningMessage = resultAction.payload?.warning || "No se pudo agregar el producto al carrito.";
+      alert(warningMessage); 
+    }
   };
+  
+  
+  
 
   if (loading) return <p>Cargando productos...</p>;
   if (error) return <p>Error: {error}</p>;

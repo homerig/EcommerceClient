@@ -4,13 +4,15 @@ import { fetchProducts, fetchCategories, filterByCategory, filterByPrice, agrega
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; 
 import './css/Products.css';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import loader from '../assets/gifLoader.gif';
 const Products = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
   const { productos, categorias, loading, error } = useSelector((state) => state.catalogo);
   
-  const [selectedCategories, setSelectedCategories] = useState([]); // Solo se puede seleccionar una categoría a la vez
+  const [selectedCategories, setSelectedCategories] = useState([]); 
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [showFilters, setShowFilters] = useState(false);
 
@@ -20,16 +22,15 @@ const Products = () => {
   }, [dispatch]);
 
   const handleCategoryChange = (e) => {
-    setSelectedCategories([e.target.value]); // Actualiza con la categoría seleccionada
-    dispatch(filterByCategory(e.target.value)); // Filtra por categoría al seleccionar
+    setSelectedCategories([e.target.value]); 
+    dispatch(filterByCategory(e.target.value)); 
   };
 
   const handlePriceChange = () => {
-    // Filtra automáticamente cuando el rango de precio cambie
     if (priceRange.min || priceRange.max) {
       dispatch(filterByPrice(priceRange));
     } else {
-      dispatch(fetchProducts()); // Si no hay rango de precio, resetear a todos los productos
+      dispatch(fetchProducts()); 
     }
   };
 
@@ -37,7 +38,6 @@ const Products = () => {
     const { name, value } = e.target;
     setPriceRange((prev) => {
       const newPriceRange = { ...prev, [name]: value };
-      // Aplica el filtro automáticamente al escribir el precio
       dispatch(filterByPrice(newPriceRange));
       return newPriceRange;
     });
@@ -46,7 +46,7 @@ const Products = () => {
   const clearFilters = () => {
     setSelectedCategories([]);
     setPriceRange({ min: '', max: '' });
-    dispatch(fetchProducts()); // Resetear filtros y cargar todos los productos
+    dispatch(fetchProducts()); 
   };
 
   const navigate = useNavigate(); 
@@ -68,7 +68,15 @@ const Products = () => {
   
   
 
-  if (loading) return <p>Cargando productos...</p>;
+  if (loading) return  (<div className="productos-container">
+    <header className="productos-header">
+      <h1>Productos</h1>
+      <button className="filtro-button">
+        Filtrar <FontAwesomeIcon icon={faFilter} />
+      </button>
+    </header>
+    <div className="containerLoaderProducts"><img src={loader} alt="Cargando.." className="loader" /><p> Cargando productos...</p></div>;
+    </div>);
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -76,10 +84,7 @@ const Products = () => {
       <header className="productos-header">
         <h1>Productos</h1>
         <button className="filtro-button" onClick={() => setShowFilters(!showFilters)}>
-          Filtrar <span>🔽</span>
-        </button>
-        <button className="limpiar-filtros-button" onClick={clearFilters}>
-          Limpiar Filtros
+          Filtrar <FontAwesomeIcon icon={faFilter} />
         </button>
       </header>
   
@@ -109,17 +114,20 @@ const Products = () => {
                 name="min"
                 placeholder="Desde"
                 value={priceRange.min}
-                onChange={handlePriceInputChange} // Aplica el filtro mientras escribe
+                onChange={handlePriceInputChange} 
               />
               <input
                 type="number"
                 name="max"
                 placeholder="Hasta"
                 value={priceRange.max}
-                onChange={handlePriceInputChange} // Aplica el filtro mientras escribe
+                onChange={handlePriceInputChange} 
               />
             </div>
           </div>
+          <button className="limpiar-filtros-button" onClick={clearFilters}>
+          Limpiar Filtros
+        </button>
         </div>
       )}
   

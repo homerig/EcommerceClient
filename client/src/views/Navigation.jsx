@@ -33,10 +33,10 @@ const Navigation = () => {
         {userRole == 'ADMIN' && (
           <>
             <li>
-              <Link to="/Orders">Orders</Link>
+              <Link to="/Orders">Órdenes</Link>
             </li>
             <li>
-              <Link to="/ViewUsers">Users</Link>
+              <Link to="/ViewUsers">Usuarios</Link>
             </li>
             <li>
               <Link to="/Categories">Categorías</Link>

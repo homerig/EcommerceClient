@@ -46,7 +46,7 @@
 
 .cart-item-quantity {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 10px;
 }
 
@@ -75,10 +75,10 @@
 }
 
 .confirm-cart-button {
-  background-color: #646cff;
+  background-color: #3c3838;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   padding: 10px 20px;
   cursor: pointer;
   margin-top: 10px;
@@ -87,12 +87,24 @@
 .remove-item-button {
   background-color: transparent;
   border: none;
-  color: #ff0000;
+  color: #3c3838;
   cursor: pointer;
   font-size: 18px;
   padding: 5px;
+  padding-left: 20px;
 }
 
 .remove-item-button:hover {
   color: #cc0000;
+}
+
+.emptyCart{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  padding-top: 20px;
+}
+.emptyCart img{
+  width: 40vh;
 }

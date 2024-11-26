@@ -24,6 +24,7 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    margin-top: 10px;
   }
   
   .category-form button:hover {
@@ -49,15 +50,15 @@
   .add-category-button {
     padding: 10px 15px;
     margin-top: 20px;
-    background-color: #007BFF;
+    background-color: #3c3838;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
   }
   
   .add-category-button:hover {
-    background-color: #0056b3;
+    background-color: #4a4b4e;
   }
   .categories-list li {
     display: flex;
@@ -91,9 +92,7 @@
     color: #007bff; 
   }
   
-  .add-category-button {
-    margin-top: 10px;
-  }
+
   
   .category-form input {
     flex-grow: 1;
@@ -106,3 +105,8 @@
   }
   
     
+  .formCategories{
+    display: flex;
+    gap: 20px;
+    align-items: baseline;
+  }

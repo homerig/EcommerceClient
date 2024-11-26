@@ -9,6 +9,9 @@ import {
 } from "../Redux/cartSlice";
 import FinishCart from "./FinishCart";
 import "./css/ViewCart.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash} from '@fortawesome/free-solid-svg-icons';
+import emptyCart from '../assets/emptyCart.png';
 
 const ViewCart = () => {
   const dispatch = useDispatch();
@@ -91,7 +94,10 @@ const ViewCart = () => {
     <div className="cart-container">
       <h2>Carrito de Compras</h2>
       {detailedCartItems.length === 0 ? (
-        <p>El carrito está vacío.</p>
+        <div className="emptyCart">
+          <img src={emptyCart} alt="Carrito Vacío"  />
+        <p>El carrito está vacío</p>
+        </div>
       ) : (
         <>
           <div className="cart-items">
@@ -126,7 +132,7 @@ const ViewCart = () => {
                   className="remove-item-button"
                   onClick={() => handleRemoveItem(item.productId)}
                 >
-                  🗑
+                  <FontAwesomeIcon icon={faTrash} />
                 </button>
               </div>
             ))}

@@ -88,7 +88,46 @@ const ProductTable = () => {
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
-  if (loading) return <div className="containerLoader"><img src={loader} alt="Cargando.." className="loader" /><p> Cargando productos...</p></div>;
+  if (loading) return (<div className="product-table-container">
+    <div className="table-actions">
+    <h2>Productos</h2>
+    <div className="table-actions">
+    <button className="add-button" disabled>
+        <FontAwesomeIcon icon={faPlus} /> Agregar
+      </button>
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Buscar..."
+          value={searchTerm}
+          className="searchBar"
+        />
+        <FontAwesomeIcon icon={faSearch} className="search-icon" />
+      </div>
+    </div>
+      
+    </div>
+    <div className="tableContainer">
+    <table className="styled-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Precio</th>
+          <th>Descuento %</th>
+          <th>Imágenes</th>
+          <th>Stock</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+      <div className="containerLoaderProducts"><img src={loader} alt="Cargando.." className="loader" /><p> Cargando productos...</p></div>
+    </div>
+    
+
+  </div>);
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
   return (
     <div className="product-table-container">

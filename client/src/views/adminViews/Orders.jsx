@@ -4,6 +4,7 @@ import { fetchOrders } from "../../Redux/ordersSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faSearch } from "@fortawesome/free-solid-svg-icons";
 import "./css/Orders.css";
+import loader from '../../assets/gifLoader.gif';
 
 const OrderTable = () => {
   const dispatch = useDispatch();
@@ -34,12 +35,47 @@ const OrderTable = () => {
     setSelectedOrder(null);
   };
 
-  if (loading) return <p>Cargando órdenes...</p>;
+  if (loading) return  (<div className="order-table-container">
+    <div className="table-actions">
+    <h2>Órdenes</h2>
+    <div className="table-actions">
+    <div className="search-bar bottom">
+      <input
+        type="text"
+        placeholder="Buscar por email..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <FontAwesomeIcon icon={faSearch} className="search-icon" />
+    </div>
+    </div>
+    
+    </div>
+    <div className="tableContainer">
+    <table className="styled-table">
+      <thead>
+        <tr>
+          <th>N° Orden</th>
+          <th>E-Mail</th>
+          <th>Total</th>
+          <th>Detalle</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <div className="containerLoaderOrders"><img src={loader} alt="Cargando.." className="loader" /><p> Cargando Órdenes...</p></div>
+    </div>
+    
+
+  </div>);
   if (error) return <p>{error}</p>;
 
   return (
     <div className="order-table-container">
-      <h2>Ver Órdenes</h2>
+      <div className="table-actions">
+      <h2>Órdenes</h2>
+      <div className="table-actions">
       <div className="search-bar bottom">
         <input
           type="text"
@@ -49,14 +85,17 @@ const OrderTable = () => {
         />
         <FontAwesomeIcon icon={faSearch} className="search-icon" />
       </div>
-
+      </div>
+      
+      </div>
+      <div className="tableContainer">
       <table className="styled-table">
         <thead>
           <tr>
             <th>N° Orden</th>
-            <th>E-Mail</th>
+            <th>Correo Electrónico</th>
             <th>Total</th>
-            <th>Orden</th>
+            <th>Detalle</th>
           </tr>
         </thead>
         <tbody>
@@ -74,11 +113,13 @@ const OrderTable = () => {
           ))}
         </tbody>
       </table>
+      </div>
+      
 
       {showPopup && selectedOrder && (
         <div className="modal">
           <div className="modal-content">
-            <h3>Detalles de la Orden #{selectedOrder.id}</h3>
+            <h3>Detalles de la Órden #{selectedOrder.id}</h3>
             <div className="order-details">
               {selectedOrder.items.map((item) => (
                 <div key={item.id} className="order-item">

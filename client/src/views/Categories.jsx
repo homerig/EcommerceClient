@@ -51,7 +51,7 @@ const Categories = () => {
 
   return (
     <div className="categories-container">
-      <h1>Categorías</h1>
+      <h2>Categorías</h2>
       {loading && <p>Cargando categorías...</p>}
       {error && <p className="error">{error}</p>}
 
@@ -100,22 +100,25 @@ const Categories = () => {
         ))}
       </ul>
 
-      <button className="add-category-button" onClick={() => setShowInput(!showInput)}>
-        {showInput ? "Cancelar" : "Agregar Categoría"}
-      </button>
+      <div className="formCategories">
+        <button className="add-category-button" onClick={() => setShowInput(!showInput)}>
+          {showInput ? "Cancelar" : "Agregar Categoría"}
+        </button>
 
-      {showInput && (
-        <form onSubmit={handleAddCategory} className="category-form">
-          <input
-            type="text"
-            value={newDescription}
-            onChange={(e) => setNewDescription(e.target.value)}
-            placeholder="Nueva categoría"
-            required
-          />
-          <button type="submit">Agregar</button>
-        </form>
-      )}
+        {showInput && (
+          <form onSubmit={handleAddCategory} className="category-form">
+            <input
+              type="text"
+              value={newDescription}
+              onChange={(e) => setNewDescription(e.target.value)}
+              placeholder="Nueva categoría"
+              required
+            />
+            <button type="submit">Agregar</button>
+          </form>
+        )}
+      </div>
+      
     </div>
   );
 };

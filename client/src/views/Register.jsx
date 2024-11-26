@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { registerUser } from "../Redux/authSlice";
 import { fetchCart } from "../Redux/cartSlice";
 import "./css/Register.css";
+import mate from '../assets/logoisotipo.png';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -56,6 +57,7 @@ const Register = () => {
   return (
     <div className="register-container">
       <div className="register-modal">
+        <img src={mate} alt="Logo" className="logoisotipo" />
         <h2>Complete sus datos</h2>
         <form onSubmit={handleSubmit} className="register-form">
           <input
@@ -97,6 +99,11 @@ const Register = () => {
 
         {passwordError && <p className="error">{passwordError}</p>}
         {error && <p className="error">Error: {error}</p>}
+<br />
+        <p> ¿Ya tienes una cuenta?{' '} </p>
+        <button className="register-link" onClick={() => navigate('/login')}>
+          Inicia Sesión
+          </button>
       </div>
     </div>
   );

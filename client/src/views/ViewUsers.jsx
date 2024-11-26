@@ -7,6 +7,9 @@ import EditUser from "./EditUser";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import "./css/Users.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import loader from '../assets/gifLoader.gif';
 
 const ViewUsers = () => {
   const dispatch = useDispatch();
@@ -41,7 +44,7 @@ const ViewUsers = () => {
   const handleDelete = (id) => {
     Swal.fire({
       title: "¿Estás seguro?",
-      text: `¿Quieres eliminar el usuario con ID ${id}?`,
+      text: `¿Quieres eliminar este usuario?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -74,24 +77,53 @@ const ViewUsers = () => {
     return true;
   });
 
-  if (loading) return <p>Cargando usuarios...</p>;
-  if (error) return <p>Error: {error}</p>;
-
-  return (
-    <div className="users-container">
-      <h1>Usuarios</h1>
+  if (loading) return (<div className="users-container">
+    <div className="filterContainer">
+      <h2>Usuarios</h2>
       <div className="search-filter">
         <select value={filter} onChange={(e) => setFilter(e.target.value)}>
           <option value="Todos">Todos</option>
           <option value="USER">User</option>
           <option value="ADMIN">Administrador</option>
         </select>
+        <div className="search-bar-users">
         <input
           type="text"
           placeholder="Buscar por nombre o email..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <FontAwesomeIcon icon={faSearch} className="search-icon" />
+        </div>
+      </div>
+      <div className="containerLoader"><img src={loader} alt="Cargando.." className="loader" /><p> Cargando Usuarios...</p></div>;
+    </div>
+
+  </div>);
+  if (error) return <p>Error: {error}</p>;
+
+  return (
+    <div className="users-container">
+      <div className="filterContainer">
+        <h2>Usuarios</h2>
+        <div className="search-filter">
+          <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+            <option value="Todos">Todos</option>
+            <option value="USER">User</option>
+            <option value="ADMIN">Administrador</option>
+          </select>
+          <div className="search-bar-users">
+          <input
+            type="text"
+            placeholder="Buscar por nombre o email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <FontAwesomeIcon icon={faSearch} className="search-icon" />
+          </div>
+        </div>
+        
+        
       </div>
       <div className="user-list">
         {filteredUsers.map(user => (

@@ -5,6 +5,10 @@ import { loginUser, logout } from '../Redux/authSlice';
 import { resetCartState } from "../Redux/cartSlice"; 
 import { fetchCart } from "../Redux/cartSlice";
 import './css/Login.css';
+import mate from '../assets/logoisotipo.png';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,9 +38,12 @@ const Login = () => {
     return (
       <div className="login-container">
         <div className="login-modal">
-          <h1>Perfil de Usuario</h1>
-          <p><strong>Nombre:</strong> {user.name}</p>
-          <p><strong>Email:</strong> {user.email}</p>
+          <h2>Perfil de Usuario</h2>
+          <div className='infoUser'>
+            <p><FontAwesomeIcon icon={faUser} className="perfilIcon" /><strong>Nombre:</strong> {user.name}</p>
+            <p><FontAwesomeIcon icon={faEnvelope} className="perfilIcon" /><strong>Email:</strong> {user.email}</p>
+          </div>
+          <br />
           <button onClick={handleLogout}>Cerrar Sesión</button>
         </div>
       </div>
@@ -46,7 +53,8 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-modal">
-        <h1>¡Bienvenido/a!</h1>
+      <img src={mate} alt=" Logo" className="logoisotipo" />
+        <h2>¡Bienvenido/a!</h2>
         <form onSubmit={handleSubmit}>
           <input
             type="email"
@@ -67,12 +75,11 @@ const Login = () => {
           <button type="submit">Iniciar Sesión</button>
         </form>
         <p>¿Has olvidado tu contraseña?</p>
-        <p>
-          ¿Aún no tienes cuenta?{' '}
-          <span className="register-link" onClick={() => navigate('/register')}>
+        <br />
+        <p> ¿Aún no tienes una cuenta?{' '} </p>
+        <button className="register-link" onClick={() => navigate('/register')}>
             Registrarse
-          </span>
-        </p>
+          </button>
       </div>
     </div>
   );

@@ -57,7 +57,7 @@ const EditUser = ({
         <h2>Editar Usuario</h2>
         <form onSubmit={handleFormSubmit}>
           <label>
-            Nombre:
+            Nombre
             <input
               type="text"
               value={updatedUser.name}
@@ -68,7 +68,7 @@ const EditUser = ({
             />
           </label>
           <label>
-            Correo electrónico:
+            Correo electrónico
             <input
               type="email"
               value={updatedUser.email}
@@ -79,7 +79,7 @@ const EditUser = ({
             />
           </label>
           <label>
-            Rol:
+            Rol
             <select
               value={updatedUser.role}
               onChange={(e) =>

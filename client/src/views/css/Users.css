@@ -1,41 +1,36 @@
 .users-container {
   width: 100%;
+  min-height: 90vh;
   padding: 20px;
   font-family: 'Roboto', sans-serif;
   background-color: #f9f9f9;
   color: #333;
   box-sizing: border-box;
   overflow-x: hidden;
-  border-bottom: 2cm solid #E4E2DD;
 }
 
 .search-filter {
   display: flex;
-  justify-content: flex-start; 
+  justify-content: flex-end;
   align-items: center;
   margin-bottom: 20px;
-  gap: 150px;
+  gap: 15px;
 }
 
 .search-filter select {
   padding: 12px;
   font-size: 18px; 
-  border-radius: 18px;
+  border-radius: 99rem;
   border: 1px solid #ccc;
   width: 200px;
 }
 
 .search-filter input {
-  padding: 12px;
+  padding: 12px 20px;
   font-size: 18px;
-  border-radius: 18px;
+  border-radius: 99rem;
   border: 1px solid #ccc;
-  width: 1000px;
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij4gPHBhdGggZD0iTTE0LjMxIDIwLjcxbDQuODctNC44NmEuNzkuNzkgMCAwIDAgMC0xLjEyTDExLjgyIDExLjhhNyA3IDAgMSAwLS43OTkuNzk5bDcuMjg4IDcuMjk2YS43OS43OSAwIDAgMCAxLjEyIDB6bS0xMy40LTkuNzY4YTYuMDk3IDYuMDk3IDAgMSAxIDEyLjE5NCAwIDYuMDk3IDYuMDk3IDAgMCAxLTEyLjE5NCAweiIvPjwvc3ZnPg==');
-  background-position: 98% center; 
-  background-repeat: no-repeat;
-  background-size: 20px;
-  
+  width: 60vw !important;
 }
 
 .user-list {
@@ -46,4 +41,30 @@
 
 .user-card {
   max-width: 100%;
+}
+
+.search-bar-users{
+  display: flex;
+  align-items: baseline;
+  width: 30%;
+}
+
+.search-bar input {
+  padding: 10px;
+  width: 100%;
+  border-radius: 99rem;
+  
+}
+
+.search-icon {
+  margin-left: -30px;
+  color: #888;
+}
+
+.filterContainer{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-left: 25px;
+  padding-right: 5px;
 }

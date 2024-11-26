@@ -52,7 +52,7 @@ const ViewUsers = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(deleteUser(id)).then(() => {
+        dispatch(deleteUser(id)).unwrap().then(() => {
           Swal.fire({
             title: "Eliminado",
             text: "El usuario ha sido eliminado exitosamente.",
@@ -61,6 +61,13 @@ const ViewUsers = () => {
             showConfirmButton: false,
             toast: true,
             position: "top-end",
+          });
+        }).catch(() => {
+          Swal.fire({
+            title: "No se ha podido eliminar",
+            text: "No se puede eliminar un usuario que tenga órdenes asociadas.",
+            icon: "error",
+            showConfirmButton: true,
           });
         });
       }

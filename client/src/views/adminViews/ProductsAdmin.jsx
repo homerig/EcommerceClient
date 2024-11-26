@@ -63,7 +63,7 @@ const ProductTable = () => {
             icon: "error",
             showConfirmButton: true,
           });
-        });;
+        });
       }
     });
   };

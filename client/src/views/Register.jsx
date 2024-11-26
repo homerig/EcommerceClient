@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../Redux/authSlice";
+import { fetchCart } from "../Redux/cartSlice";
 import "./css/Register.css";
 
 const Register = () => {
@@ -13,6 +14,7 @@ const Register = () => {
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const userId = useSelector((state) => state.auth.user?.userId);
   const { loading, error } = useSelector((state) => state.auth);
 
   const [passwordError, setPasswordError] = useState(null);
@@ -27,6 +29,7 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setPasswordError(null);
+
 
     if (formData.password !== formData.confirmPassword) {
       setPasswordError("Las contraseñas no coinciden");
@@ -43,6 +46,12 @@ const Register = () => {
         console.error("Error al registrar el usuario:", err);
       });
   };
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchCart(userId)); 
+    }
+  }, [userId, dispatch]);
 
   return (
     <div className="register-container">

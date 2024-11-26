@@ -89,7 +89,7 @@ export const finishCart = createAsyncThunk(
       await axios.put(`${BASE_URL}/${cartId}/finish`, formData);
 
       await axios.put(`${BASE_URL}/${cartId}/clear`);
-      alert('Compra finalizada con exito!');
+      
 
       return cartId;
 

@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, fetchUserOrders, updateUser, deleteUser } from "../Redux/userSlice";
 import UserCard from "./UserCard";
 import EditUser from "./EditUser";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 import "./css/Users.css";
 
 const ViewUsers = () => {
@@ -37,9 +39,30 @@ const ViewUsers = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
-      dispatch(deleteUser(id)).catch((err) => console.error("Error deleting user:", err));
-    }
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: `¿Quieres eliminar el usuario con ID ${id}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteUser(id)).then(() => {
+          Swal.fire({
+            title: "Eliminado",
+            text: "El usuario ha sido eliminado exitosamente.",
+            icon: "success",
+            timer: 3000,
+            showConfirmButton: false,
+            toast: true,
+            position: "top-end",
+          });
+        });
+      }
+    });
   };
 
   const filteredUsers = users.filter(user => {

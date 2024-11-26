@@ -41,8 +41,7 @@ export const agregarAlCarrito = createAsyncThunk("catalogo/agregarAlCarrito", as
     const existingProductInCart = cartResponse.data.items.find(item => item.productId === producto.id);
     const currentQuantityInCart = existingProductInCart ? existingProductInCart.quantity : 0;
     if (currentQuantityInCart + 1 > producto.stock) {
-      alert("No puedes agregar más unidades de este producto. Stock insuficiente.");
-      return null; 
+      return rejectWithValue("No puedes agregar más unidades de este producto. Stock insuficiente.");
     }
     await axios.put(`${BASE_URL}/${cartId}/add-product`, {
       cartId,
@@ -107,8 +106,10 @@ const catalogoSlice = createSlice({
         }
       })
       .addCase(agregarAlCarrito.rejected, (state, action) => {
-        if (action.payload?.warning) {
-          state.error = action.payload.warning;
+        console.log(action.payload);
+                if (action.payload) {
+
+          state.error = action.payload;
         } else {
           state.error = action.payload || "Error al agregar el producto al carrito.";
         }

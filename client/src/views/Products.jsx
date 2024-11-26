@@ -75,8 +75,16 @@ const Products = () => {
         timerProgressBar: true,
       });
     } else if (agregarAlCarrito.rejected.match(resultAction)) {
-      const warningMessage = resultAction.payload?.warning || "No se pudo agregar el producto al carrito.";
-      alert(warningMessage); 
+      const warningMessage = resultAction.payload || "No se pudo agregar el producto al carrito.";
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: warningMessage,
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
     }
   };
   
@@ -92,7 +100,6 @@ const Products = () => {
     </header>
     <div className="containerLoaderProducts"><img src={loader} alt="Cargando.." className="loader" /><p> Cargando productos...</p></div>;
     </div>);
-  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="productos-container">
